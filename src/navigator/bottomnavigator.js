@@ -5,7 +5,7 @@ import { View, Text } from 'react-native';
 
 import Dashboard from '../navigator/dashnavigator';
 
-import Nav from '../components/bottomnavigation/activenav';
+import Nav from '../components/navigation/bottomnav';
 
 const TestScreen = () => {
 	return (
