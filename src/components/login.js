@@ -10,6 +10,10 @@ import {
 
 import login from '../assets/login.png'
 import styles from './styles/login'
+import Axios from 'axios';
+
+
+
 
 class LogIn extends React.Component{
 
@@ -20,6 +24,10 @@ class LogIn extends React.Component{
       password: "admin",
       error:""
     }
+  }
+
+  requestdata = () =>{
+    Axios.get('https://192.168.0.106/').then(results => console.log(results.json())).catch(err => console.log(err))
   }
 
   checkLogin = () => {
@@ -60,7 +68,7 @@ class LogIn extends React.Component{
               :
               null
           }
-          <TouchableOpacity style={styles.button} onPress={this.checkLogin}>
+          <TouchableOpacity style={styles.button} onPress={this.requestdata}>
             <Text style={{fontSize:17}}>Sign In</Text>
           </TouchableOpacity>
         </ImageBackground>
