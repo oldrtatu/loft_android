@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 
 import { View, Text } from 'react-native';
 
-import Dashboard from '../components/dashboard';
+import Dashboard from '../navigator/dashnavigator';
 
 import Nav from '../components/bottomnavigation/activenav';
 
@@ -17,10 +17,7 @@ const TestScreen = () => {
 
 const MainApp = createBottomTabNavigator(
 	{
-		Dashboard: {
-			screen: Dashboard,
-			path: 'dashboard'
-		},
+		Dashboard: Dashboard,
 		Inventory: TestScreen,
 		Issues: TestScreen,
 		'Purchase Order': TestScreen,

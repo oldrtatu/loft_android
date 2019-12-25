@@ -1,5 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import {
+	View,
+	Text,
+	StyleSheet,
+	Image,
+	ImageBackground,
+	TouchableOpacity,
+	ScrollView,
+	Dimensions,
+	TouchableWithoutFeedback
+} from 'react-native';
 
 import topnav from '../assets/topnav.png';
 import settings from '../assets/settings.png';
@@ -28,11 +38,16 @@ class Dashboard extends React.Component {
 	}
 	cards = {
 		'Purchase Orders': { Active: 'active', Complete: 'normal' },
-		Notitifications: { Unread: 'alert' },
+		Notifications: { Unread: 'alert' },
 		Issues: { Open: 'open', 'Due in next 2 days': 'normal' },
 		Reports: { Total: 'normal' },
 		Inventory: { 'Low in stock': 'alert' }
-	};
+	}
+
+	changeToSettings = () => {
+		this.props.navigation.navigate('Settings')
+	}
+
 	render() {
 		let rowlength = Object.keys(this.cards).length;
 		let keyarray = Object.keys(this.cards);
@@ -51,7 +66,7 @@ class Dashboard extends React.Component {
 					<ImageBackground source={topnav} style={styles.background}>
 						<View style={styles.topline}>
 							<Text style={styles.navheading}>Dashboard</Text>
-							<TouchableOpacity style={styles.settingtap}>
+							<TouchableOpacity style={styles.settingtap} onPress={this.changeToSettings}>
 								<Image source={settings} style={styles.settings} />
 							</TouchableOpacity>
 						</View>
@@ -59,26 +74,58 @@ class Dashboard extends React.Component {
 							<Image source={profile} style={styles.profileimage} />
 							<Text style={styles.greetings}>Greetings! John Doe</Text>
 						</View>
-						<TouchableOpacity style={styles.card1}>
-							<Image source={Icons[this.state.firstcard]} style={styles.cardimage} />
-							<Text style={styles.cardtitle}>{this.state.firstcard}</Text>
-							<View style={styles.cardinfo}>
-								{Object.keys(this.cards[this.state.firstcard]).map((item, i) => (
-									<View key={i} style={styles.info}>
-										<Text style={styles[this.cards[this.state.firstcard][item]]}>123</Text>
-										<Text style={styles.text}>{item}</Text>
-									</View>
-								))}
+						<TouchableWithoutFeedback>
+							<View style={styles.card1}>
+								<Image source={Icons[this.state.firstcard]} style={styles.cardimage} />
+								<Text style={styles.cardtitle}>{this.state.firstcard}</Text>
+								<View style={styles.cardinfo}>
+									{Object.keys(this.cards[this.state.firstcard]).map((item, i) => (
+										<View key={i} style={styles.info}>
+											<Text style={styles[this.cards[this.state.firstcard][item]]}>123</Text>
+											<Text style={styles.text}>{item}</Text>
+										</View>
+									))}
+								</View>
 							</View>
-						</TouchableOpacity>
+						</TouchableWithoutFeedback>
 					</ImageBackground>
 				</View>
 				<View style={styles.restarea}>
 					<View style={styles.leftcolumn}>
-						{Object.keys(oddobject).map((item, i) => <View style={styles.normalcard} key={i} />)}
+						{Object.keys(oddobject).map((item, i) => (
+							<TouchableWithoutFeedback  key={i}>
+								<View style={styles.normalcard}>
+									<Image source={Icons[item]} style={styles.cardimage} />
+									<Text style={styles.cardtitle}>{item}</Text>
+									{Object.keys(this.cards[item]).map((action, i) => (
+										<View style={styles.normalcardinfo} key={i}>
+											<View style={styles.normalinfo}>
+												<Text style={styles[this.cards[item][action]]}>12</Text>
+												<Text style={styles.text}>{action}</Text>
+											</View>
+										</View>
+									))}
+								</View>
+							</TouchableWithoutFeedback>
+						))}
 					</View>
 					<View style={styles.rightcolumn}>
-						{Object.keys(evenobject).map((item, i) => <View style={styles.normalcard} key={i} />)}
+						{Object.keys(evenobject).map((item, i) => (
+							<TouchableWithoutFeedback key={i}>
+								<View style={styles.normalcard} >
+									<Image source={Icons[item]} style={styles.cardimage} />
+									<Text style={styles.cardtitle}>{item}</Text>
+									{Object.keys(this.cards[item]).map((action, i) => (
+										<View style={styles.normalcardinfo} key={i}>
+											<View style={styles.normalinfo}>
+												<Text style={styles[this.cards[item][action]]}>123</Text>
+												<Text style={styles.text}>{action}</Text>
+											</View>
+										</View>
+									))}
+								</View>
+							</TouchableWithoutFeedback>
+						))}
 					</View>
 				</View>
 			</ScrollView>
@@ -88,7 +135,8 @@ class Dashboard extends React.Component {
 
 const styles = StyleSheet.create({
 	containerStyle: {
-		flex: 1
+		flex: 1,
+		backgroundColor:"#F6F7F9"
 	},
 	topbar: {
 		width: '100%',
@@ -185,12 +233,14 @@ const styles = StyleSheet.create({
 	},
 	alert: {
 		backgroundColor: '#D62246',
+		color: '#fff',
 		paddingVertical: 4,
 		paddingHorizontal: 8,
 		borderRadius: 5
 	},
 	open: {
 		backgroundColor: '#F68257',
+		color: '#fff',
 		paddingVertical: 4,
 		paddingHorizontal: 8,
 		borderRadius: 5
@@ -205,22 +255,24 @@ const styles = StyleSheet.create({
 		marginLeft: 10
 	},
 	restarea: {
-		marginTop: 35,
+		marginTop: 30,
 		flex: 1,
 		flexDirection: 'row',
 		width: Dimensions.get('window').width * 0.9,
 		alignSelf: 'center',
-		borderWidth: 1
+		marginBottom: 5
 	},
 	leftcolumn: {
 		flex: 1,
 		flexDirection: 'column',
-		marginRight:10
+		marginRight: 10,
+		height: 'auto'
 	},
 	rightcolumn: {
 		flex: 1,
 		flexDirection: 'column',
-		marginLeft:10
+		marginLeft: 10,
+		height: 'auto'
 	},
 	normalcard: {
 		shadowColor: '#000000',
@@ -229,10 +281,19 @@ const styles = StyleSheet.create({
 		elevation: 3,
 		borderRadius: 5,
 		backgroundColor: '#fff',
-		height: 100,
-		borderWidth: 1,
+		marginTop: 20,
+		height: 'auto',
+		paddingBottom: 20
+	},
+	normalcardinfo: {
 		flex: 1,
-		marginTop:15
+		marginTop: 10,
+		marginLeft: 20
+	},
+	normalinfo: {
+		flex: 1,
+		flexDirection: 'row',
+		height: 25
 	}
 });
 
