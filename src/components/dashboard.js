@@ -34,6 +34,17 @@ class Dashboard extends React.Component {
 		Inventory: { 'Low in stock': 'alert' }
 	};
 	render() {
+		let rowlength = Object.keys(this.cards).length;
+		let keyarray = Object.keys(this.cards);
+		let evenobject = {};
+		let oddobject = {};
+		for (let i = 1; i < rowlength; i++) {
+			if (i % 2 == 0) {
+				evenobject[keyarray[i]] = this.cards[keyarray[i]];
+			} else {
+				oddobject[keyarray[i]] = this.cards[keyarray[i]];
+			}
+		}
 		return (
 			<ScrollView style={styles.containerStyle}>
 				<View style={styles.topbar}>
@@ -63,11 +74,12 @@ class Dashboard extends React.Component {
 					</ImageBackground>
 				</View>
 				<View style={styles.restarea}>
-					{Object.keys(this.cards).map((item, i) => (
-						<View style={[styles.normalcard , (i %2 != 0) ? {marginLeft : 'auto'} : null]} key={i} >
-							{item != this.state.firstcard ? <Text>{item}</Text> : null}
-						</View>
-					))}
+					<View style={styles.leftcolumn}>
+						{Object.keys(oddobject).map((item, i) => <View style={styles.normalcard} key={i} />)}
+					</View>
+					<View style={styles.rightcolumn}>
+						{Object.keys(evenobject).map((item, i) => <View style={styles.normalcard} key={i} />)}
+					</View>
 				</View>
 			</ScrollView>
 		);
@@ -194,12 +206,21 @@ const styles = StyleSheet.create({
 	},
 	restarea: {
 		marginTop: 35,
-		flex:1,
-		flexDirection:"row",
-		flexWrap:"wrap",
+		flex: 1,
+		flexDirection: 'row',
 		width: Dimensions.get('window').width * 0.9,
-		alignSelf:'center',
-		borderWidth:1,
+		alignSelf: 'center',
+		borderWidth: 1
+	},
+	leftcolumn: {
+		flex: 1,
+		flexDirection: 'column',
+		marginRight:10
+	},
+	rightcolumn: {
+		flex: 1,
+		flexDirection: 'column',
+		marginLeft:10
 	},
 	normalcard: {
 		shadowColor: '#000000',
@@ -208,12 +229,10 @@ const styles = StyleSheet.create({
 		elevation: 3,
 		borderRadius: 5,
 		backgroundColor: '#fff',
-		height:100,
-		// width: 1,
-		// flex: 1,
-		width:'40%',
-		borderWidth:1,
-		marginVertical: 10,
+		height: 100,
+		borderWidth: 1,
+		flex: 1,
+		marginTop:15
 	}
 });
 
