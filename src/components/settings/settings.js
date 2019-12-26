@@ -7,8 +7,8 @@ import {
 	TouchableWithoutFeedback,
 	TextInput,
 	TouchableOpacity,
-	Button,
-    Modal
+	Modal,
+	Switch
 } from 'react-native';
 
 import profile from '../../assets/profile.png';
@@ -16,27 +16,55 @@ import camera from '../../assets/camera.png';
 import forward from '../../assets/forward.png';
 import password from '../../assets/password.png';
 import logout from '../../assets/logout.png';
-import changepassword from '../../assets/changepassword.png'
-import close from '../../assets/close.png'
+import changepassword from '../../assets/changepassword.png';
+import close from '../../assets/close.png';
+import configure from '../../assets/configure.png'
 
 import styles from './style';
-import modal from './modalstyle'
+import modal from './modalstyle';
 
 class Settings extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			visible: true
+			visible: false,
+			modal2: false,
+			swtiches: [true,true,false,false,true]
 		};
-    }
-    
-    addPassword = () => {
-        this.setState({visible:true})
-    }
+	}
+	array = ["Purchase Order","Notifications","Issues","Reports","Inventory"]
 
-    closePassword = () => {
-        this.setState({visible:false})
-    }
+	addPassword = () => {
+		this.setState({ visible: true });
+	};
+
+	closePassword = () => {
+		this.setState({ visible: false });
+	};
+
+	changepassword = () => {
+		this.setState({ visible: false });
+	};
+
+	closeconfigure = () => {
+		this.setState({modal2:false})
+	}
+
+	changeconfigure = () => {
+		this.setState({modal2:false})
+	}
+
+	addconfigure = () => {
+		this.setState({modal2:true})
+	}
+
+	changeswitch = (value,key) =>{
+		let arr = [...this.state.swtiches]
+		arr[key] = value
+		this.setState({
+			swtiches:arr
+		})
+	}
 
 	render() {
 		return (
@@ -66,7 +94,7 @@ class Settings extends React.Component {
 						/>
 					</View>
 					<View style={styles.separator} />
-					<TouchableOpacity style={styles.navigator}>
+					<TouchableOpacity style={styles.navigator} onPress={this.addconfigure}>
 						<Text style={styles.forwardtitle}>Customise dashboard</Text>
 						<Image source={forward} style={styles.forwardarrow} />
 					</TouchableOpacity>
@@ -83,16 +111,48 @@ class Settings extends React.Component {
 						<Image source={logout} style={styles.forwardarrow} />
 					</TouchableOpacity>
 				</View>
-                <Modal animationType="fade" transparent={true} visible={this.state.visible}>
-                    <View style={modal.background} />
-                    <View style={modal.container}>
-                        <TouchableOpacity style={modal.closemodal} onPress={this.closePassword}>
-                            <Image source={close} style={modal.closeimage} />
-                        </TouchableOpacity>
-                        <Image source={changepassword} style={modal.topimage} />
-                        <TextInput></TextInput>
-                    </View>
-                </Modal>
+				<Modal animationType="fade" transparent={true} visible={this.state.visible}>
+					<View style={modal.background} />
+					<View style={modal.container}>
+						<ScrollView>
+							<TouchableOpacity style={modal.closemodal} onPress={this.closePassword}>
+								<Image source={close} style={modal.closeimage} />
+							</TouchableOpacity>
+							<Image source={changepassword} style={modal.topimage} />
+							<TextInput style={modal.passwordbox} secureTextEntry={true} />
+							<TextInput style={modal.passwordbox} secureTextEntry={true} />
+							<TextInput style={modal.passwordbox} secureTextEntry={true} />
+							<TouchableOpacity style={modal.savebutton} onPress={this.changepassword}>
+								<Text style={{ color: '#fff', alignSelf: 'center', fontSize: 17 }}>Save</Text>
+							</TouchableOpacity>
+						</ScrollView>
+					</View>
+				</Modal>
+				<Modal animationType="fade" transparent={true} visible={this.state.modal2}>
+					<View style={modal.background} />
+					<View style={modal.container2}>
+						<ScrollView>
+							<TouchableOpacity style={modal.closemodal} onPress={this.closeconfigure}>
+								<Image source={close} style={modal.closeimage} />
+							</TouchableOpacity>
+							<Image source={configure} style={modal.topimage} />
+							{
+								this.array.map((item,i) => (
+									<View style={modal.slider} key={i}>
+										<Text style={modal.text}>{item}</Text>
+										<Switch
+											onValueChange={(e)=> this.changeswitch(e,i)}
+											value={this.state.swtiches[i]}
+										/>
+									</View>
+								))
+							}
+							<TouchableOpacity style={modal.savebutton} onPress={this.changeconfigure}>
+								<Text style={{ color: '#fff', alignSelf: 'center', fontSize: 17 }}>Save</Text>
+							</TouchableOpacity>
+						</ScrollView>
+					</View>
+				</Modal>
 			</ScrollView>
 		);
 	}

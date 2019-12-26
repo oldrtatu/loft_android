@@ -68,7 +68,7 @@ class LogIn extends React.Component{
               :
               null
           }
-          <TouchableOpacity style={styles.button} onPress={this.requestdata}>
+          <TouchableOpacity style={styles.button} onPress={this.checkLogin}>
             <Text style={{fontSize:17}}>Sign In</Text>
           </TouchableOpacity>
         </ImageBackground>

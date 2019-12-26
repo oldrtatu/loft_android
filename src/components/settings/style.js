@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     navigator:{
         width:Dimensions.get('window').width * 0.8,
         alignSelf:"center",
-        height:25,
+        height:35,
         marginTop: 8,
         flexDirection:"row"
     },
