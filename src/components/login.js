@@ -10,7 +10,7 @@ import {
 
 import login from '../assets/login.png'
 import styles from './styles/login'
-import Axios from 'axios';
+import axios from 'axios';
 
 
 
@@ -27,7 +27,7 @@ class LogIn extends React.Component{
   }
 
   requestdata = () =>{
-    Axios.get('https://192.168.0.106/').then(results => console.log(results.json())).catch(err => console.log(err))
+    axios.get('http://xplicitsoftware.co:8080').then(res => console.log(res.data)).catch(err => console.log(err))
   }
 
   checkLogin = () => {

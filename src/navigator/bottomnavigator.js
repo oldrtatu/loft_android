@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { View, Text } from 'react-native';
 
 import Dashboard from '../navigator/dashnavigator';
+import Purchaseorder from '../navigator/purchasenavigator'
 
 import Nav from '../components/navigation/bottomnav';
 
@@ -20,7 +21,7 @@ const MainApp = createBottomTabNavigator(
 		Dashboard: Dashboard,
 		Inventory: TestScreen,
 		Issues: TestScreen,
-		'Purchase Order': TestScreen,
+		'Purchase Order': Purchaseorder,
 		Reports: TestScreen,
         Notifications: TestScreen
 	},

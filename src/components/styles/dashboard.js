@@ -120,7 +120,8 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		lineHeight: 25,
-		marginLeft: 10
+		marginLeft: 10,
+		flexWrap:"wrap"
 	},
 	restarea: {
 		marginTop: 30,
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		width: Dimensions.get('window').width * 0.9,
 		alignSelf: 'center',
-		marginBottom: 5
+		marginBottom: 30
 	},
 	leftcolumn: {
 		flex: 1,

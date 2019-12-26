@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
         alignItems:"center",
         justifyContent:"center",
         borderColor:"#D62246",
-        borderWidth:1
+        borderWidth:1,
+        marginBottom:20
     },
     logouttitle:{
         fontSize:17,

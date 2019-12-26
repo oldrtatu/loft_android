@@ -1,0 +1,72 @@
+import React from 'react'
+import { StyleSheet } from 'react-native'
+
+const styles = StyleSheet.create({
+    tableheader:{
+        borderTopEndRadius:10,
+        borderTopStartRadius:10,
+        backgroundColor:"#fff",
+        height:60,
+        flexDirection:"row",
+        marginTop:-10,
+        shadowColor:"#000",
+        shadowOpacity:0.6,
+        shadowOffset:{width:0,height:5},
+        elevation:2
+    },
+    header1:{
+        fontSize:17,
+        fontWeight:"bold",
+        marginLeft:25,
+        marginRight:15,
+        flex:1,
+        alignSelf:"center"
+    },
+    header:{
+        fontSize:17,
+        fontWeight:"bold",
+        marginRight:15,
+        flex:1,
+        alignSelf:"center"
+    },
+    addbutton:{
+        marginRight:15,
+        alignSelf:"center",
+        paddingHorizontal:10,
+        paddingVertical:8,
+        backgroundColor:"#1CA49F",
+        justifyContent:"center",
+        borderRadius:5
+    },
+    addtext:{
+        color:"#fff",
+        fontSize:17
+    },
+    row:{
+        flexDirection:"row",
+        height:35,
+        shadowColor:"#000",
+        shadowOpacity:0.6,
+        shadowOffset:{width:0,height:5},
+        elevation:2,
+        marginBottom:1,
+        alignContent:"center",
+        backgroundColor:"#fff",
+        borderRadius:3
+    },
+    text1:{
+        fontSize:15,
+        marginLeft:25,
+        marginRight:15,
+        flex:1,
+        alignSelf:"center"
+    },
+    text:{
+        fontSize:15,
+        marginRight:15,
+        flex:1,
+        alignSelf:"center"
+    }
+})
+
+export default styles

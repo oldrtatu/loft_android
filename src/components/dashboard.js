@@ -36,14 +36,11 @@ class Dashboard extends React.Component {
 			firstcard: 'Purchase Orders'
 		};
 	}
-
-	componentDidMount(){
-		console.log(this.props)
-	}
+	
 	cards = {
 		'Purchase Orders': { Active: 'active', Complete: 'normal' },
 		Notifications: { Unread: 'alert' },
-		Issues: { Open: 'open', 'Due in next 2 days': 'normal' },
+		Issues: { Open: 'open', 'Due in 2 days': 'normal' },
 		Reports: { Total: 'normal' },
 		Inventory: { 'Low in stock': 'alert' }
 	}

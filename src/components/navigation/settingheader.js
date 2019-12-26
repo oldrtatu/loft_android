@@ -13,6 +13,7 @@ class Nav extends React.Component{
     changeNav = () => {
         this.props.navigation.goBack(null)
     }
+    
     render(){
         return(
             <View style={styles.container}>
