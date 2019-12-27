@@ -44,6 +44,10 @@ class datatable extends React.Component {
 		};
 	}
 
+	addNewInventory = () => {
+		this.props.navigation.navigate('Form')
+	}
+
 	viewRow = (rowdata) => {
 		this.props.navigation.navigate('View',{rowdata})
 	}
@@ -172,7 +176,7 @@ class datatable extends React.Component {
 							{this.header.map((item, i) => (
 								<Text style={i == 0 ? table.header1 : table.header}>{item}</Text>
 							))}
-							<TouchableOpacity style={table.addbutton}>
+							<TouchableOpacity style={table.addbutton} onPress={this.addNewInventory}>
 								<Text style={table.addtext}>+Add</Text>
 							</TouchableOpacity>
 						</View>
