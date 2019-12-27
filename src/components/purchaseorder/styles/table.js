@@ -66,6 +66,14 @@ const styles = StyleSheet.create({
         marginRight:15,
         flex:1,
         alignSelf:"center"
+    },
+    forward:{
+        width:40,
+        height:14,
+        resizeMode:"contain",
+        marginRight:20,
+        marginLeft:10,
+        marginTop:10
     }
 })
 
