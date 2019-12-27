@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, FlatList, Dimensions } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, FlatList, Dimensions, SafeAreaView } from 'react-native';
 
 import styles from './styles/filter';
 import table from './styles/table';
@@ -12,7 +12,7 @@ import Data from './podata.json';
 
 const Row = (props) => {
 	return (
-		<TouchableOpacity activeOpacity={1} style={table.row}>
+		<TouchableOpacity activeOpacity={1} style={table.row} onPress={() => props.viewRow(props.rowdata)}>
 			<Text style={table.text1}>{props.id}</Text>
 			<Text style={table.text}>{props.rowdata.equipment}</Text>
 			<Text style={table.text}>{props.rowdata.status}</Text>
@@ -44,6 +44,11 @@ class datatable extends React.Component {
 			searchtext: ''
 		};
 	}
+
+	viewRow = (rowdata) => {
+		this.props.navigation.navigate('View',{rowdata})
+	}
+
 	header = [ 'PO #', 'Equipment', 'Status' ];
 
 	changesearch = () => {
@@ -110,77 +115,79 @@ class datatable extends React.Component {
 	render() {
 		return (
 			<React.Fragment>
-				<View style={styles.container}>
-					<View style={styles.topbar}>
-						{this.state.showsearch == false ? (
-							<React.Fragment>
-								<Text style={styles.navheading}>Purchase orders</Text>
+				<SafeAreaView style={{backgroundColor:"#507df0"}}>
+					<View style={styles.container}>
+						<View style={styles.topbar}>
+							{this.state.showsearch == false ? (
+								<React.Fragment>
+									<Text style={styles.navheading}>Purchase orders</Text>
+									<TouchableOpacity
+										activeOpacity={1}
+										style={styles.searchcontainer}
+										onPress={this.changesearch}
+									>
+										<Image source={search} style={styles.searchimage} />
+									</TouchableOpacity>
+								</React.Fragment>
+							) : (
+								<React.Fragment>
+									<TextInput
+										placeholder="Enter PO#"
+										style={styles.searchbar}
+										placeholderTextColor="#fff"
+										defaultValue={this.state.searchtext}
+										onSubmitEditing={(e) => this.applysearch(e)}
+									/>
+									<TouchableOpacity
+										activeOpacity={1}
+										style={styles.closeimagecontainer}
+										onPress={this.changesearch}
+									>
+										<Image source={close} style={styles.closeimage} />
+									</TouchableOpacity>
+								</React.Fragment>
+							)}
+						</View>
+						<ScrollView style={styles.filterbar} horizontal={true} showsHorizontalScrollIndicator={false}>
+							{Object.keys(this.state.filters).map((item, i) => (
 								<TouchableOpacity
+									style={[
+										this.state.activefilter == item ? styles.activefilter : styles.normalfilter,
+										i == 0 ? styles.firstfilter : null
+									]}
 									activeOpacity={1}
-									style={styles.searchcontainer}
-									onPress={this.changesearch}
+									key={i}
+									onPress={(e) => this.changefilter(e, item, false)}
 								>
-									<Image source={search} style={styles.searchimage} />
+									<Text
+										style={
+											this.state.activefilter == item ? styles.activefiltertext : styles.filtertext
+										}
+									>
+										{item} ({this.state.filters[item]})
+									</Text>
 								</TouchableOpacity>
-							</React.Fragment>
-						) : (
-							<React.Fragment>
-								<TextInput
-									placeholder="Enter PO#"
-									style={styles.searchbar}
-									placeholderTextColor="#fff"
-									defaultValue={this.state.searchtext}
-									onSubmitEditing={(e) => this.applysearch(e)}
-								/>
-								<TouchableOpacity
-									activeOpacity={1}
-									style={styles.closeimagecontainer}
-									onPress={this.changesearch}
-								>
-									<Image source={close} style={styles.closeimage} />
-								</TouchableOpacity>
-							</React.Fragment>
-						)}
-					</View>
-					<ScrollView style={styles.filterbar} horizontal={true} showsHorizontalScrollIndicator={false}>
-						{Object.keys(this.state.filters).map((item, i) => (
-							<TouchableOpacity
-								style={[
-									this.state.activefilter == item ? styles.activefilter : styles.normalfilter,
-									i == 0 ? styles.firstfilter : null
-								]}
-								activeOpacity={1}
-								key={i}
-								onPress={(e) => this.changefilter(e, item, false)}
-							>
-								<Text
-									style={
-										this.state.activefilter == item ? styles.activefiltertext : styles.filtertext
-									}
-								>
-									{item} ({this.state.filters[item]})
-								</Text>
+							))}
+						</ScrollView>
+						<View style={table.tableheader}>
+							{this.header.map((item, i) => (
+								<Text style={i == 0 ? table.header1 : table.header}>{item}</Text>
+							))}
+							<TouchableOpacity style={table.addbutton}>
+								<Text style={table.addtext}>+Add</Text>
 							</TouchableOpacity>
-						))}
-					</ScrollView>
-					<View style={table.tableheader}>
-						{this.header.map((item, i) => (
-							<Text style={i == 0 ? table.header1 : table.header}>{item}</Text>
-						))}
-						<TouchableOpacity style={table.addbutton}>
-							<Text style={table.addtext}>+Add</Text>
-						</TouchableOpacity>
+						</View>
 					</View>
-				</View>
+				</SafeAreaView>
 				<FlatList
 					style={{ flex: 1, marginTop: 5 }}
 					data={this.state.loadeddata}
-					renderItem={({ item }) => <Row id={item.id} rowdata={item} />}
-					keyExtractor={(item) => item.id}
+					renderItem={({ item }) => <Row key={item.id} id={item.id} rowdata={item} viewRow={this.viewRow} />}
+					keyExtractor={(item) => item.id.toString()}
 					showsVerticalScrollIndicator={false}
 					refreshing={this.state.refreshing}
 					onEndReached={this.addData}
-					onEndReachedThreshold={20}
+					onEndReachedThreshold={25}
 				/>
 			</React.Fragment>
 		);

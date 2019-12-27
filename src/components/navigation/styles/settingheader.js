@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     text:{
         color:"#fff",
         fontSize:24,
-        fontFamily:"Source Sans Pro",
         fontWeight:"bold",
         flex:1,
         alignSelf:"center",

@@ -143,6 +143,7 @@ class Settings extends React.Component {
 										<Switch
 											onValueChange={(e)=> this.changeswitch(e,i)}
 											value={this.state.swtiches[i]}
+											style={{ transform: [{ scaleX: .6 }, { scaleY: .6 }] }}
 										/>
 									</View>
 								))

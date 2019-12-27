@@ -6,7 +6,8 @@ import {
 	ImageBackground,
 	TouchableOpacity,
 	ScrollView,
-	TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+	SafeAreaView
 } from 'react-native';
 
 import topnav from '../assets/topnav.png';
@@ -62,74 +63,76 @@ class Dashboard extends React.Component {
 			}
 		}
 		return (
-			<ScrollView style={styles.containerStyle}>
-				<View style={styles.topbar}>
-					<ImageBackground source={topnav} style={styles.background}>
-						<View style={styles.topline}>
-							<Text style={styles.navheading}>Dashboard</Text>
-							<TouchableOpacity style={styles.settingtap} onPress={this.changeToSettings}>
-								<Image source={settings} style={styles.settings} />
-							</TouchableOpacity>
-						</View>
-						<View style={styles.profilebar}>
-							<Image source={profile} style={styles.profileimage} />
-							<Text style={styles.greetings}>Greetings! John Doe</Text>
-						</View>
-						<TouchableWithoutFeedback>
-							<View style={styles.card1}>
-								<Image source={Icons[this.state.firstcard]} style={styles.cardimage} />
-								<Text style={styles.cardtitle}>{this.state.firstcard}</Text>
-								<View style={styles.cardinfo}>
-									{Object.keys(this.cards[this.state.firstcard]).map((item, i) => (
-										<View key={i} style={styles.info}>
-											<Text style={styles[this.cards[this.state.firstcard][item]]}>123</Text>
-											<Text style={styles.text}>{item}</Text>
-										</View>
-									))}
-								</View>
+			<SafeAreaView style={[styles.containerStyle,{backgroundColor:"#507df0"}]}>
+				<ScrollView style={styles.containerStyle}>
+					<View style={styles.topbar}>
+						<ImageBackground source={topnav} style={styles.background}>
+							<View style={styles.topline}>
+								<Text style={styles.navheading}>Dashboard</Text>
+								<TouchableOpacity style={styles.settingtap} onPress={this.changeToSettings}>
+									<Image source={settings} style={styles.settings} />
+								</TouchableOpacity>
 							</View>
-						</TouchableWithoutFeedback>
-					</ImageBackground>
-				</View>
-				<View style={styles.restarea}>
-					<View style={styles.leftcolumn}>
-						{Object.keys(oddobject).map((item, i) => (
-							<TouchableWithoutFeedback  key={i}>
-								<View style={styles.normalcard}>
-									<Image source={Icons[item]} style={styles.cardimage} />
-									<Text style={styles.cardtitle}>{item}</Text>
-									{Object.keys(this.cards[item]).map((action, i) => (
-										<View style={styles.normalcardinfo} key={i}>
-											<View style={styles.normalinfo}>
-												<Text style={styles[this.cards[item][action]]}>12</Text>
-												<Text style={styles.text}>{action}</Text>
+							<View style={styles.profilebar}>
+								<Image source={profile} style={styles.profileimage} />
+								<Text style={styles.greetings}>Greetings! John Doe</Text>
+							</View>
+							<TouchableWithoutFeedback>
+								<View style={styles.card1}>
+									<Image source={Icons[this.state.firstcard]} style={styles.cardimage} />
+									<Text style={styles.cardtitle}>{this.state.firstcard}</Text>
+									<View style={styles.cardinfo}>
+										{Object.keys(this.cards[this.state.firstcard]).map((item, i) => (
+											<View key={i} style={styles.info}>
+												<Text style={styles[this.cards[this.state.firstcard][item]]}>123</Text>
+												<Text style={styles.text}>{item}</Text>
 											</View>
-										</View>
-									))}
+										))}
+									</View>
 								</View>
 							</TouchableWithoutFeedback>
-						))}
+						</ImageBackground>
 					</View>
-					<View style={styles.rightcolumn}>
-						{Object.keys(evenobject).map((item, i) => (
-							<TouchableWithoutFeedback key={i}>
-								<View style={styles.normalcard} >
-									<Image source={Icons[item]} style={styles.cardimage} />
-									<Text style={styles.cardtitle}>{item}</Text>
-									{Object.keys(this.cards[item]).map((action, i) => (
-										<View style={styles.normalcardinfo} key={i}>
-											<View style={styles.normalinfo}>
-												<Text style={styles[this.cards[item][action]]}>123</Text>
-												<Text style={styles.text}>{action}</Text>
+					<View style={styles.restarea}>
+						<View style={styles.leftcolumn}>
+							{Object.keys(oddobject).map((item, i) => (
+								<TouchableWithoutFeedback  key={i}>
+									<View style={styles.normalcard}>
+										<Image source={Icons[item]} style={styles.cardimage} />
+										<Text style={styles.cardtitle}>{item}</Text>
+										{Object.keys(this.cards[item]).map((action, i) => (
+											<View style={styles.normalcardinfo} key={i}>
+												<View style={styles.normalinfo}>
+													<Text style={styles[this.cards[item][action]]}>12</Text>
+													<Text style={styles.text}>{action}</Text>
+												</View>
 											</View>
-										</View>
-									))}
-								</View>
-							</TouchableWithoutFeedback>
-						))}
+										))}
+									</View>
+								</TouchableWithoutFeedback>
+							))}
+						</View>
+						<View style={styles.rightcolumn}>
+							{Object.keys(evenobject).map((item, i) => (
+								<TouchableWithoutFeedback key={i}>
+									<View style={styles.normalcard} >
+										<Image source={Icons[item]} style={styles.cardimage} />
+										<Text style={styles.cardtitle}>{item}</Text>
+										{Object.keys(this.cards[item]).map((action, i) => (
+											<View style={styles.normalcardinfo} key={i}>
+												<View style={styles.normalinfo}>
+													<Text style={styles[this.cards[item][action]]}>123</Text>
+													<Text style={styles.text}>{action}</Text>
+												</View>
+											</View>
+										))}
+									</View>
+								</TouchableWithoutFeedback>
+							))}
+						</View>
 					</View>
-				</View>
-			</ScrollView>
+				</ScrollView>
+			</SafeAreaView>
 		);
 	}
 }

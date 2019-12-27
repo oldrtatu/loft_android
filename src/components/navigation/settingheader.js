@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Image, TouchableOpacity, Text } from 'react-native'
+import { View, Image, TouchableOpacity, Text,SafeAreaView } from 'react-native'
 import styles from './styles/settingheader'
 
 import back from '../../assets/back.png'
@@ -16,12 +16,14 @@ class Nav extends React.Component{
     
     render(){
         return(
-            <View style={styles.container}>
-                <TouchableOpacity style={styles.button} onPress={this.changeNav}>
-                    <Image source={back} style={styles.image}></Image>
-                </TouchableOpacity>
-                <Text style ={styles.text}>Settings</Text>
-            </View>
+            <SafeAreaView style={{backgroundColor:"#507df0"}}>
+                <View style={styles.container}>
+                    <TouchableOpacity style={styles.button} onPress={this.changeNav}>
+                        <Image source={back} style={styles.image}></Image>
+                    </TouchableOpacity>
+                    <Text style ={styles.text}>Settings</Text>
+                </View>
+            </SafeAreaView>
         )
     }
 }

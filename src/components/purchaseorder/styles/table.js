@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
         marginTop:-10,
         shadowColor:"#000",
         shadowOpacity:0.6,
-        shadowOffset:{width:0,height:5},
+        shadowOffset:{width:0,height:2},
         elevation:2
     },
     header1:{
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         height:35,
         shadowColor:"#000",
         shadowOpacity:0.6,
-        shadowOffset:{width:0,height:5},
+        shadowOffset:{width:0,height:2},
         elevation:2,
         marginBottom:1,
         alignContent:"center",
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
         height:14,
         resizeMode:"contain",
         marginRight:20,
-        marginLeft:10,
+        marginLeft:5,
         marginTop:10
     }
 })
