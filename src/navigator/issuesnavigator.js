@@ -1,26 +1,26 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 
-import inventory from '../components/inventory/datatable'
-import ViewInventory from '../components/inventory/view'
+import issues from '../components/issues/datatable'
+import ViewIssues from '../components/issues/view'
 
-const inventorynav = createStackNavigator(
+const issue = createStackNavigator(
     {
-        Inventory:{
-            screen:inventory,
+        Issues:{
+            screen:issues,
             navigationOptions:{
                 header:null
             }
         },
         View:{
-            screen: ViewInventory,
+            screen: ViewIssues,
             navigationOptions:{
                 header:null
             }
         }
     },
     {
-        initialRouteName:'Inventory',
+        initialRouteName:'Issues',
         navigationOptions: ({ navigation }) => {
 			let tabBarVisible = true;
 			if (navigation.state.index > 0) {
@@ -33,4 +33,4 @@ const inventorynav = createStackNavigator(
     }
 )
 
-export default inventorynav;
+export default issue;

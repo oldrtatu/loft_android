@@ -6,6 +6,7 @@ import { View, Text } from 'react-native';
 import Dashboard from '../navigator/dashnavigator';
 import Purchaseorder from '../navigator/purchasenavigator'
 import InventoryNav from '../navigator/inventorynavigator'
+import IssuesNav from '../navigator/issuesnavigator'
 
 import Nav from '../components/navigation/bottomnav';
 
@@ -21,7 +22,7 @@ const MainApp = createBottomTabNavigator(
 	{
 		Dashboard: Dashboard,
 		Inventory: InventoryNav,
-		Issues: TestScreen,
+		Issues: IssuesNav,
 		'Purchase Order': Purchaseorder,
 		Reports: TestScreen,
         Notifications: TestScreen
