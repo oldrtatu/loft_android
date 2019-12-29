@@ -119,9 +119,9 @@ class Settings extends React.Component {
 								<Image source={close} style={modal.closeimage} />
 							</TouchableOpacity>
 							<Image source={changepassword} style={modal.topimage} />
-							<TextInput style={modal.passwordbox} secureTextEntry={true} />
-							<TextInput style={modal.passwordbox} secureTextEntry={true} />
-							<TextInput style={modal.passwordbox} secureTextEntry={true} />
+							<TextInput style={modal.passwordbox} secureTextEntry={true} placeholder="Enter current password" />
+							<TextInput style={modal.passwordbox} secureTextEntry={true} placeholder="Enter new password" />
+							<TextInput style={modal.passwordbox} secureTextEntry={true} placeholder="Confirm new password" />
 							<TouchableOpacity style={modal.savebutton} onPress={this.changepassword}>
 								<Text style={{ color: '#fff', alignSelf: 'center', fontSize: 17 }}>Save</Text>
 							</TouchableOpacity>
@@ -143,7 +143,7 @@ class Settings extends React.Component {
 										<Switch
 											onValueChange={(e)=> this.changeswitch(e,i)}
 											value={this.state.swtiches[i]}
-											style={{ transform: [{ scaleX: .6 }, { scaleY: .6 }] }}
+											style={{ transform: [{ scaleX: .75 }, { scaleY: .75 }] }}
 										/>
 									</View>
 								))

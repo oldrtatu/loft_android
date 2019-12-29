@@ -24,8 +24,7 @@ const viewstyle = StyleSheet.create({
         flex:1,
         color:"#fff",
         fontSize:20,
-        alignSelf:"center",
-        marginLeft: (Dimensions.get('window').width/2)-120
+        alignSelf:"center"
     },
     restarea:{
         flex:1,
