@@ -3,6 +3,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import purchaseorder from '../components/purchaseorder/datatable'
 import ViewPurchaseOrder from '../components/purchaseorder/view'
+import POForm from '../components/purchaseorder/form'
 
 const purchase = createStackNavigator(
     {
@@ -14,6 +15,12 @@ const purchase = createStackNavigator(
         },
         View:{
             screen: ViewPurchaseOrder,
+            navigationOptions:{
+                header:null
+            }
+        },
+        Form:{
+            screen:POForm,
             navigationOptions:{
                 header:null
             }

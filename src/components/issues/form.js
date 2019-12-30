@@ -82,7 +82,7 @@ class IssuesForm extends React.Component {
 		super(props);
 		this.state = {
 			editdata: null,
-			formnumber: 3,
+			formnumber: 1,
 			equipment: 'truck',
 			override: false,
 			tab1: 'active',

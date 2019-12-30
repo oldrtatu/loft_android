@@ -51,6 +51,10 @@ class datatable extends React.Component {
 
 	header = [ 'PO #', 'Equipment', 'Status' ];
 
+	addPO = () => {
+		this.props.navigation.navigate('Form')
+	}
+
 	changesearch = () => {
 		this.setState({ showsearch: !this.state.showsearch});
 	};
@@ -173,7 +177,7 @@ class datatable extends React.Component {
 							{this.header.map((item, i) => (
 								<Text style={i == 0 ? table.header1 : table.header}>{item}</Text>
 							))}
-							<TouchableOpacity style={table.addbutton}>
+							<TouchableOpacity style={table.addbutton} onPress={this.addPO}>
 								<Text style={table.addtext}>+Add</Text>
 							</TouchableOpacity>
 						</View>
