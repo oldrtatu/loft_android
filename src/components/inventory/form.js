@@ -1,12 +1,12 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image, ScrollView, TextInput, Animated, TouchableHighlight } from 'react-native';
-import SwipeOut from 'react-native-swipeout'
+import { Text, View, TouchableOpacity, Image, ScrollView, TextInput, PanResponder, Animated } from 'react-native';
 
 import form from './styles/formstyle';
 import AutoFillTwoFields from '../helpers/AutoFillTwoFields';
 import IncrementField from '../helpers/IncrementField';
 import DropDown from '../helpers/DropDown';
 import DatePicker from '../helpers/DatePicker';
+import Slidebutton from '../helpers/slidebutton'
 
 import back from '../../assets/back.png';
 
@@ -26,6 +26,8 @@ class InventoryForm extends React.Component {
 		};
 	}
 
+
+
 	addeddata = {};
 
 	componentDidMount() {
@@ -43,11 +45,15 @@ class InventoryForm extends React.Component {
 		this.addeddata = ob;
 	};
 
-	setNumbers = (field, value) => {
+	setValue = (field, value) => {
 		let ob = { ...this.addeddata };
 		ob[field] = value;
 		this.addeddata = ob;
 	};
+
+	handleSubmit=()=>{
+		console.log(this.addeddata)
+	}
 
 	render() {
 		return (
@@ -83,14 +89,14 @@ class InventoryForm extends React.Component {
 					/>
 					<IncrementField
 						value="0"
-						setNumbers={this.setNumbers}
+						setNumbers={this.setValue}
 						name="aquan"
 						unit="pieces"
 						label="Actual Quantity"
 					/>
 					<IncrementField
 						value="0"
-						setNumbers={this.setNumbers}
+						setNumbers={this.setValue}
 						name="squan"
 						unit="pieces"
 						label="In stock Quantity"
@@ -101,12 +107,12 @@ class InventoryForm extends React.Component {
 						value="Select"
 						dropdown={[ 'Active', 'Inactive' ]}
 						suggestBoxStyle={form.suggestbox}
-						setValue={this.setNumbers}
+						setValue={this.setValue}
 					/>
-					<DatePicker label="Inventory check date" value="12-06-2019" name="invcheck" setValue={this.setNumbers} />
+					<DatePicker label="Inventory check date" value="12-06-2019" name="invcheck" setValue={this.setValue} />
 					<IncrementField
 						value="0"
-						setNumbers={this.setNumbers}
+						setNumbers={this.setValue}
 						name="reorderat"
 						unit="pieces"
 						label="Reorder at"
@@ -117,12 +123,7 @@ class InventoryForm extends React.Component {
 					<Text style={[ form.label, { marginTop: 20 } ]}>Notes</Text>
 					<TextInput style={[ form.inputarea, { marginTop: -25 } ]} placeholder="Enter notes" multiline={true} numberOfLines={4} />
 				</ScrollView>
-				<SwipeOut backgroundColor={"#90b7fb"} close>
-					<TouchableOpacity activeOpacity={1} style={form.editbutton} >
-						<Text style={form.editbuttontext}>Slide to Save</Text>
-					</TouchableOpacity>
-				</SwipeOut>
-				
+				<Slidebutton submit={this.handleSubmit} />
 			</React.Fragment>
 		);
 	}

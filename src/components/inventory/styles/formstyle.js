@@ -91,17 +91,7 @@ const form = StyleSheet.create({
         shadowOffset:{width:0,height:3},
         elevation:10,
         shadowOpacity:0.3
-	},
-	editbutton:{
-        backgroundColor:"#507df0",
-        height:60,
-        justifyContent:"center",
-        alignItems:"center"
-    },
-    editbuttontext:{
-        color:"#fff",
-        fontSize:18
-    }
+	}
 });
 
 export default form;

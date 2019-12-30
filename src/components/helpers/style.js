@@ -85,7 +85,8 @@ const style = StyleSheet.create({
         marginTop:10,
         width:Dimensions.get('window').width*0.8,
         borderWidth:1,
-        borderColor:"#e6e6e6"
+        borderColor:"#e6e6e6",
+        alignSelf:"center"
     }
 })
 
