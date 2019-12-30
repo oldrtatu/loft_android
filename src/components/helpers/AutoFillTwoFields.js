@@ -133,8 +133,6 @@ export default class SuggestionSearchList extends React.Component {
 
 			this.hideSuggestBox(value);
 		}
-
-		this.hideSuggestBox(field);
 	};
 
 	async search(field) {

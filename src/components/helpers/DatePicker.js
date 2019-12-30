@@ -46,7 +46,7 @@ class DatePicker extends React.Component {
 	render() {
 		return (
 			<TouchableOpacity activeOpacity={1} onPress={this.show}>
-				<Text style={[style.label,{marginTop:30}]}>{this.props.label}</Text>
+				<Text style={[style.label,{marginTop:20}]}>{this.props.label}</Text>
 				<Text style={[style.input,{marginTop:-25, paddingTop:35, marginBottom:10}]}>{this.state.value}</Text>
 				<View style={style.dropbuttoncontainer}>
 					<Image source={calender} style={[style.image,{marginTop:-20}]} />

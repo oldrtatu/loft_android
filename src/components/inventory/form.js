@@ -69,11 +69,9 @@ class InventoryForm extends React.Component {
 				<ScrollView style={form.mainform} nestedScrollEnabled={true}>
 					<AutoFillTwoFields
 						list={this.state.itemdata}
-						renderListItem={(item) => this.renderListItem(item)}
 						startSuggestingFrom={1}
-						inputStyle={[ form.input, form[this.state.error.name] ]}
+						inputStyle={ form.input}
 						suggestBoxStyle={form.suggestbox}
-						hideBox={this.state.hideNameBox}
 						label={[ 'Item name', 'Item code' ]}
 						placeholder={[ 'Enter item name', 'Enter item code' ]}
 						field1="name"
@@ -106,9 +104,9 @@ class InventoryForm extends React.Component {
 						name="status"
 						value="Select"
 						dropdown={[ 'Active', 'Inactive' ]}
-						suggestBoxStyle={form.suggestbox}
 						setValue={this.setValue}
 					/>
+					<View style={{height:10}}/>
 					<DatePicker label="Inventory check date" value="12-06-2019" name="invcheck" setValue={this.setValue} />
 					<IncrementField
 						value="0"

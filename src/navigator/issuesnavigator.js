@@ -3,6 +3,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 
 import issues from '../components/issues/datatable'
 import ViewIssues from '../components/issues/view'
+import IssueForm from '../components/issues/form'
 
 const issue = createStackNavigator(
     {
@@ -14,6 +15,12 @@ const issue = createStackNavigator(
         },
         View:{
             screen: ViewIssues,
+            navigationOptions:{
+                header:null
+            }
+        },
+        Form:{
+            screen:IssueForm,
             navigationOptions:{
                 header:null
             }

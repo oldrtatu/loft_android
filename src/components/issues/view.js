@@ -20,6 +20,10 @@ class PurchaseOrder extends React.Component {
 		this.props.navigation.goBack(null);
 	};
 
+	editdata = () => {
+		this.props.navigation.navigate('Form', {rowdata:this.state.rowdata})
+	}
+
 	render() {
 		return this.state.rowdata != null ? (
 			<React.Fragment>
@@ -101,7 +105,7 @@ class PurchaseOrder extends React.Component {
 						</View>
 					</View>
 				</ScrollView>
-				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton}>
+				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
 					<Text style={viewstyle.editbuttontext}>Tap to Edit</Text>
 				</TouchableOpacity>
 			</React.Fragment>
