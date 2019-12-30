@@ -22,13 +22,13 @@ export default class SuggestionSearchList extends React.Component {
 		};
 	}
 
-	componentDidUpdate(){
-		if(this.state.loaded==false){
+	componentDidUpdate() {
+		if (this.state.loaded == false) {
 			this.setState({
-				searchValue:this.props.value[0],
-				searchValue2:this.props.value[1],
-				loaded:true
-			})
+				searchValue: this.props.value[0],
+				searchValue2: this.props.value[1],
+				loaded: true
+			});
 		}
 	}
 
@@ -70,22 +70,10 @@ export default class SuggestionSearchList extends React.Component {
 	}
 
 	hideSuggestBox(field) {
-		const suggestBoxHeight = 0;
-
 		if (field == this.state.field1) {
-			Animated.timing(this.state.animation, {
-				toValue: suggestBoxHeight,
-				duration: 300
-			}).start();
-
-			setTimeout(() => this.setState({ showResults: false }), 400);
+			this.setState({ showResults: false });
 		} else {
-			Animated.timing(this.state.animation2, {
-				toValue: suggestBoxHeight,
-				duration: 300
-			}).start();
-
-			setTimeout(() => this.setState({ showResults2: false }), 400);
+			this.setState({ showResults2: false });
 		}
 	}
 
@@ -206,7 +194,7 @@ export default class SuggestionSearchList extends React.Component {
 				/>
 				{showResults && (
 					<Animated.View style={[ this.props.suggestBoxStyle, { height: animation } ]}>
-						<ScrollView>
+						<ScrollView nestedScrollEnabled={true}>
 							{results.map((item) => {
 								return this.renderListItem(item, this.state.field1);
 							})}
@@ -223,7 +211,7 @@ export default class SuggestionSearchList extends React.Component {
 				/>
 				{showResults2 && (
 					<Animated.View style={[ this.props.suggestBoxStyle, { height: animation2, marginTop: 160 } ]}>
-						<ScrollView>
+						<ScrollView nestedScrollEnabled={true}>
 							{results2.map((item) => {
 								return this.renderListItem(item, this.state.field2);
 							})}

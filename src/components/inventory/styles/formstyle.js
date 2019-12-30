@@ -27,7 +27,7 @@ const form = StyleSheet.create({
 	},
 	mainform: {
 		flex: 1,
-		width: Dimensions.get('window').width * 0.8,
+		width: Dimensions.get('window').width,
         alignSelf: 'center'
 	},
 	label: {
@@ -36,7 +36,9 @@ const form = StyleSheet.create({
 		fontWeight: 'bold',
 		color: 'rgba(80,86,101,0.36)',
 		marginTop: 20,
-		marginLeft: 10
+		marginLeft: 10,
+		width: Dimensions.get('window').width*0.8,
+		alignSelf:"center"
 	},
 	input: {
 		flex: 1,
@@ -48,7 +50,23 @@ const form = StyleSheet.create({
         borderColor:"#e6e6e6",
 		backgroundColor: 'transparent',
 		marginTop: -25,
-		paddingTop: 30
+		paddingTop: 30,
+		width: Dimensions.get('window').width*0.8,
+		alignSelf:"center"
+    },
+	inputarea: {
+		paddingLeft: 12,
+		color: '#131d4a',
+		fontSize: 17,
+		flex:1,
+        borderWidth: 1,
+        borderColor:"#e6e6e6",
+		backgroundColor: 'transparent',
+		marginTop: -25,
+		paddingTop:20,
+		marginBottom:20,
+		width: Dimensions.get('window').width*0.8,
+		alignSelf:"center"
     },
     start:{
         borderColor:"#e6e6e6"
@@ -66,12 +84,23 @@ const form = StyleSheet.create({
         backgroundColor:"#fff",
         marginTop:80,
         position:"absolute",
-        width:Dimensions.get('window').width*0.8,
+		width:Dimensions.get('window').width*0.8,
+		alignSelf:"center",
         zIndex:30,
         shadowColor:"#000",
         shadowOffset:{width:0,height:3},
         elevation:10,
         shadowOpacity:0.3
+	},
+	editbutton:{
+        backgroundColor:"#507df0",
+        height:60,
+        justifyContent:"center",
+        alignItems:"center"
+    },
+    editbuttontext:{
+        color:"#fff",
+        fontSize:18
     }
 });
 

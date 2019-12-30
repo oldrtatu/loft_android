@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, TextInput, Text, TouchableOpacity, Image } from 'react-native';
 
-import minus from '../../../assets/minus.png';
-import plus from '../../../assets/plus.png';
+import minus from '../../assets/minus.png';
+import plus from '../../assets/plus.png';
 
 import style from './style';
 
@@ -37,11 +37,11 @@ class IncrementField extends React.Component {
 				},
 				() => this.props.setNumbers(this.props.name, parseInt(this.state.intvalue))
 			);
-		} else if (this.state.value > 0) {
+		} else if (this.state.intvalue > 0) {
 			this.setState(
 				{
-					value: (parseInt(this.state.intvalue) + 1).toString() + ' ' + this.state.unit,
-					intvalue: parseInt(this.state.intvalue) + 1
+					value: (parseInt(this.state.intvalue) - 1).toString() + ' ' + this.state.unit,
+					intvalue: parseInt(this.state.intvalue) - 1
 				},
 				() => this.props.setNumbers(this.props.name, parseInt(this.state.intvalue))
 			);
@@ -54,12 +54,12 @@ class IncrementField extends React.Component {
 				this.props.setNumbers(this.props.name, parseInt(this.state.intvalue))
 			);
 		} else {
-			this.setState({ value: this.state.value + ' ' + this.state.unit });
+			this.setState({ value: this.state.intvalue.toString() + ' ' + this.state.unit });
 		}
 	};
 
 	TouchStart = () => {
-		this.setState({ value: this.state.value.replace(this.state.unit, '') });
+		this.setState({ value: this.state.intvalue.toString()});
 	};
 
 	changeText = (text) => {
