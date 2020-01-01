@@ -1,6 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image, ScrollView, TextInput } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
+import { Text, View, TouchableOpacity, Image, ScrollView, TextInput,Switch } from 'react-native';
 
 import form from './styles/formstyle';
 
@@ -142,7 +141,7 @@ class IssuesForm extends React.Component {
 					</Text>
 				</View>
 				<ScrollView style={form.mainform} nestedScrollEnabled={true}>
-					<Text style={form.partnumber}>{this.state.formnumber}/3  </Text>
+					<Text style={form.partnumber}>{this.state.formnumber}/3 </Text>
 					{this.state.formnumber == 1 && (
 						<React.Fragment>
 							<Text style={[ form.label, { marginTop: 20 } ]}>Title</Text>
@@ -214,7 +213,8 @@ class IssuesForm extends React.Component {
 									<Text style={form.checkheading}>Inside</Text>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Front</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.driver.inside.front}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -225,7 +225,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Steer</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.driver.inside.steer}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -236,7 +237,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Rear</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.driver.inside.rear}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -248,7 +250,8 @@ class IssuesForm extends React.Component {
 									<Text style={form.checkheading}>Outside</Text>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Front</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.driver.outside.front}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -259,7 +262,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Steer</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.driver.outside.steer}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -270,7 +274,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Rear</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.driver.outside.rear}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -287,7 +292,8 @@ class IssuesForm extends React.Component {
 									<Text style={form.checkheading}>Inside</Text>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Front</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.passenger.inside.front}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -298,7 +304,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Steer</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.passenger.inside.steer}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -309,7 +316,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Rear</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.passenger.inside.rear}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -321,7 +329,8 @@ class IssuesForm extends React.Component {
 									<Text style={form.checkheading}>Outside</Text>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Front</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.passenger.outside.front}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -332,7 +341,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Steer</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.passenger.outside.steer}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -343,7 +353,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Rear</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.truck.passenger.outside.rear}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -360,7 +371,8 @@ class IssuesForm extends React.Component {
 									<Text style={form.checkheading}>Inside</Text>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 1</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.driver.inside.number1}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -371,7 +383,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 2</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.driver.inside.number2}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -382,7 +395,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 3</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.driver.inside.number3}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -393,7 +407,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 4</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.driver.inside.number4}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -404,7 +419,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 5</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.driver.inside.number5}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -416,7 +432,8 @@ class IssuesForm extends React.Component {
 									<Text style={form.checkheading}>Outside</Text>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 1</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.driver.outside.number1}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -427,7 +444,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 2</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.driver.outside.number2}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -438,7 +456,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 3</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.driver.outside.number3}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -449,7 +468,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 4</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.driver.outside.number4}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -460,7 +480,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 5</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.driver.outside.number5}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -477,7 +498,8 @@ class IssuesForm extends React.Component {
 									<Text style={form.checkheading}>Inside</Text>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 1</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.passenger.inside.number1}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -488,7 +510,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 2</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.passenger.inside.number2}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -499,7 +522,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 3</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.passenger.inside.number3}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -510,7 +534,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 4</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.passenger.inside.number4}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -521,7 +546,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 5</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.passenger.inside.number5}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -533,7 +559,8 @@ class IssuesForm extends React.Component {
 									<Text style={form.checkheading}>Outside</Text>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 1</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.passenger.outside.number1}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -544,7 +571,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 2</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.passenger.outside.number2}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -555,7 +583,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 3</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.passenger.outside.number3}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -566,7 +595,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 4</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.passenger.outside.number4}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -577,7 +607,8 @@ class IssuesForm extends React.Component {
 									</View>
 									<View style={form.checkboxcontainer}>
 										<Text style={form.checktext}>Number 5</Text>
-										<CheckBox
+										<Switch
+											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 											value={this.state.checkboxes.trailer.passenger.outside.number5}
 											onValueChange={(val) => {
 												let ob = { ...this.state.checkboxes };
@@ -614,7 +645,7 @@ class IssuesForm extends React.Component {
 								dropdown={[ 'Days', 'Weeks', 'Months', 'Years' ]}
 								setValue={this.setValue}
 							/>
-                            <View style={{height:10}}/>
+							<View style={{ height: 10 }} />
 							<Text style={[ form.label, { marginTop: 20 } ]}>Description</Text>
 							<TextInput
 								style={[ form.inputarea, { marginTop: -25 } ]}

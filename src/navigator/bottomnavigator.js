@@ -7,6 +7,7 @@ import Dashboard from '../navigator/dashnavigator';
 import Purchaseorder from '../navigator/purchasenavigator'
 import InventoryNav from '../navigator/inventorynavigator'
 import IssuesNav from '../navigator/issuesnavigator'
+import ReportView from '../components/reports/report'
 
 import Nav from '../components/navigation/bottomnav';
 
@@ -24,7 +25,7 @@ const MainApp = createBottomTabNavigator(
 		Inventory: InventoryNav,
 		Issues: IssuesNav,
 		'Purchase Order': Purchaseorder,
-		Reports: TestScreen,
+		Reports: ReportView,
         Notifications: TestScreen
 	},
 	{
