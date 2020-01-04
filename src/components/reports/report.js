@@ -1,14 +1,44 @@
 import React from 'react';
 import { LineChart } from 'react-native-chart-kit';
 import { Dimensions, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { Dropdown } from 'react-native-material-dropdown'
 
 import back from '../../assets/back.png';
 
 import styles from './style';
 
+let months = [{
+	value: 'Jan',
+  }, {
+	value: 'Feb',
+  }, {
+	value: 'Mar',
+  }, {
+	value: 'Apr',
+  }, {
+	value: 'May',
+  }, {
+	value: 'Jun',
+  }, {
+	value: 'Jul',
+  }, {
+	value: 'Aug',
+  }, {
+	value: 'Sep',
+  }, {
+	value: 'Oct',
+  }, {
+	value: 'Nov',
+  }, {
+	value: 'Dec',
+  }]
+
 export default class Reports extends React.Component {
 	constructor(props) {
 		super(props);
+		this.state = {
+			selected : 70000
+		}
 	}
 
 	goback = () => {
@@ -91,6 +121,15 @@ export default class Reports extends React.Component {
 								backgroundColor: '#ffffff'
 							}}
 						/>
+						<View style={styles.cardData}>
+							<View style={styles.cardData1}>
+								<Text style={styles.cardDataheading}>Selected month</Text>
+								<Text style={styles.cardDatavalue}>$ {this.state.selected} </Text>
+							</View>
+							<View style={styles.cardData2}>
+								<Dropdown label="" value="Feb" data={months} /> 
+							</View>
+						</View>
 					</View>
 				</ScrollView>
 			</React.Fragment>

@@ -35,7 +35,8 @@ const viewstyle = StyleSheet.create({
         shadowColor:"#000",
         shadowOffset:{width:0,height:3},
         shadowOpacity:0.8,
-        elevation:3
+        elevation:3,
+        marginBottom:100
     },
     cardheadingcontainer:{
         flex:1,
@@ -59,7 +60,8 @@ const viewstyle = StyleSheet.create({
     },
     cardData1:{
         flex:1,
-        alignItems:"center"
+        alignItems:"center",
+        justifyContent:"center"
     },
     cardDataheading:{
         color:"#131d4a",
@@ -72,6 +74,9 @@ const viewstyle = StyleSheet.create({
         fontSize:15,
         width:111,
         marginTop:5
+    },
+    cardData2:{
+        flex:1.3
     }
 })
 export default viewstyle
