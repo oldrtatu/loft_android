@@ -177,7 +177,7 @@ class datatable extends React.Component {
 						</ScrollView>
 						<View style={table.tableheader}>
 							{this.header.map((item, i) => (
-								<Text style={i == 0 ? table.header1 : table.header}>{item}</Text>
+								<Text key={i} style={i == 0 ? table.header1 : table.header}>{item}</Text>
 							))}
 							<TouchableOpacity style={table.addbutton} onPress={this.addNewIssue}>
 								<Text style={table.addtext}>+Add</Text>

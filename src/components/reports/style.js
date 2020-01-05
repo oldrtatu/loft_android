@@ -76,7 +76,8 @@ const viewstyle = StyleSheet.create({
         marginTop:5
     },
     cardData2:{
-        flex:1.3
+        flex:1.4,
+        flexDirection:"row"
     }
 })
 export default viewstyle

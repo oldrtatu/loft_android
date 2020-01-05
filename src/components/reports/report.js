@@ -32,6 +32,13 @@ let months = [{
   }, {
 	value: 'Dec',
   }]
+let year = []
+
+for(let i = 2000; i<= 2020 ;i++){
+	let ob = {}
+	ob["value"] = i
+	year.push(ob)
+}
 
 export default class Reports extends React.Component {
 	constructor(props) {
@@ -127,7 +134,12 @@ export default class Reports extends React.Component {
 								<Text style={styles.cardDatavalue}>$ {this.state.selected} </Text>
 							</View>
 							<View style={styles.cardData2}>
-								<Dropdown label="" value="Feb" data={months} /> 
+								<View style={{flex:1,paddingHorizontal:10}}>
+									<Dropdown label="" value="Feb" data={months} /> 
+								</View>
+								<View style={{flex:1,paddingHorizontal:10}}>
+									<Dropdown label="" value="2000" data={year} /> 
+								</View>
 							</View>
 						</View>
 					</View>

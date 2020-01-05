@@ -174,7 +174,7 @@ class datatable extends React.Component {
 						</ScrollView>
 						<View style={table.tableheader}>
 							{this.header.map((item, i) => (
-								<Text style={i == 0 ? table.header1 : table.header}>{item}</Text>
+								<Text key={i} style={i == 0 ? table.header1 : table.header}>{item}</Text>
 							))}
 							<TouchableOpacity style={table.addbutton} onPress={this.addNewInventory}>
 								<Text style={table.addtext}>+Add</Text>
@@ -186,7 +186,7 @@ class datatable extends React.Component {
 					style={{ flex: 1, marginTop: 5 }}
 					data={this.state.loadeddata}
 					renderItem={({ item }) => <Row key={item.code} id={item.code} rowdata={item} viewRow={this.viewRow} />}
-					keyExtractor={(item) => item.code.toString()}
+					keyExtractor={(item) => "item" + item.code.toString()}
 					showsVerticalScrollIndicator={false}
 					refreshing={this.state.refreshing}
 					onEndReached={this.addData}
