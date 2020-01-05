@@ -15,13 +15,14 @@ class Nav extends React.Component{
     }
     
     render(){
+        let index = this.props.navigation.state.index
         return(
             <SafeAreaView style={{backgroundColor:"#507df0"}}>
                 <View style={styles.container}>
                     <TouchableOpacity style={styles.button} onPress={this.changeNav}>
                         <Image source={back} style={styles.image}></Image>
                     </TouchableOpacity>
-                    <Text style ={styles.text}>Settings</Text>
+                    <Text style ={styles.text}>{this.props.navigation.state.routes[index].routeName}</Text>
                 </View>
             </SafeAreaView>
         )

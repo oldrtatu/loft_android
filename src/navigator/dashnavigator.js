@@ -2,9 +2,7 @@ import React from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import Dashboard from '../components/dashboard';
-import Settings from '../components/settings/settings';
-
-import Settingsheader from '../components/navigation/settingheader';
+import SettingsNav from './settingsnavigator';
 
 const dashboard = createStackNavigator(
 	{
@@ -15,10 +13,10 @@ const dashboard = createStackNavigator(
 			}
 		},
 		Settings: {
-			screen: Settings,
+			screen: SettingsNav,
 			navigationOptions: {
 				tabBarVisible: false,
-				header: (props) => <Settingsheader {...props} />
+				header: null
 			}
 		}
 	},

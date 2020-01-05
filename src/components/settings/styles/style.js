@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Dimensions} from 'react-native'
-import THEME from '../../config/theme'
+import THEME from '../../../config/theme'
 
 const styles = StyleSheet.create({
     containerStyle:{

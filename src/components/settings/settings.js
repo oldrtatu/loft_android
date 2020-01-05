@@ -20,8 +20,8 @@ import changepassword from '../../assets/changepassword.png';
 import close from '../../assets/close.png';
 import configure from '../../assets/configure.png'
 
-import styles from './style';
-import modal from './modalstyle';
+import styles from './styles/style';
+import modal from './styles/modalstyle';
 
 class Settings extends React.Component {
 	constructor(props) {
@@ -34,6 +34,9 @@ class Settings extends React.Component {
 	}
 	array = ["Purchase Order","Notifications","Issues","Reports","Inventory"]
 
+	todolist = () => {
+		this.props.navigation.navigate('To Do List')
+	}
 	addPassword = () => {
 		this.setState({ visible: true });
 	};
@@ -98,7 +101,7 @@ class Settings extends React.Component {
 						<Text style={styles.forwardtitle}>Customise dashboard</Text>
 						<Image source={forward} style={styles.forwardarrow} />
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.navigator}>
+					<TouchableOpacity style={styles.navigator} onPress={this.todolist}>
 						<Text style={styles.forwardtitle}>To do list</Text>
 						<Image source={forward} style={styles.forwardarrow} />
 					</TouchableOpacity>
