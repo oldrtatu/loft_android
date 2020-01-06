@@ -1,7 +1,12 @@
-import App from './src/navigator/index'
+import App from './src/navigator/index';
 import React from 'react';
 
+import { GlobalContextProvider } from './src/provider';
 
-const AppMain = () => <App />
+const AppMain = () => (
+	<GlobalContextProvider>
+		<App />
+	</GlobalContextProvider>
+);
 
-export default AppMain
+export default AppMain;

@@ -1,7 +1,7 @@
+import React from 'react'
 import { createSwitchNavigator, createAppContainer } from "react-navigation";
 import LogIn from "../components/login";
 import MainApp from "./bottomnavigator";
-
 
 
 const AppNavigator = createSwitchNavigator(
@@ -15,8 +15,5 @@ const AppNavigator = createSwitchNavigator(
         initialRouteName: 'Sign In'
     }
 );
-
-
-
 
 export default createAppContainer(AppNavigator);

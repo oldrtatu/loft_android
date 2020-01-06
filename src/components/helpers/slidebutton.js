@@ -1,5 +1,7 @@
 import React from 'react';
-import { StyleSheet, Animated, PanResponder, View, Text, Dimensions } from 'react-native';
+import { StyleSheet, Animated, PanResponder, View, Text, Dimensions, Image } from 'react-native';
+
+import slideimage from '../../assets/slideimage.png'
 
 class SlideButton extends React.Component {
 	constructor(props) {
@@ -20,7 +22,7 @@ class SlideButton extends React.Component {
 				}
 			},
 			onPanResponderRelease: (evt, gestureState) => {
-				if (gestureState.dx < Dimensions.get('window').width/2) {
+				if (gestureState.dx < Dimensions.get('window').width * 0.75) {
 					Animated.timing(this.state.position, {
 						toValue: { x: 0, y: 0 },
 						duration: 150
@@ -43,9 +45,10 @@ class SlideButton extends React.Component {
 			<View style={styles.buttoncontainer}>
 				<Animated.View style={[ this.state.position.getLayout() ]} {...this.panResponder.panHandlers}>
 					<View style={styles.savebutton}>
-						<Text style={{ color: '#fff', fontSize: 20 }}>Slide to save</Text>
+						<Image source={slideimage} style={{width:30,height:30,resizeMode:"contain",marginLeft:40,marginTop:20}} />
 					</View>
 				</Animated.View>
+				<Text style={{ color: '#fff', fontSize: 18,position:"absolute",alignSelf:"center",left:Dimensions.get('window').width * 1.39}}>Slide to save</Text>
 			</View>
 		);
 	}
@@ -53,7 +56,7 @@ class SlideButton extends React.Component {
 
 const styles = StyleSheet.create({
 	buttoncontainer: {
-		height: 80,
+		height: 70,
 		marginLeft: 0 - Dimensions.get('window').width,
 		justifyContent: 'center',
 		backgroundColor: 'rgba(28,164,159,0.56)',
@@ -63,9 +66,7 @@ const styles = StyleSheet.create({
 		width: Dimensions.get('window').width,
 		height: 80,
 		marginLeft: Dimensions.get('window').width,
-		backgroundColor: '#1CA49F',
-		justifyContent: 'center',
-		alignItems: 'center'
+		backgroundColor: '#1CA49F'
 	}
 });
 

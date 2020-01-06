@@ -1,82 +1,66 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  ImageBackground,
-  TextInput,
-  Text,
-  TouchableOpacity
-} from 'react-native';
+import { StyleSheet, View, ImageBackground, TextInput, Text, TouchableOpacity } from 'react-native';
 
-import login from '../assets/login.png'
-import styles from './styles/login'
-import axios from 'axios';
+import login from '../assets/login.png';
+import styles from './styles/login';
+
+import { withGlobalContext } from '../provider';
+
+class LogIn extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			user_data: props.global.user_data
+		};
+	}
 
 
+	checkLogin = () => {
+		// if (this.state.user_data.username == '' || this.state.user_data.password == '') {
+		// 	this.setState({
+		// 		user_data: { ...this.state.user_data, error: 'Fill the details' }
+		// 	});
+		// } else {
+		// 	let res =  await this.props.global.login(this.state.user_data.username, this.state.user_data.password);
+		// 	if(res[0] == false){
+		// 		this.setState({user_data:{...this.state.user_data,error:res[1]}})
+		// 	}else{
+		// 		this.props.navigation.navigate('App')
+		// 	}
+		// }
+		this.props.navigation.navigate('App')
+	};
 
-
-class LogIn extends React.Component{
-
-  constructor(props){
-    super(props);
-    this.state = {
-      username : "admin",
-      password: "admin",
-      error:""
-    }
-  }
-
-  requestdata = () =>{
-    axios.get('http://xplicitsoftware.co:8080').then(res => console.log(res.data)).catch(err => console.log(err))
-  }
-
-  checkLogin = () => {
-    if (this.state.password == "admin" && this.state.username == "admin"){
-      this.setState({
-        error:""
-      })
-      this.props.navigation.navigate('App')
-    }else{
-      this.setState({
-        error:"Incorrect username or password"
-      })
-    }
-  }
-
-  render(){
-    return (
-      <View style={styles.container}>
-        <ImageBackground source={login} style ={styles.background} >
-          <TextInput 
-            style={styles.textinput} 
-            placeholder="Enter username" 
-            defaultValue={this.state.username}
-            onChangeText={ text => this.setState({username:text})}
-          >
-          </TextInput>
-          <TextInput 
-            style={styles.textinput} 
-            placeholder="Enter password" 
-            secureTextEntry={true} 
-            defaultValue={this.state.password}
-            onChangeText={ text => this.setState({password:text})}
-          >
-          </TextInput>
-          {
-            (this.state.error != undefined && this.state.error != "")?
-              <Text style={styles.error}>{this.state.error}</Text>
-              :
-              null
-          }
-          <TouchableOpacity style={styles.button} onPress={this.checkLogin}>
-            <Text style={{fontSize:17}}>Sign In</Text>
-          </TouchableOpacity>
-        </ImageBackground>
-      </View>
-    );
-  }
+	render() {
+		// ()
+		return (
+			<View style={styles.container}>
+				<ImageBackground source={login} style={styles.background}>
+					<TextInput
+						style={styles.textinput}
+						placeholder="Enter username"
+						defaultValue={this.state.user_data.username}
+						onChangeText={(text) =>
+							this.setState({ user_data: { ...this.state.user_data, username: text } })}
+					/>
+					<TextInput
+						style={styles.textinput}
+						placeholder="Enter password"
+						secureTextEntry={true}
+						defaultValue={this.state.user_data.password}
+						onChangeText={(text) =>
+							this.setState({ user_data: { ...this.state.user_data, password: text } })}
+					/>
+					{this.state.user_data.error != undefined && this.state.user_data.error != '' ? (
+						<Text style={styles.error}>{this.state.user_data.error}</Text>
+					) : null}
+					<TouchableOpacity style={styles.button} onPress={this.checkLogin}>
+						<Text style={{ fontSize: 17 }}>Sign In</Text>
+					</TouchableOpacity>
+				</ImageBackground>
+			</View>
+		);
+	}
 }
 
-
-export default LogIn;
-
+export default withGlobalContext(LogIn);
