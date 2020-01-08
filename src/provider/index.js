@@ -51,3 +51,5 @@ export class GlobalContextProvider extends React.Component {
 export const withGlobalContext = (ChildComponent) => (props) => (
 	<GlobalContext.Consumer>{(context) => <ChildComponent {...props} global={context} />}</GlobalContext.Consumer>
 );
+
+export {GlobalContext}

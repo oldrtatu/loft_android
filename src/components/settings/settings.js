@@ -26,10 +26,14 @@ import modal from './styles/modalstyle';
 class Settings extends React.Component {
 	constructor(props) {
 		super(props);
+		console.log(props)
 		this.state = {
 			visible: false,
 			modal2: false,
-			swtiches: [true,true,false,false,true]
+			swtiches: [true,true,false,false,true],
+			user_data: {
+				username:"Yash"
+			}
 		};
 	}
 	array = ["Purchase Order","Notifications","Issues","Reports","Inventory"]
@@ -82,7 +86,7 @@ class Settings extends React.Component {
 					</TouchableWithoutFeedback>
 					<View style={styles.firstformcomponent}>
 						<Text style={styles.label}>First Name</Text>
-						<TextInput style={styles.textinput} placeholder="Enter first name" defaultValue="John" />
+						<TextInput style={styles.textinput} placeholder="Enter first name" value={this.state.user_data.username} />
 					</View>
 					<View style={styles.otherformcomponent}>
 						<Text style={styles.label}>Last Name</Text>

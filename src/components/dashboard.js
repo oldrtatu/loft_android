@@ -20,7 +20,10 @@ import po from '../assets/router/po.png';
 import report from '../assets/router/report.png';
 import notification from '../assets/router/notification.png';
 
-import styles from './styles/dashboard'
+import { GlobalContext } from '../provider';
+import Axios from 'axios';
+
+import styles from './styles/dashboard';
 
 const Icons = {
 	Inventory: inventory,
@@ -30,24 +33,30 @@ const Icons = {
 	Notifications: notification
 };
 
-class Dashboard extends React.Component {
+class DashboardJSX extends React.Component {
 	constructor(props) {
 		super(props);
+		console.log(props)
 		this.state = {
-			firstcard: 'Purchase Orders'
+			user_data: props.context.user_data,
+			image: profile
 		};
 	}
-	
+
 	cards = {
-		'Purchase Orders': { Active: 'active', Complete: 'normal' },
+		'Purchase Order': { Active: 'active', Complete: 'normal' },
 		Notifications: { Unread: 'alert' },
 		Issues: { Open: 'open', 'Due in 2 days': 'normal' },
 		Reports: { Total: 'normal' },
 		Inventory: { 'Low in stock': 'alert' }
-	}
+	};
 
 	changeToSettings = () => {
-		this.props.navigation.navigate('Settings')
+		this.props.navigation.navigate('Settings');
+	};
+
+	changeNav = (routeName) => {
+		this.props.navigation.navigate(routeName)
 	}
 
 	render() {
@@ -55,15 +64,24 @@ class Dashboard extends React.Component {
 		let keyarray = Object.keys(this.cards);
 		let evenobject = {};
 		let oddobject = {};
-		for (let i = 1; i < rowlength; i++) {
-			if (i % 2 == 0) {
-				evenobject[keyarray[i]] = this.cards[keyarray[i]];
-			} else {
-				oddobject[keyarray[i]] = this.cards[keyarray[i]];
+		let i = 0;
+		let toshow = this.state.user_data.dashboardConfig.toString().split('');
+		let firstcard = '';
+		while (i < rowlength) {
+			if (toshow[i] == 1) {
+				if (firstcard == '') {
+					firstcard = keyarray[i];
+				} else if (Object.keys(oddobject).length <= Object.keys(evenobject).length) {
+					oddobject[keyarray[i]] = this.cards[keyarray[i]];
+				} else {
+					evenobject[keyarray[i]] = this.cards[keyarray[i]];
+				}
 			}
+			i++;
 		}
+
 		return (
-			<SafeAreaView style={[styles.containerStyle,{backgroundColor:"#507df0"}]}>
+			<SafeAreaView style={[ styles.containerStyle, { backgroundColor: '#507df0' } ]}>
 				<ScrollView style={styles.containerStyle}>
 					<View style={styles.topbar}>
 						<ImageBackground source={topnav} style={styles.background}>
@@ -74,29 +92,44 @@ class Dashboard extends React.Component {
 								</TouchableOpacity>
 							</View>
 							<View style={styles.profilebar}>
-								<Image source={profile} style={styles.profileimage} />
-								<Text style={styles.greetings}>Greetings! John Doe</Text>
+								<Image
+									source={{
+										uri: 'http://xplicitsoftware.co:8080' + this.state.user_data.profile,
+										headers: {
+											Authorization: `Bearer ${this.props.context.token}`
+										},
+										method: 'GET'
+									}}
+									style={styles.profileimage}
+								/>
+								<Text style={styles.greetings}>
+									Greetings! {this.state.user_data.firstName} {this.state.user_data.lastName}
+								</Text>
 							</View>
-							<TouchableWithoutFeedback>
-								<View style={styles.card1}>
-									<Image source={Icons[this.state.firstcard]} style={styles.cardimage} />
-									<Text style={styles.cardtitle}>{this.state.firstcard}</Text>
-									<View style={styles.cardinfo}>
-										{Object.keys(this.cards[this.state.firstcard]).map((item, i) => (
-											<View key={i} style={styles.info}>
-												<Text style={styles[this.cards[this.state.firstcard][item]]}>123</Text>
-												<Text style={styles.text}>{item}</Text>
-											</View>
-										))}
+
+							{firstcard != '' ? (
+								<TouchableOpacity activeOpacity={1} onPress={(e)=>this.changeNav(firstcard)}>
+									<View style={styles.card1}>
+										<Image source={Icons[firstcard]} style={styles.cardimage} />
+										<Text style={styles.cardtitle}>{firstcard}</Text>
+
+										<View style={styles.cardinfo}>
+											{Object.keys(this.cards[firstcard]).map((item, i) => (
+												<View key={i} style={styles.info}>
+													<Text style={styles[this.cards[firstcard][item]]}>123</Text>
+													<Text style={styles.text}>{item}</Text>
+												</View>
+											))}
+										</View>
 									</View>
-								</View>
-							</TouchableWithoutFeedback>
+								</TouchableOpacity>
+							) : null}
 						</ImageBackground>
 					</View>
 					<View style={styles.restarea}>
 						<View style={styles.leftcolumn}>
 							{Object.keys(oddobject).map((item, i) => (
-								<TouchableWithoutFeedback  key={i}>
+								<TouchableOpacity activeOpacity={1} onPress={(e)=>this.changeNav(item)} key={i}>
 									<View style={styles.normalcard}>
 										<Image source={Icons[item]} style={styles.cardimage} />
 										<Text style={styles.cardtitle}>{item}</Text>
@@ -109,13 +142,13 @@ class Dashboard extends React.Component {
 											</View>
 										))}
 									</View>
-								</TouchableWithoutFeedback>
+								</TouchableOpacity>
 							))}
 						</View>
 						<View style={styles.rightcolumn}>
 							{Object.keys(evenobject).map((item, i) => (
-								<TouchableWithoutFeedback key={i}>
-									<View style={styles.normalcard} >
+								<TouchableOpacity activeOpacity={1} onPress={(e)=>this.changeNav(item)} key={i}>
+									<View style={styles.normalcard}>
 										<Image source={Icons[item]} style={styles.cardimage} />
 										<Text style={styles.cardtitle}>{item}</Text>
 										{Object.keys(this.cards[item]).map((action, i) => (
@@ -127,7 +160,7 @@ class Dashboard extends React.Component {
 											</View>
 										))}
 									</View>
-								</TouchableWithoutFeedback>
+								</TouchableOpacity>
 							))}
 						</View>
 					</View>
@@ -136,5 +169,9 @@ class Dashboard extends React.Component {
 		);
 	}
 }
+
+const Dashboard = (props) => (
+	<GlobalContext.Consumer>{(context) => <DashboardJSX context={context} {...props} />}</GlobalContext.Consumer>
+);
 
 export default Dashboard;

@@ -15,7 +15,7 @@ class SlideButton extends React.Component {
 			onMoveShouldSetPanResponder: (evt, gestureState) => true,
 			onPanResponderTerminationRequest: (evt, gestureState) => false,
 			onPanResponderMove: (evt, gestureState) => {
-				if (gestureState.dx > 35) {
+				if (gestureState.dx > 25) {
 					let newX = gestureState.dx + this.gestureDelay;
 					position.setValue({ x: newX, y: 0 });
 					this.setState({ position });

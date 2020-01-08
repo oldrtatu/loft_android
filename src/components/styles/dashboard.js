@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
 		height: 40,
 		resizeMode: 'cover',
 		marginLeft: 25,
-		borderRadius: 20
+		borderRadius: 20,
+		borderWidth: 1
 	},
 	greetings: {
 		lineHeight: 45,

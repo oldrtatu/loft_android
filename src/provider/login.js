@@ -16,15 +16,21 @@ export function loginuser(username, password) {
                 resolve(res.data)
             }else{
                 reject({
-                    "message":"Incorrect details"
+                    "message":"Token expired"
                 })
             }
             
         })
         .catch((err) => {
-            reject({
-                "message":"Network error"
-            })
+            if (err.response.data){
+                reject({
+                    "message":err.response.data.message
+                })
+            }else{
+                reject({
+                    "message":"Network error"
+                })
+            }
         });
     })
     
