@@ -8,7 +8,9 @@ import search from '../../assets/search.png';
 import close from '../../assets/whiteclose.png';
 import forward from '../../assets/forward.png';
 
-import Data from './podata.json';
+import {GlobalContext} from '../../provider'
+
+let Data = []
 
 const Row = (props) => {
 	return (
@@ -21,15 +23,16 @@ const Row = (props) => {
 	);
 };
 
-class datatable extends React.Component {
+class PODataTable extends React.Component {
 	constructor(props) {
 		super(props);
+		Data = (props.context.podata != undefined && props.context.podata != null)? props.context.podata : []
 		let filterobject = {
 			All: Data.length,
-			Active: 0,
-			Complete: 0,
-			Invoiced: 0,
-			'Entered in QB': 0
+			ACTIVE: 0,
+			COMPLETE: 0,
+			INVOICED: 0,
+			'ENTERED IN QB': 0
 		};
 		for (let j = 0; j < Data.length; j++) {
 			filterobject[Data[j].status] += 1;
@@ -197,5 +200,8 @@ class datatable extends React.Component {
 		);
 	}
 }
+const datatable = (props) => (
+	<GlobalContext.Consumer>{(context) => <PODataTable context={context} {...props} />}</GlobalContext.Consumer>
+);
 
 export default datatable;

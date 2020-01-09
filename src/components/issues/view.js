@@ -13,7 +13,7 @@ class PurchaseOrder extends React.Component {
 		};
 	}
 	componentDidMount() {
-		this.setState({ rowdata: this.props.navigation.getParam('rowdata') });
+		this.setState({ rowdata: this.props.navigation.getParam('rowdata') }, () => console.log(this.state.rowdata));
 	}
 
 	goback = () => {
@@ -21,8 +21,34 @@ class PurchaseOrder extends React.Component {
 	};
 
 	editdata = () => {
-		this.props.navigation.navigate('Form', {rowdata:this.state.rowdata})
-	}
+		this.props.navigation.navigate('Form', { rowdata: this.state.rowdata });
+	};
+
+	convertdate = (date) => {
+		let monthNames = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+		let formatted = new Date(Date.parse(date));
+
+		var hr = formatted.getHours();
+		var min = formatted.getMinutes();
+		var ampm = 'AM';
+		if (hr > 12) {
+			hr -= 12;
+			ampm = 'PM';
+		}
+		formatted =
+			monthNames[formatted.getMonth()] +
+			' ' +
+			formatted.getDate() +
+			', ' +
+			formatted.getFullYear() +
+			' ' +
+			hr +
+			':' +
+			min +
+			' ' +
+			ampm;
+		return formatted;
+	};
 
 	render() {
 		return this.state.rowdata != null ? (
@@ -37,30 +63,32 @@ class PurchaseOrder extends React.Component {
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Title</Text>
-							<Text style={viewstyle.righttext}>Axel damaged</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.title}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Unit number</Text>
-							<Text style={viewstyle.righttext}>12345</Text>
+							<Text style={viewstyle.righttext}>
+								{this.state.rowdata[this.state.rowdata.equipmentType.toLowerCase()]['unitNo']}
+							</Text>
 						</View>
 						<View style={viewstyle.row}>
-							<Text style={viewstyle.lefttext}>Subsidiary</Text>
-							<Text style={viewstyle.righttext}>Tango Zulu</Text>
+							<Text style={viewstyle.lefttext}>Division</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.division.name}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Category</Text>
-							<Text style={viewstyle.righttext}>Sample text</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.category.name}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Equipment Type</Text>
-							<Text style={viewstyle.righttext}>{this.state.rowdata.equipment}</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.equipmentType}</Text>
 						</View>
 					</View>
 					<View style={viewstyle.separator} />
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Type</Text>
-							<Text style={viewstyle.righttext}>General</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.type}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Status</Text>
@@ -68,41 +96,58 @@ class PurchaseOrder extends React.Component {
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>PO #</Text>
-							<Text style={viewstyle.righttext}>--</Text>
+							<Text style={viewstyle.righttext}>
+								{this.state.rowdata.po ? this.state.rowdata.po.id : '--'}
+							</Text>
 						</View>
 					</View>
 					<View style={viewstyle.separator} />
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Reported on</Text>
-							<Text style={viewstyle.righttext}>06 May, 2019</Text>
+							<Text style={viewstyle.righttext}>{this.convertdate(this.state.rowdata.reportedOn)}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Posted on</Text>
-							<Text style={viewstyle.righttext}>06 May, 2019</Text>
+							<Text style={viewstyle.righttext}>{this.convertdate(this.state.rowdata.postedOn)}</Text>
 						</View>
-						<View style={viewstyle.row}>
-							<Text style={viewstyle.lefttext}>Due on</Text>
-							<Text style={viewstyle.righttext}>21 May, 2019</Text>
-						</View>
-						<View style={viewstyle.row}>
-							<Text style={viewstyle.lefttext}>Period</Text>
-							<Text style={viewstyle.righttext}>3 months</Text>
-						</View>
+						{this.state.rowdata.dueOn ? (
+							<View style={viewstyle.row}>
+								<Text style={viewstyle.lefttext}>Due on</Text>
+								<Text style={viewstyle.righttext}>{this.convertdate(this.state.rowdata.dueOn)}</Text>
+							</View>
+						) : null}
+						{this.state.rowdata.period ? (
+							<View style={viewstyle.row}>
+								<Text style={viewstyle.lefttext}>Period</Text>
+								<Text style={viewstyle.righttext}>
+									{this.state.rowdata.period + ' ' + this.state.rowdata.periodUnit}
+								</Text>
+							</View>
+						) : null}
 					</View>
+					{this.state.rowdata.typeDriverSide ? (
+						<React.Fragment>
+							<View style={viewstyle.separator} />
+							<View style={viewstyle.details}>
+								<View style={viewstyle.row}>
+								</View>
+							</View>
+							<View style={viewstyle.separator} />
+						</React.Fragment>
+					) : null}
 					<View style={viewstyle.separator} />
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Odometer</Text>
-							<Text style={viewstyle.righttext}>92344 miles</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.odometer}</Text>
 						</View>
-						<View style={viewstyle.paragraph}>
-							<Text style={viewstyle.longtextheading}>Description</Text>
-							<Text style={viewstyle.longtext}>
-								Pellentesque habitant morbi tristique senectus etnete malesuada fames ac turpis egestas.
-								Ut arcu liberotert
-							</Text>
-						</View>
+						{this.state.rowdata.description ? (
+							<View style={viewstyle.paragraph}>
+								<Text style={viewstyle.longtextheading}>Description</Text>
+								<Text style={viewstyle.longtext}>{this.state.rowdata.description}</Text>
+							</View>
+						) : null}
 					</View>
 				</ScrollView>
 				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>

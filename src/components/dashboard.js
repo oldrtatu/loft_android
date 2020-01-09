@@ -41,6 +41,10 @@ class DashboardJSX extends React.Component {
 		};
 	}
 
+	componentDidMount(){
+		this.props.context.fetchdata()
+	}
+
 	UNSAFE_componentWillReceiveProps(newprops){
 		this.setState({
 			user_data: newprops.context.user_data

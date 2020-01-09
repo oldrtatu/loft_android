@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, FlatList, Dimensions, SafeAreaView } from 'react-native';
+import {GlobalContext}  from '../../provider'
 
 import styles from './styles/filter';
 import table from './styles/table';
@@ -8,30 +9,33 @@ import search from '../../assets/search.png';
 import close from '../../assets/whiteclose.png';
 import forward from '../../assets/forward.png';
 
-import Data from './issuesdata.json';
+
 
 const Row = (props) => {
 	return (
 		<TouchableOpacity activeOpacity={1} style={table.row} onPress={() => props.viewRow(props.rowdata)}>
 			<Text style={table.text1}>{props.id}</Text>
-			<Text style={table.text}>{props.rowdata.equipment}</Text>
+			<Text style={table.text}>{props.rowdata.equipmentType}</Text>
 			<Text style={table.text}>{props.rowdata.status}</Text>
 			<Image source={forward} style={table.forward} />
 		</TouchableOpacity>
 	);
 };
 
-class datatable extends React.Component {
+let Data = []
+
+class IssuesDataTable extends React.Component {
 	constructor(props) {
 		super(props);
+		Data = (props.context.issuesdata)? props.context.issuesdata : []
 		let filterobject = {
 			All: Data.length,
-			Assigned: 0,
-			Open: 0,
-			Deferred: 0,
-			Cancelled:0,
-			Complete:0,
-			Incomplete:0
+			ASSIGNED: 0,
+			OPEN: 0,
+			DEFERRED: 0,
+			CANCELLED:0,
+			COMPLETE:0,
+			INCOMPLETE:0
 		};
 		for (let j = 0; j < Data.length; j++) {
 			filterobject[Data[j].status] += 1;
@@ -199,5 +203,10 @@ class datatable extends React.Component {
 		);
 	}
 }
+
+const datatable = (props) => (
+	<GlobalContext.Consumer>{(context) => <IssuesDataTable context={context} {...props} />}</GlobalContext.Consumer>
+);
+
 
 export default datatable;
