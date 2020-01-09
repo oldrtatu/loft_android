@@ -39,6 +39,8 @@ target 'loft_app' do
   pod 'react-native-document-picker', :path => '../node_modules/react-native-document-picker'
 
 
+  pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
+
   target 'loft_appTests' do
     inherit! :search_paths
     # Pods for testing

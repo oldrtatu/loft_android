@@ -5571,6 +5571,11 @@ react-native-screens@^2.0.0-alpha.22:
   dependencies:
     debounce "^1.2.0"
 
+react-native-snackbar@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-snackbar/-/react-native-snackbar-2.0.4.tgz#cc9587600b6c67267b5a96eb74e693d2e3eee054"
+  integrity sha512-q0NhXYV3uBebN4z9MenR8SIycFGM7QN8NWgwcbJn1zuEiRp49jaJRR/KX7ucS385BvqzBdUu+QqF7SrFN7HiRA==
+
 react-native-svg@^9.13.6:
   version "9.13.6"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-9.13.6.tgz#5365fba2bc460054b90851e71f2a71006a5d373f"

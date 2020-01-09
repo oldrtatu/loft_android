@@ -21,14 +21,13 @@ import report from '../assets/router/report.png';
 import notification from '../assets/router/notification.png';
 
 import { GlobalContext } from '../provider';
-import Axios from 'axios';
 
 import styles from './styles/dashboard';
 
 const Icons = {
 	Inventory: inventory,
 	Issues: issues,
-	'Purchase Orders': po,
+	'Purchase Order': po,
 	Reports: report,
 	Notifications: notification
 };
@@ -36,7 +35,6 @@ const Icons = {
 class DashboardJSX extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log(props)
 		this.state = {
 			user_data: props.context.user_data,
 			image: profile
@@ -94,7 +92,7 @@ class DashboardJSX extends React.Component {
 							<View style={styles.profilebar}>
 								<Image
 									source={{
-										uri: 'http://xplicitsoftware.co:8080' + this.state.user_data.profile,
+										uri: this.props.context.url + this.state.user_data.profile,
 										headers: {
 											Authorization: `Bearer ${this.props.context.token}`
 										},

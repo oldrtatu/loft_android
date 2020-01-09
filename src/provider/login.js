@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react';
 import axios from 'axios';
 
-export function loginuser(username, password) {
+export function loginuser(url,username, password) {
     return new Promise(async (resolve, reject) => {
         await axios({
             method: 'POST',
@@ -9,7 +9,7 @@ export function loginuser(username, password) {
                 email : username,
                 password
             },
-            url : 'http://xplicitsoftware.co:8080/login'
+            url : url + '/login'
         })
         .then((res) => {
             if(res.data.code == "LOGGED_IN"){
@@ -22,7 +22,7 @@ export function loginuser(username, password) {
             
         })
         .catch((err) => {
-            if (err.response.data){
+            if (err.response){
                 reject({
                     "message":err.response.data.message
                 })
@@ -32,8 +32,76 @@ export function loginuser(username, password) {
                 })
             }
         });
-    })
-    
-    
-    
+    }) 
+}
+
+export function change_password(url,token,data){
+    return new Promise(async (resolve, reject) => {
+        await axios({
+            method: 'POST',
+            data: {
+                newPassword : data.newPassword,
+                currentPassword: data.currentPassword
+            },
+            url : url + '/changePassword',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then((res) => {
+            if(res.data.code == "UPDATE_SUCC"){
+                resolve(res.data)
+            }else{
+                reject({
+                    "message":"Token expired"
+                })
+            }
+            
+        })
+        .catch((err) => {
+            if (err.response){
+                reject({
+                    "message":err.response.data.message
+                })
+            }else{
+                reject({
+                    "message":"Network error"
+                })
+            }
+        });
+    }) 
+}
+
+export function change_userdata(url,token,data){
+    return new Promise(async (resolve, reject) => {
+        await axios({
+            method: "PUT",
+            data: data,
+            url : url + '/users',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then((res) => {
+            if(res.data.code == "UPDATE_SUCC"){
+                resolve(res.data)
+            }else{
+                reject({
+                    "message":"Token expired"
+                })
+            }
+            
+        })
+        .catch((err) => {
+            if (err.response){
+                reject({
+                    "message":err.response.data.message
+                })
+            }else{
+                reject({
+                    "message":"Network error"
+                })
+            }
+        });
+    }) 
 }

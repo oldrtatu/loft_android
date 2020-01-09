@@ -72,19 +72,19 @@ const styles = StyleSheet.create({
         alignSelf:"center",
         height:35,
         marginTop: 8,
-        flexDirection:"row"
+        flexDirection:"row",
+        alignItems:'center'
     },
     forwardtitle:{
         flex:1,
         fontSize:17,
         color:"#8991A2",
-        fontWeight:"700"
+        fontWeight:"700",
     },
     forwardarrow:{
         width:15,
         height:15,
         resizeMode:"contain",
-        alignSelf:"center"
     },
     password:{
         width:Dimensions.get('window').width * 0.8,
@@ -120,6 +120,12 @@ const styles = StyleSheet.create({
         fontSize:17,
         color:"#D62246",
         fontWeight:"700"
+    },
+    error:{
+      color:"#D62246",
+      marginVertical:10,
+      marginLeft:50,
+      alignSelf:"flex-start"
     }
 })
 
