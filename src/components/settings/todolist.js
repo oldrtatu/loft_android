@@ -1,11 +1,11 @@
 import React from 'react';
-import { Text, SafeAreaView, ScrollView, View, ImageBackground } from 'react-native';
-import { SwipeableFlatList } from 'react-native-swipeable-flat-list';
+import { Text, SafeAreaView, ScrollView, View, ImageBackground, TouchableOpacity, Image } from 'react-native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 import styles from './styles/todolist';
 
 import topnav from '../../assets/topnav.png';
-const Row = (item) => console.log(item) || <Text>{item.key}</Text>;
+import forward from '../../assets/forward.png';
 
 class ToDoList extends React.Component {
 	constructor(props) {
@@ -26,9 +26,14 @@ class ToDoList extends React.Component {
 							</ImageBackground>
 						</View>
 					</View>
-					<SwipeableFlatList
+					<SwipeListView
 						data={this.data}
-						renderItem={({ item }) => <Row style={{height:48}} item={item} />}
+						renderItem={data => (
+							<TouchableOpacity activeOpacity={1} style={styles.row}>
+								<Text style={styles.text}>{data.item.key}</Text>
+								<Image style={styles.forward} source={forward}></Image>
+							</TouchableOpacity>
+						)}
 						style={styles.liststyle}
 					/>
 				</View>

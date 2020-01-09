@@ -24,9 +24,31 @@ const styles = StyleSheet.create({
 	liststyle:{
 		marginTop:-150,
 		width:Dimensions.get('window').width * 0.85,
-		alignSelf:"center",
-		backgroundColor:"white"
-	}
+		alignSelf:"center"
+	},
+	row:{
+		backgroundColor:"white",
+		marginVertical:2,
+		height:70,
+		paddingLeft:20,
+		borderRadius:5,
+		flexDirection:"row",
+		alignItems:"center"
+	},
+    text:{
+        fontSize:15,
+        marginRight:15,
+        flex:1,
+        alignSelf:"center"
+    },
+    forward:{
+        width:40,
+        height:14,
+        resizeMode:"contain",
+        marginRight:20,
+        marginLeft:5,
+        marginTop:5
+    }
 })
 
 export default styles
