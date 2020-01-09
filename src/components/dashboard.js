@@ -41,6 +41,12 @@ class DashboardJSX extends React.Component {
 		};
 	}
 
+	UNSAFE_componentWillReceiveProps(newprops){
+		this.setState({
+			user_data: newprops.context.user_data
+		})
+	}
+
 	cards = {
 		'Purchase Order': { Active: 'active', Complete: 'normal' },
 		Notifications: { Unread: 'alert' },

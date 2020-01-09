@@ -2,7 +2,7 @@ import React from 'react';
 
 const GlobalContext = React.createContext();
 
-import { loginuser,change_password, change_userdata } from './login';
+import { loginuser,change_password, change_userdata,upload_user_image } from './login';
 
 export class GlobalContextProvider extends React.Component {
 	constructor(props) {
@@ -72,7 +72,8 @@ export class GlobalContextProvider extends React.Component {
 					...this.state,
 					login: this.login,
 					changepassword: this.changepassword,
-					changeuserdata:this.changeuserdata
+					changeuserdata:this.changeuserdata,
+					uploaduserimage: upload_user_image
 				}}
 			>
 				{this.props.children}

@@ -8,7 +8,8 @@ import {
 	TextInput,
 	TouchableOpacity,
 	Modal,
-	Switch
+	Switch,
+	Dimensions
 } from 'react-native';
 
 import camera from '../../assets/camera.png';
@@ -25,6 +26,16 @@ import modal from './styles/modalstyle';
 import { GlobalContext } from '../../provider';
 import Snackbar from 'react-native-snackbar';
 import { UIActivityIndicator } from 'react-native-indicators';
+import ImagePicker from 'react-native-image-picker';
+
+const options = {
+	title: 'Select profile pic',
+	storageOptions: {
+		skipBackup: false,
+		path: 'images'
+	},
+	allowsEditing: true
+};
 
 class Settings extends React.Component {
 	constructor(props) {
@@ -46,6 +57,7 @@ class Settings extends React.Component {
 			passworderror: '',
 			passwordloading: false,
 			dashboardloading: false,
+			loading: false,
 			password: {
 				current: '',
 				new: '',
@@ -159,16 +171,16 @@ class Settings extends React.Component {
 		this.props.navigation.navigate('Sign In');
 	};
 
-	changeuserdata = async (key,toshow) => {
-		let value = this.state.user_data[key]
+	changeuserdata = async (key, toshow) => {
+		let value = this.state.user_data[key];
 		if (value != this.props.context.user_data[key]) {
-			if(value != ""){
+			if (value != '') {
 				let data = {};
 				data[key] = value;
 				(data['id'] = this.state.user_data.id), (data['uid'] = this.state.user_data.uid);
 				let res = await this.props.context.changeuserdata(data, key);
 				if (res[0]) {
-					this.setState({ user_data: { ...this.state.user_data, ...res[1] } }, () => {
+					this.setState({ user_data: { ...this.state.user_data, ...res[1] },loading:false }, () => {
 						setTimeout(() => {
 							Snackbar.show({
 								title: toshow + ' changed successfully',
@@ -178,15 +190,17 @@ class Settings extends React.Component {
 						}, 400);
 					});
 				} else {
+					this.setState({loading:false})
 					setTimeout(() => {
 						Snackbar.show({
-							title: toshow + ' was not changed',
+							title: res[1],
 							duration: Snackbar.LENGTH_SHORT,
 							backgroundColor: '#D62246'
 						});
 					}, 400);
 				}
-			}else{
+			} else {
+				this.setState({loading:false})
 				setTimeout(() => {
 					Snackbar.show({
 						title: 'Can not leave ' + toshow + ' empty',
@@ -198,12 +212,51 @@ class Settings extends React.Component {
 		}
 	};
 
+	addprofilepic = () => {
+		ImagePicker.showImagePicker(options, async (res) => {
+			let err = '';
+			if (res.didCancel) {
+				err = 'You cancelled image picking';
+			} else if (res.error) {
+				err = res.error;
+			} else {
+				this.setState({loading:true})
+				await this.props.context
+					.uploaduserimage(this.props.context.url, this.props.context.token, res)
+					.then((res) => {
+						this.setState(
+							{
+								user_data: { ...this.state.user_data, profile: res.url }
+							},
+							() => this.changeuserdata('profile', 'Image')
+						);
+					})
+					.catch((error) => {
+						err = error.message;
+					});
+			}
+			if (err != '') {
+				Snackbar.show({
+					title: err,
+					duration: Snackbar.LENGTH_SHORT,
+					backgroundColor: '#D62246'
+				});
+			}
+		});
+	};
+
 	render() {
 		return (
 			<ScrollView style={styles.containerStyle}>
+				<Modal animationType="fade" transparent={true} visible={this.state.loading}>
+					<View style={modal.background} />
+					<View style={{position:"absolute",top:0,justifyContent:"center",width:Dimensions.get('window').width,height:Dimensions.get('window').height}}>
+						<UIActivityIndicator color="#fff" size={50} />
+					</View>
+				</Modal>
 				<View style={styles.topbar} />
 				<View style={styles.restarea}>
-					<TouchableWithoutFeedback>
+					<TouchableOpacity activeOpacity={1} onPress={this.addprofilepic}>
 						<View>
 							<Image
 								source={{
@@ -217,15 +270,16 @@ class Settings extends React.Component {
 							/>
 							<Image source={camera} style={styles.camera} />
 						</View>
-					</TouchableWithoutFeedback>
+					</TouchableOpacity>
 					<View style={styles.firstformcomponent}>
 						<Text style={styles.label}>First Name</Text>
 						<TextInput
 							style={styles.textinput}
 							placeholder="Enter first name"
 							value={this.state.user_data.firstName}
-							onChangeText={(text)=>this.setState({user_data:{...this.state.user_data,firstName:text}})}
-							onBlur={()=>this.changeuserdata('firstName','First name')}
+							onChangeText={(text) =>
+								this.setState({ user_data: { ...this.state.user_data, firstName: text } })}
+							onBlur={() => this.changeuserdata('firstName', 'First name')}
 						/>
 					</View>
 					<View style={styles.otherformcomponent}>
@@ -234,8 +288,9 @@ class Settings extends React.Component {
 							style={styles.textinput}
 							placeholder="Enter last name"
 							value={this.state.user_data.lastName}
-							onChangeText={(text)=>this.setState({user_data:{...this.state.user_data,lastName:text}})}
-							onBlur={()=>this.changeuserdata('lastName','Last name')}
+							onChangeText={(text) =>
+								this.setState({ user_data: { ...this.state.user_data, lastName: text } })}
+							onBlur={() => this.changeuserdata('lastName', 'Last name')}
 						/>
 					</View>
 					<View style={styles.otherformcomponent}>
@@ -244,8 +299,9 @@ class Settings extends React.Component {
 							style={styles.textinput}
 							placeholder="Enter email address"
 							value={this.state.user_data.email}
-							onChangeText={(text)=>this.setState({user_data:{...this.state.user_data,email:text}})}
-							onBlur={()=>this.changeuserdata('email','Email address')}
+							onChangeText={(text) =>
+								this.setState({ user_data: { ...this.state.user_data, email: text } })}
+							onBlur={() => this.changeuserdata('email', 'Email address')}
 						/>
 					</View>
 					<View style={styles.separator} />
