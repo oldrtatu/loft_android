@@ -141,7 +141,7 @@ class IssuesForm extends React.Component {
 					</Text>
 				</View>
 				<ScrollView style={form.mainform} nestedScrollEnabled={true}>
-					<Text style={form.partnumber}>{this.state.formnumber}/3 </Text>
+					<Text style={form.partnumber}>{`${this.state.formnumber}/3 `}</Text>
 					{this.state.formnumber == 1 && (
 						<React.Fragment>
 							<Text style={[ form.label, { marginTop: 20 } ]}>Title</Text>

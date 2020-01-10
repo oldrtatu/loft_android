@@ -128,7 +128,6 @@ class Settings extends React.Component {
 				val += '0';
 			}
 		}
-		val = parseInt(val);
 		let res = await this.props.context.changeuserdata(
 			{
 				dashboardConfig: val,

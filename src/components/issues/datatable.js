@@ -15,7 +15,7 @@ const Row = (props) => {
 	return (
 		<TouchableOpacity activeOpacity={1} style={table.row} onPress={() => props.viewRow(props.rowdata)}>
 			<Text style={table.text1}>{props.id}</Text>
-			<Text style={table.text}>{props.rowdata.equipmentType}</Text>
+			<Text style={table.text2}>{props.rowdata.title}</Text>
 			<Text style={table.text}>{props.rowdata.status}</Text>
 			<Image source={forward} style={table.forward} />
 		</TouchableOpacity>
@@ -59,7 +59,7 @@ class IssuesDataTable extends React.Component {
 		this.props.navigation.navigate('Form')
 	}
 
-	header = [ 'Issue #', 'Equipment', 'Status' ];
+	header = [ '#', 'Title', 'Status' ];
 
 	changesearch = () => {
 		this.setState({ showsearch: !this.state.showsearch});
@@ -144,7 +144,7 @@ class IssuesDataTable extends React.Component {
 									<TextInput
 										placeholder="Enter Issue#"
 										style={styles.searchbar}
-										placeholderTextColor="#fff"
+										placeholderTextColor="rgba(255,255,255,0.6)"
 										defaultValue={this.state.searchtext}
 										onSubmitEditing={(e) => this.applysearch(e)}
 									/>
@@ -181,7 +181,7 @@ class IssuesDataTable extends React.Component {
 						</ScrollView>
 						<View style={table.tableheader}>
 							{this.header.map((item, i) => (
-								<Text key={i} style={i == 0 ? table.header1 : table.header}>{item}</Text>
+								<Text key={i} style={i == 0 ? table.header1 : ((i == 1) ? table.header2 : table.header)}>{item}</Text>
 							))}
 							<TouchableOpacity style={table.addbutton} onPress={this.addNewIssue}>
 								<Text style={table.addtext}>+Add</Text>
@@ -190,7 +190,7 @@ class IssuesDataTable extends React.Component {
 					</View>
 				</SafeAreaView>
 				<FlatList
-					style={{ flex: 1, marginTop: 5 }}
+					style={{ flex: 1, paddingTop: 5 ,backgroundColor:"#F6F7F9" }}
 					data={this.state.loadeddata}
 					renderItem={({ item }) => <Row key={item.id} id={item.id} rowdata={item} viewRow={this.viewRow} />}
 					keyExtractor={(item) => item.id.toString()}

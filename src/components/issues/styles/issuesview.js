@@ -34,9 +34,9 @@ const viewstyle = StyleSheet.create({
         backgroundColor:"#fff"
     },
     details:{
-        width:Dimensions.get('window').width * 0.8,
+        width:Dimensions.get('window').width * 0.85,
         alignSelf:"center",
-        paddingVertical:20
+        paddingVertical:10
     },
     row:{
         height:30,
@@ -47,15 +47,15 @@ const viewstyle = StyleSheet.create({
     lefttext:{
         flex:1,
         fontSize:17,
-        fontWeight:"700",
+        fontWeight:"500",
         color:"#8991A2"
     },
     righttext:{
-        fontSize:17,
+        fontSize:16,
         color:"#131d4a"
     },
     separator:{
-        width:Dimensions.get('window').width * 0.8,
+        width:Dimensions.get('window').width * 0.85,
         alignSelf:"center",
         height:1,
         backgroundColor:"#707070"
@@ -66,13 +66,13 @@ const viewstyle = StyleSheet.create({
     longtextheading:{
         flex:1,
         fontSize:17,
-        fontWeight:"700",
+        fontWeight:"500",
         color:"#8991A2"
     },
     longtext:{
         paddingVertical:5,
         flex:1,
-        fontSize:17,
+        fontSize:16,
         color:"#131d4a",
         textAlign:"justify"
     },
@@ -82,7 +82,7 @@ const viewstyle = StyleSheet.create({
         color:"#131d4a"
     },
     editbutton:{
-        backgroundColor:"#507df0",
+        backgroundColor:"#2196F3",
         height:60,
         justifyContent:"center",
         alignItems:"center"
@@ -90,6 +90,37 @@ const viewstyle = StyleSheet.create({
     editbuttontext:{
         color:"#fff",
         fontSize:18
+    },
+    driverside:{
+        flexDirection:"row",
+        flexWrap:"wrap",
+        paddingVertical:5,
+        marginTop:10
+    },
+    true:{
+        backgroundColor:"#D62246",
+        paddingVertical:5,
+        paddingHorizontal:12,
+        borderRadius:20,
+        marginRight:5,
+        marginBottom:7
+    },
+    fault:{
+        color:"#fff",
+        fontSize:16
+    },
+    false:{
+        borderColor:"#1CA49F",
+        borderWidth:1,
+        paddingVertical:5,
+        paddingHorizontal:12,
+        borderRadius:20,
+        marginRight:5,
+        marginBottom:7
+    },
+    correct:{
+        color:"#1CA49F",
+        fontSize:16
     }
 })
 

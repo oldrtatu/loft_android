@@ -13,7 +13,7 @@ class PurchaseOrder extends React.Component {
 		};
 	}
 	componentDidMount() {
-		this.setState({ rowdata: this.props.navigation.getParam('rowdata') }, () => console.log(this.state.rowdata));
+		this.setState({ rowdata: this.props.navigation.getParam('rowdata') });
 	}
 
 	goback = () => {
@@ -126,16 +126,6 @@ class PurchaseOrder extends React.Component {
 							</View>
 						) : null}
 					</View>
-					{this.state.rowdata.typeDriverSide ? (
-						<React.Fragment>
-							<View style={viewstyle.separator} />
-							<View style={viewstyle.details}>
-								<View style={viewstyle.row}>
-								</View>
-							</View>
-							<View style={viewstyle.separator} />
-						</React.Fragment>
-					) : null}
 					<View style={viewstyle.separator} />
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
@@ -149,9 +139,44 @@ class PurchaseOrder extends React.Component {
 							</View>
 						) : null}
 					</View>
+					{this.state.rowdata.typeDriverSide ? (
+						<React.Fragment>
+							<View style={viewstyle.separator} />
+							<View style={viewstyle.details}>
+								<View style={viewstyle.paragraph}>
+									<Text style={viewstyle.longtextheading}>Driver side</Text>
+									<View style={viewstyle.driverside}>
+										{Object.keys(this.state.rowdata.typeDriverSide).map((item, i) => (
+											<View style={viewstyle[this.state.rowdata.typeDriverSide[item]]} key={i}>
+												{this.state.rowdata.typeDriverSide[item] ? (
+													<Text style={viewstyle.fault}>{item}</Text>
+												) : (
+													<Text style={viewstyle.correct}>{`${item}`}</Text>
+												)}
+											</View>
+										))}
+									</View>
+								</View>
+								<View style={viewstyle.paragraph}>
+									<Text style={viewstyle.longtextheading}>Passenger side</Text>
+									<View style={viewstyle.driverside}>
+										{Object.keys(this.state.rowdata.typePassengerSide).map((item, i) => (
+											<View style={viewstyle[this.state.rowdata.typePassengerSide[item]]} key={i}>
+												{this.state.rowdata.typePassengerSide[item] ? (
+													<Text style={viewstyle.fault}>{item}</Text>
+												) : (
+													<Text style={viewstyle.correct}>{`${item}`}</Text>
+												)}
+											</View>
+										))}
+									</View>
+								</View>
+							</View>
+						</React.Fragment>
+					) : null}
 				</ScrollView>
 				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
-					<Text style={viewstyle.editbuttontext}>Tap to Edit</Text>
+					<Text style={viewstyle.editbuttontext}>Tap to edit</Text>
 				</TouchableOpacity>
 			</React.Fragment>
 		) : (
