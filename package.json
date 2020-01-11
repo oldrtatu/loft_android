@@ -34,7 +34,8 @@
     "react-navigation": "^4.0.10",
     "react-navigation-stack": "^1.10.3",
     "react-navigation-tabs": "^2.6.2",
-    "react-navigation-transitions": "^1.0.12"
+    "react-navigation-transitions": "^1.0.12",
+    "source-sans-pro": "^3.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.7",

@@ -34,28 +34,30 @@ const viewstyle = StyleSheet.create({
         backgroundColor:"#fff"
     },
     details:{
-        width:Dimensions.get('window').width * 0.85,
+        width:Dimensions.get('window').width * 0.8,
         alignSelf:"center",
-        paddingVertical:10
+        paddingVertical:13
     },
     row:{
-        height:30,
+        height:31,
         flexDirection:"row",
         flex:1,
         alignItems:"center"
     },
     lefttext:{
         flex:1,
-        fontSize:17,
-        fontWeight:"500",
-        color:"#8991A2"
+        fontSize:14,
+        fontWeight:"600",
+        color:"#8991A2",
+        letterSpacing:-0.5
     },
     righttext:{
-        fontSize:16,
-        color:"#131d4a"
+        fontSize:14,
+        color:"#131d4a",
+        letterSpacing:-0.5
     },
     separator:{
-        width:Dimensions.get('window').width * 0.85,
+        width:Dimensions.get('window').width * 0.8,
         alignSelf:"center",
         height:1,
         backgroundColor:"#707070"
@@ -65,20 +67,22 @@ const viewstyle = StyleSheet.create({
     },
     longtextheading:{
         flex:1,
-        fontSize:17,
-        fontWeight:"500",
-        color:"#8991A2"
+        fontSize:14,
+        fontWeight:"600",
+        color:"#8991A2",
+        letterSpacing:-0.5
     },
     longtext:{
         paddingVertical:5,
         flex:1,
-        fontSize:16,
+        fontSize:13,
         color:"#131d4a",
-        textAlign:"justify"
+        textAlign:"justify",
+        letterSpacing:-0.5
     },
     leftissuetext:{
         flex:1,
-        fontSize:17,
+        fontSize:14,
         color:"#131d4a"
     },
     editbutton:{
@@ -89,13 +93,14 @@ const viewstyle = StyleSheet.create({
     },
     editbuttontext:{
         color:"#fff",
-        fontSize:18
+        fontSize:17,
+        fontWeight:"400"
     },
     driverside:{
         flexDirection:"row",
         flexWrap:"wrap",
         paddingVertical:5,
-        marginTop:10
+        marginTop:5
     },
     true:{
         backgroundColor:"#D62246",
@@ -107,7 +112,7 @@ const viewstyle = StyleSheet.create({
     },
     fault:{
         color:"#fff",
-        fontSize:16
+        fontSize:14
     },
     false:{
         borderColor:"#1CA49F",
@@ -120,7 +125,7 @@ const viewstyle = StyleSheet.create({
     },
     correct:{
         color:"#1CA49F",
-        fontSize:16
+        fontSize:14
     }
 })
 

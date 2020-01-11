@@ -60,6 +60,7 @@ class PurchaseOrder extends React.Component {
 					<Text style={viewstyle.heading}>Issue# - {this.state.rowdata.id}</Text>
 				</View>
 				<ScrollView style={viewstyle.restarea}>
+					<View style={{height:25}}/>
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Title</Text>
@@ -100,6 +101,10 @@ class PurchaseOrder extends React.Component {
 								{this.state.rowdata.po ? this.state.rowdata.po.id : '--'}
 							</Text>
 						</View>
+						<View style={viewstyle.row}>
+							<Text style={viewstyle.lefttext}>Odometer</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.odometer}</Text>
+						</View>
 					</View>
 					<View style={viewstyle.separator} />
 					<View style={viewstyle.details}>
@@ -126,19 +131,17 @@ class PurchaseOrder extends React.Component {
 							</View>
 						) : null}
 					</View>
-					<View style={viewstyle.separator} />
-					<View style={viewstyle.details}>
-						<View style={viewstyle.row}>
-							<Text style={viewstyle.lefttext}>Odometer</Text>
-							<Text style={viewstyle.righttext}>{this.state.rowdata.odometer}</Text>
-						</View>
-						{this.state.rowdata.description ? (
-							<View style={viewstyle.paragraph}>
-								<Text style={viewstyle.longtextheading}>Description</Text>
-								<Text style={viewstyle.longtext}>{this.state.rowdata.description}</Text>
+					{this.state.rowdata.description ? (
+						<React.Fragment>
+							<View style={viewstyle.separator} />
+							<View style={viewstyle.details}>
+								<View style={viewstyle.paragraph}>
+									<Text style={viewstyle.longtextheading}>Description</Text>
+									<Text style={viewstyle.longtext}>{this.state.rowdata.description}</Text>
+								</View>
 							</View>
-						) : null}
-					</View>
+						</React.Fragment>
+					) : null}
 					{this.state.rowdata.typeDriverSide ? (
 						<React.Fragment>
 							<View style={viewstyle.separator} />
@@ -157,6 +160,13 @@ class PurchaseOrder extends React.Component {
 										))}
 									</View>
 								</View>
+							</View>
+						</React.Fragment>
+					) : null}
+					{this.state.rowdata.typePassengerSide ? (
+						<React.Fragment>
+							<View style={viewstyle.separator} />
+							<View style={viewstyle.details}>
 								<View style={viewstyle.paragraph}>
 									<Text style={viewstyle.longtextheading}>Passenger side</Text>
 									<View style={viewstyle.driverside}>
@@ -176,7 +186,7 @@ class PurchaseOrder extends React.Component {
 					) : null}
 				</ScrollView>
 				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
-					<Text style={viewstyle.editbuttontext}>Tap to edit</Text>
+					<Text style={viewstyle.editbuttontext}>Tap to Edit</Text>
 				</TouchableOpacity>
 			</React.Fragment>
 		) : (

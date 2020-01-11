@@ -35,9 +35,9 @@ const form = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: 'bold',
 		color: 'rgba(80,86,101,0.36)',
-		marginTop: 20,
+		marginTop: 15,
 		marginLeft: 10,
-		width: Dimensions.get('window').width*0.8,
+		width: Dimensions.get('window').width*0.85,
 		alignSelf:"center"
 	},
 	input: {
@@ -45,13 +45,13 @@ const form = StyleSheet.create({
 		paddingLeft: 12,
 		color: '#131d4a',
 		fontSize: 17,
-		height: 70,
+		height: 60,
         borderWidth: 1,
         borderColor:"#e6e6e6",
 		backgroundColor: 'transparent',
 		marginTop: -25,
 		paddingTop: 30,
-		width: Dimensions.get('window').width*0.8,
+		width: Dimensions.get('window').width*0.85,
 		alignSelf:"center"
     },
 	inputarea: {
@@ -94,8 +94,8 @@ const form = StyleSheet.create({
 		fontSize:18,
 		flex:1,
 		height:20,
-		marginRight:20,
-		marginTop:20,
+		marginRight:25,
+		marginTop:10,
 		marginLeft:"auto",
 		fontWeight:"bold"
 	},

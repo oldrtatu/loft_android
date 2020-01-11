@@ -3,10 +3,7 @@ import { Text, View, TouchableOpacity, Image, ScrollView, TextInput,Switch } fro
 
 import form from './styles/formstyle';
 
-import SuggestionField from '../helpers/SuggestionField';
-import Slidebutton from '../helpers/slidebutton';
-import DropDown from '../helpers/DropDown';
-import DatePicker from '../helpers/DatePicker';
+import {SuggestionField,Slidebutton,DropDown,DatePicker,InputField} from '../helpers'
 
 import back from '../../assets/back.png';
 
@@ -144,8 +141,7 @@ class IssuesForm extends React.Component {
 					<Text style={form.partnumber}>{`${this.state.formnumber}/3 `}</Text>
 					{this.state.formnumber == 1 && (
 						<React.Fragment>
-							<Text style={[ form.label, { marginTop: 20 } ]}>Title</Text>
-							<TextInput style={[ form.input, { marginTop: -25 } ]} placeholder="Enter title" />
+							<InputField placeholder="Enter title" label="Title" value="" validate={["empty"]} />
 							<DropDown
 								label="Equipment Type"
 								name="equipment"
