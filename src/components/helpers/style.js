@@ -71,22 +71,6 @@ const style = StyleSheet.create({
         width:20,
         height:20,
         resizeMode:"contain"
-    },
-    dropbuttoncontainer:{
-        width:50,
-        height:50,
-        alignItems:"center",
-        justifyContent:"center",
-        marginTop:-60,
-        marginLeft:Dimensions.get('window').width*0.77
-    },
-    dropdownoptions:{
-        backgroundColor:"#ffffff",
-        marginTop:10,
-        width:Dimensions.get('window').width*0.8,
-        borderWidth:1,
-        borderColor:"#e6e6e6",
-        alignSelf:"center"
     }
 })
 

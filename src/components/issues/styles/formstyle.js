@@ -2,33 +2,39 @@ import React from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
 
 const form = StyleSheet.create({
-	topbar: {
-		height: 110,
-		backgroundColor: '#507df0',
-		flexDirection: 'row'
-	},
-	backcontainer: {
-		width: 70,
-		height: 110,
-		paddingVertical: 45,
-		paddingHorizontal: 25,
-		alignContent: 'center'
-	},
-	backimage: {
-		width: 20,
-		height: 20,
-		resizeMode: 'contain'
-	},
-	heading: {
-		flex: 1,
-		color: '#fff',
-		fontSize: 20,
-		alignSelf: 'center'
-	},
+	topbar:{
+        height:110,
+        backgroundColor:"#507df0",
+        flexDirection:"row"
+    },
+    backcontainer:{
+        width:70,
+        height:110,
+        paddingVertical:45,
+        paddingHorizontal:25,
+        alignContent:"center",
+        alignSelf:"flex-start"
+    },
+    backimage:{
+        width:18,
+        height:18,
+        resizeMode:"contain"
+    },
+    heading:{
+        flex:1,
+        color:"#fff",
+        fontSize:18,
+        fontWeight:"bold",
+        alignSelf:"center",
+        position:"absolute",
+        width:"100%",
+        textAlign:"center",
+        zIndex:-1
+    },
 	mainform: {
 		flex: 1,
 		width: Dimensions.get('window').width,
-        alignSelf: 'center'
+		alignSelf: 'center'
 	},
 	label: {
 		flex: 1,
@@ -91,13 +97,13 @@ const form = StyleSheet.create({
 	},
 	partnumber:{
 		color:"#507DF0",
-		fontSize:18,
+		fontSize:15,
 		flex:1,
 		height:20,
-		marginRight:25,
+		marginRight:32,
 		marginTop:10,
 		marginLeft:"auto",
-		fontWeight:"bold"
+		fontWeight:"600"
 	},
     editbutton:{
         backgroundColor:"#507df0",

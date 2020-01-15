@@ -63,7 +63,7 @@ export class GlobalContextProvider extends React.Component {
 	};
 
 	fetchdata = async () => {
-		let arr = [ { path: '/po/issue', key: 'issuesdata' }, { path: '/po/po', key: 'podata' } ];
+		let arr = [ { path: '/po/issue', key: 'issuesdata' }, { path: '/po/po', key: 'podata' } , {path:'/archive/truck', key:'truckdata'} ];
 		for (let i in arr) {
 			let item = arr[i]
 			let res = await fetch_data(this.state.url, this.state.token, item.path);
@@ -74,6 +74,8 @@ export class GlobalContextProvider extends React.Component {
 					this.setState({ "issuesdata": res });
 				}else if(item.key == "podata"){
 					this.setState({ "podata": res });
+				}else if(item.key == "truckdata"){
+					this.setState({"truckdata":res})
 				}
 			}
 		}

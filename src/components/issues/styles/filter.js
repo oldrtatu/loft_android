@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     },
     navheading:{
         color:"#fff",
-        fontSize:24,
+        fontSize:20,
         flex:1,
         alignSelf:"center",
         fontWeight:"bold",
@@ -30,18 +30,18 @@ const styles = StyleSheet.create({
     },
     searchimage:{
         resizeMode:"contain",
-        width:20,
-        height:20,
+        width:17,
+        height:17,
         alignSelf:"flex-end"
     },
     searchbar:{
         width: Dimensions.get('window').width * 0.9,
-        height: 40,
+        height: 35,
         paddingLeft:15,
         borderWidth:1,
         borderColor:"#fff",
         color:"#fff",
-        fontSize:17,
+        fontSize:13,
         backfaceVisibility:"hidden",
         alignSelf:"center",
         marginLeft:25
@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
     },
     closeimage:{
         resizeMode:"contain",
-        width:15,
-        height:15,
+        width:12,
+        height:12,
         alignSelf:"flex-end"
     },
     filterbar:{
@@ -88,11 +88,11 @@ const styles = StyleSheet.create({
     },
     activefiltertext:{
         color:"#131d4a",
-        fontSize:15
+        fontSize:13
     },
     filtertext:{
         color:"#fff",
-        fontSize:15
+        fontSize:13
     }
 })
 

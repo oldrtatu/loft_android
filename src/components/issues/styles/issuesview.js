@@ -13,28 +13,37 @@ const viewstyle = StyleSheet.create({
         height:110,
         paddingVertical:45,
         paddingHorizontal:25,
-        alignContent:"center"
+        alignContent:"center",
+        alignSelf:"flex-start"
     },
     backimage:{
-        width:20,
-        height:20,
+        width:18,
+        height:18,
         resizeMode:"contain"
     },
     heading:{
         flex:1,
         color:"#fff",
-        fontSize:20,
-        alignSelf:"center"
+        fontSize:18,
+        fontWeight:"bold",
+        alignSelf:"center",
+        position:"absolute",
+        width:"100%",
+        textAlign:"center",
+        zIndex:-1
     },
     restarea:{
         flex:1,
-        borderTopEndRadius:5,
-        borderTopStartRadius:5,
+        borderRadius:10,
         marginTop:-10,
-        backgroundColor:"#fff"
+        backgroundColor:"#fff",
+        shadowColor:"#000",
+        shadowOpacity:0.2,
+        shadowOffset:{width:0,height:-10},
+        elevation:0
     },
     details:{
-        width:Dimensions.get('window').width * 0.8,
+        width:Dimensions.get('window').width * 0.9,
         alignSelf:"center",
         paddingVertical:13
     },
@@ -57,10 +66,10 @@ const viewstyle = StyleSheet.create({
         letterSpacing:-0.5
     },
     separator:{
-        width:Dimensions.get('window').width * 0.8,
+        width:Dimensions.get('window').width * 0.9,
         alignSelf:"center",
         height:1,
-        backgroundColor:"#707070"
+        backgroundColor:"#f2f2f2"
     },
     paragraph:{
         flex:1
@@ -93,8 +102,9 @@ const viewstyle = StyleSheet.create({
     },
     editbuttontext:{
         color:"#fff",
-        fontSize:17,
-        fontWeight:"400"
+        fontSize:15,
+        fontWeight:"400",
+        elevation:1
     },
     driverside:{
         flexDirection:"row",
@@ -104,28 +114,28 @@ const viewstyle = StyleSheet.create({
     },
     true:{
         backgroundColor:"#D62246",
-        paddingVertical:5,
-        paddingHorizontal:12,
+        paddingVertical:10,
+        paddingHorizontal:20,
         borderRadius:20,
-        marginRight:5,
-        marginBottom:7
+        marginRight:10,
+        marginBottom:12
     },
     fault:{
         color:"#fff",
-        fontSize:14
+        fontSize:12
     },
     false:{
         borderColor:"#1CA49F",
         borderWidth:1,
-        paddingVertical:5,
-        paddingHorizontal:12,
+        paddingVertical:10,
+        paddingHorizontal:20,
         borderRadius:20,
-        marginRight:5,
-        marginBottom:7
+        marginRight:10,
+        marginBottom:12
     },
     correct:{
         color:"#1CA49F",
-        fontSize:14
+        fontSize:12
     }
 })
 

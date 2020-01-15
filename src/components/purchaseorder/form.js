@@ -4,7 +4,6 @@ import { Text, View, TouchableOpacity, Image, ScrollView, TextInput } from 'reac
 import form from './styles/formstyle';
 
 import DropDown from '../helpers/DropDown'
-import SuggestionField from '../helpers/SuggestionField'
 import DatePicker from '../helpers/DatePicker'
 
 
@@ -82,7 +81,7 @@ class POForm extends React.Component {
 								dropdown={[ 'Truck', 'Trailer' ]}
 								setValue={this.setEquipment}
 							/>
-							<SuggestionField
+							{/* <SuggestionField
 								label="Unit number"
 								placeholder="Enter unit number"
 								list={this.data[this.state.equipment]}
@@ -94,7 +93,7 @@ class POForm extends React.Component {
 								addfield="unitNo"
 								changeOverRide={() => this.setState({ override: false })}
 								override={this.state.override}
-							/>
+							/> */}
 							<Text style={[ form.label, { marginTop: 20 } ]}>Category</Text>
 							<TextInput style={[ form.input, { marginTop: -25 } ]} placeholder="Enter category" />
 							<Text style={[ form.label, { marginTop: 20 } ]}>Subsidiary</Text>

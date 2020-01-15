@@ -53,14 +53,15 @@ class PurchaseOrder extends React.Component {
 	render() {
 		return this.state.rowdata != null ? (
 			<React.Fragment>
+				<SafeAreaView style={{backgroundColor:"#507df0"}} />
 				<View style={viewstyle.topbar}>
 					<TouchableOpacity activeOpacity={1} style={viewstyle.backcontainer} onPress={this.goback}>
 						<Image source={back} style={viewstyle.backimage} />
 					</TouchableOpacity>
-					<Text style={viewstyle.heading}>Issue# - {this.state.rowdata.id}</Text>
+					<Text style={viewstyle.heading}>Issue # - {this.state.rowdata.id}</Text>
 				</View>
-				<ScrollView style={viewstyle.restarea}>
-					<View style={{height:25}}/>
+				<ScrollView showsVerticalScrollIndicator={false} style={viewstyle.restarea}>
+					<View style={{height:15}}/>
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Title</Text>
@@ -186,7 +187,7 @@ class PurchaseOrder extends React.Component {
 					) : null}
 				</ScrollView>
 				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
-					<Text style={viewstyle.editbuttontext}>Tap to Edit</Text>
+					<Text style={viewstyle.editbuttontext}>{`EDIT `}</Text>
 				</TouchableOpacity>
 			</React.Fragment>
 		) : (

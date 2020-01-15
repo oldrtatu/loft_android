@@ -1,96 +1,164 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, Dimensions } from 'react-native';
+import { StyleSheet, Text, TextInput, Dimensions, Image } from 'react-native';
 
+import correct from '../../assets/correct.png';
+import errorimage from '../../assets/error.png';
 
 /**
  * @param label
  * @param placeholder
  * @param value
  * @param validationarray
+ * @param key
+ * @param getValue
  */
 class InputField extends React.Component {
 	constructor(props) {
-        super(props);
-        this.validationarray = props.validate
-        this.state = {
-            active: false,
-            value:""
-        }
-    }
-    
-    componentDidMount(){
-        this.setState({
-            value: this.props.value
-        })
-    }
+		super(props);
+		this.validationarray = props.validate;
+		this.state = {
+			active: false,
+			value: props.value,
+			source: correct,
+			error: ''
+		};
+	}
 
-    endEditing = () => {
-        this.setState({active:false})
-    }
+	UNSAFE_componentWillReceiveProps(newprops){
+		this.setState({
+			value: newprops.value
+		})
+	}
 
-    checkInput = (text) => {
-        this.setState({value:text})
-    }
+	endEditing = () => {
+		this.setState({ active: false },()=>this.props.getValue(this.props.name,this.state.value));
+	};
 
+	validation = (type,val) => {
+		switch (type) {
+			case 'empty':
+				if (val.length > 0){
+					return ""
+				}else{
+					return "Can't be empty"
+				}
+			default:
+				return ""
+		}
+	};
+
+	checkInput = (text) => {
+		let err = ''
+		for (let i = 0; i < this.validationarray.length; i++) {
+			let filter = this.validationarray[i];
+			if(err == ''){
+				err = this.validation(filter,text)
+				if (err != ''){
+					break
+				}
+			}
+		}
+		if(err == ""){
+			this.setState({ value: text, error:err,source:correct });
+		}else{
+			this.setState({ value: text, error:err,source:errorimage });
+		}
+	};
 
 	render() {
-        let props = this.props
+		let props = this.props;
 		return (
 			<React.Fragment>
-                <TextInput 
-                    style={(this.state.active)? styles.active : styles.input} 
-                    placeholder={props.placeholder}
-                    onTouchStart={()=>this.setState({active:true})}
-                    onBlur={()=>this.endEditing()}
-                    onChangeText={(text)=> this.checkInput(text)}
-                    />
-				<Text style={styles.label}>{props.label}</Text>
+				<TextInput
+					style={this.state.active ? styles.active : styles.input}
+					placeholder={props.placeholder}
+					onTouchStart={() => this.setState({ active: true })}
+					onBlur={() => this.endEditing()}
+					defaultValue={this.state.value}
+					onChangeText={(text) => this.checkInput(text)}
+				/>
+				<Text
+					style={[
+						styles.label,
+						this.state.error == ''
+							? this.state.active ? { marginBottom: 7 } : { marginBottom: 33 }
+							: this.state.active ? { marginBottom: 7 } : { marginBottom: 14 }
+					]}
+				>
+					{props.label}
+				</Text>
+				{this.state.active ? (
+					<Image
+						source={this.state.source}
+						style={[
+							styles.validation,
+							this.state.error == '' ? { marginBottom: 15 } : { marginBottom: 0 }
+						]}
+					/>
+				) : null}
+				{this.state.error != '' ? <Text style={styles.error}>{this.state.error}</Text> : null}
 			</React.Fragment>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	label: {
+	input: {
 		flex: 1,
-		fontSize: 16,
-		fontWeight: '500',
-		color: 'rgba(80,86,101,0.36)',
-		marginTop: -55,
-        marginLeft: 20,
-        marginBottom:40,
+		paddingLeft: 15,
+		color: '#131d4a',
+		fontSize: 12,
+		height: 55,
+		borderWidth: 1,
+		borderColor: 'rgba(230,230,230,0.6)',
+		backgroundColor: 'rgba(230,230,230,0.6)',
+		marginTop: 10,
+		paddingTop: 20,
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center'
 	},
-	input: {
+	active: {
 		flex: 1,
-		paddingLeft: 12,
+		paddingLeft: 15,
 		color: '#131d4a',
-		fontSize: 15,
-		height: 65,
+		fontSize: 12,
+		height: 55,
 		borderWidth: 1,
-		borderColor: 'rgba(230,230,230,0.6)',
-        backgroundColor: 'rgba(230,230,230,0.6)',
-        marginTop:10,
-		paddingTop: 30,
+		borderLeftWidth: 3,
+		backgroundColor: 'transparent',
+		marginTop: 10,
+		paddingTop: 20,
+		width: Dimensions.get('window').width * 0.85,
+		alignSelf: 'center',
+		borderTopColor: 'rgba(230,230,230,0.6)',
+		borderBottomColor: 'rgba(230,230,230,0.6)',
+		borderRightColor: 'rgba(230,230,230,0.6)',
+		borderLeftColor: '#5988FF',
+	},
+	label: {
+		flex: 1,
+		fontSize: 12,
+		fontWeight: '700',
+		color: 'rgba(80,86,101,0.36)',
+		marginTop: -47,
+		marginLeft: 30,
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center'
-    },
-    active:{
-        flex: 1,
-		paddingLeft: 12,
-		color: '#131d4a',
-		fontSize: 15,
-		height: 65,
-		borderWidth: 1,
-		borderColor: 'rgba(230,230,230,0.6)',
-        backgroundColor: 'transparent',
-        marginTop:10,
-		paddingTop: 30,
-		width: Dimensions.get('window').width * 0.85,
-        alignSelf: 'center',
-        borderLeftWidth:3,
-        borderLeftColor:"#5988FF"
-    }
+	},
+	validation: {
+		width: 18,
+		height: 18,
+		resizeMode: 'contain',
+		marginRight: 50,
+		marginTop: -10,
+		marginLeft: 'auto'
+	},
+	error: {
+		color: '#D62246',
+		fontSize: 12,
+		marginLeft: 47,
+		marginTop: 22,
+		textTransform:"uppercase"
+	}
 });
 export default InputField;

@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
         fontSize:17,
         fontWeight:"bold",
         marginRight:15,
+        marginLeft:10,
         flex:1,
         alignSelf:"center"
     },

@@ -1,9 +1,10 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image, ScrollView, TextInput,Switch } from 'react-native';
+import { Text, View, TouchableOpacity, Image, ScrollView, TextInput, Switch, SafeAreaView } from 'react-native';
 
 import form from './styles/formstyle';
 
-import {SuggestionField,Slidebutton,DropDown,DatePicker,InputField} from '../helpers'
+import { Slidebutton, DropDown, DatePicker, InputField, SuggestionField } from '../helpers';
+import { GlobalContext } from '../../provider';
 
 import back from '../../assets/back.png';
 
@@ -76,27 +77,33 @@ const checkboxstartvalue = {
 class IssuesForm extends React.Component {
 	constructor(props) {
 		super(props);
+		this.data = {
+			truck: props.context.truckdata,
+			trailer: props.context.trailerdata
+		};
 		this.state = {
-			editdata: null,
+			editdata: {
+				title: '',
+				category: { name: '' },
+				division: { name: '' },
+				equipmentType: 'TRUCK',
+				truck: { unitNo: '' },
+				trailer: { unitNo: '' }
+			},
 			formnumber: 1,
-			equipment: 'truck',
 			override: false,
 			tab1: 'active',
 			tab2: 'notactive',
 			activetab: 1,
-			checkboxes: checkboxstartvalue
+			checkboxes: checkboxstartvalue,
+			activedrop: false
 		};
 	}
-
-	data = {
-		truck: truckdata,
-		trailer: trailerdata
-	};
 
 	addeddata = {};
 
 	componentDidMount() {
-		this.setState({ editdata: this.props.navigation.getParam('rowdata') });
+		this.setState({ editdata: this.props.navigation.getParam('rowdata') }, () => console.log(this.state.editdata));
 	}
 
 	goback = () => {
@@ -107,17 +114,6 @@ class IssuesForm extends React.Component {
 		}
 	};
 
-	setValue = (field, value) => {
-		let ob = { ...this.addeddata };
-		ob[field] = value;
-		this.addeddata = ob;
-	};
-
-	setEquipment = (field, value) => {
-		this.setValue(field, value);
-		this.setState({ equipment: value.toLowerCase(), override: true });
-	};
-
 	handleSubmit = () => {
 		if (this.state.formnumber == 3) {
 			console.log(this.addeddata);
@@ -126,61 +122,84 @@ class IssuesForm extends React.Component {
 		}
 	};
 
+	getValue = (key, value) => {
+		if (value != this.state.editdata[key]) {
+			this.addeddata[key] = value;
+		} else {
+			delete this.addeddata[key];
+		}
+		console.log(this.addeddata);
+	};
+
 	render() {
 		return (
 			<React.Fragment>
+				<SafeAreaView style={{ backgroundColor: '#507df0' }} />
 				<View style={form.topbar}>
 					<TouchableOpacity activeOpacity={1} style={form.backcontainer} onPress={this.goback}>
 						<Image source={back} style={form.backimage} />
 					</TouchableOpacity>
 					<Text style={form.heading}>
-						{this.state.editdata != null ? this.state.editdata.id : 'Add issue'}
+						{this.state.editdata != null ? `Issue # - ${this.state.editdata.id}` : 'Add issue'}
 					</Text>
 				</View>
 				<ScrollView style={form.mainform} nestedScrollEnabled={true}>
 					<Text style={form.partnumber}>{`${this.state.formnumber}/3 `}</Text>
 					{this.state.formnumber == 1 && (
 						<React.Fragment>
-							<InputField placeholder="Enter title" label="Title" value="" validate={["empty"]} />
+							<InputField
+								placeholder="Enter title"
+								label="Title"
+								value={this.state.editdata.title}
+								validate={[ 'empty' ]}
+								name="title"
+								getValue={this.getValue}
+							/>
 							<DropDown
 								label="Equipment Type"
-								name="equipment"
-								value="Select"
-								dropdown={[ 'Truck', 'Trailer' ]}
-								setValue={this.setEquipment}
+								name="equipmentType"
+								value={this.state.editdata.equipmentType}
+								dropdown={[ 'TRUCK', 'TRAILER' ]}
+								getValue={this.getValue}
 							/>
 							<SuggestionField
-								label="Unit number"
+								name="unitNo"
+								getValue={this.getValue}
 								placeholder="Enter unit number"
-								list={this.data[this.state.equipment]}
-								startSuggestingFrom={1}
-								inputStyle={form.input}
-								suggestBoxStyle={form.suggestbox}
-								setValue={this.setValue}
-								field="id"
-								addfield="unitNo"
-								changeOverRide={() => this.setState({ override: false })}
-								override={this.state.override}
+								label="Unit number"
+								value={this.state.editdata[this.state.editdata.equipmentType.toLowerCase()]['unitNo']}
+								dropdowndata={this.data[this.state.editdata.equipmentType.toLowerCase()]}
 							/>
-							<Text style={[ form.label, { marginTop: 20 } ]}>Category</Text>
-							<TextInput style={[ form.input, { marginTop: -25 } ]} placeholder="Enter category" />
-							<Text style={[ form.label, { marginTop: 20 } ]}>Subsidiary</Text>
-							<TextInput style={[ form.input, { marginTop: -25 } ]} placeholder="Enter subsidiary" />
-							<DropDown
+							<InputField
+								placeholder="Enter category"
+								label="Category"
+								value={this.state.editdata.category.name}
+								validate={[ 'empty' ]}
+								name="category"
+								getValue={this.getValue}
+							/>
+							<InputField
+								placeholder="Enter division"
+								label="Division"
+								value={this.state.editdata.division.name}
+								validate={[ 'empty' ]}
+								name="subsidiary"
+								getValue={this.getValue}
+							/>
+							{/* <DropDown
 								label="Type"
 								name="type"
 								value="Select"
 								dropdown={[ 'General', 'Truck', 'Trailer' ]}
 								setValue={this.setValue}
 							/>
-							<View style={{ height: 10 }} />
 							<DropDown
 								label="Status"
 								name="status"
 								value="Select"
 								dropdown={[ 'Open', 'Active', 'Inactive' ]}
 								setValue={this.setValue}
-							/>
+							/> */}
 
 							<View style={{ height: 30 }} />
 						</React.Fragment>
@@ -664,4 +683,8 @@ class IssuesForm extends React.Component {
 	}
 }
 
-export default IssuesForm;
+const issueform = (props) => (
+	<GlobalContext.Consumer>{(context) => <IssuesForm context={context} {...props} />}</GlobalContext.Consumer>
+);
+
+export default issueform;
