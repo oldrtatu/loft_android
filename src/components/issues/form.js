@@ -99,6 +99,7 @@ class IssuesForm extends React.Component {
 		this.setState(
 			{ editdata: JSON.parse(JSON.stringify({ ...this.props.navigation.getParam('rowdata') })) },
 			() => {
+				this.addeddata['index'] = this.state.editdata.index
 				this.addeddata['id'] = this.state.editdata.id;
 			}
 		);
@@ -121,44 +122,44 @@ class IssuesForm extends React.Component {
 	};
 
 	handleSubmit = () => {
-		if (this.state.formnumber == 3) {
-			const { navigation } = this.props;
-			if (Object.keys(this.addeddata).length > 1) {
-				this.props.context.updatedata('/po/issue', 'issuesdata', this.addeddata);
-				navigation.goBack();
-				navigation.state.params.changedata(this.addeddata);
-			}else{
-				navigation.goBack()
+		const { navigation } = this.props;
+		if (Object.keys(this.addeddata).length > 2) {
+			this.props.context.updatedata('/po/issue', 'issuesdata', this.addeddata);
+			navigation.goBack();
+			navigation.state.params.changedata(this.addeddata);
+		} else {
+			navigation.goBack();
+		}
+	};
+
+	navigateFront = () => {
+		if (this.state.formnumber == 1) {
+			let err = '';
+			if (this.state.editdata.title == '') {
+				err = 'Enter title to continue';
+			} else if (
+				this.state.editdata.category == '' ||
+				this.state.editdata.category == null ||
+				this.state.editdata.category == undefined
+			) {
+				err = 'Select category';
+			}
+			if (err != '') {
+				Snackbar.show({
+					title: err,
+					duration: Snackbar.LENGTH_SHORT,
+					backgroundColor: '#D62246'
+				});
+				return;
+			} else {
+				if (this.state.editdata.type == 'AXLE') {
+					this.setState({ formnumber: this.state.formnumber + 1 });
+				} else {
+					this.setState({ formnumber: this.state.formnumber + 2 });
+				}
 			}
 		} else {
-			if (this.state.formnumber == 1) {
-				let err = '';
-				if (this.state.editdata.title == '') {
-					err = 'Enter title to continue';
-				} else if (
-					this.state.editdata.category == '' ||
-					this.state.editdata.category == null ||
-					this.state.editdata.category == undefined
-				) {
-					err = 'Select category';
-				}
-				if (err != '') {
-					Snackbar.show({
-						title: err,
-						duration: Snackbar.LENGTH_SHORT,
-						backgroundColor: '#D62246'
-					});
-					return;
-				} else {
-					if (this.state.editdata.type == 'AXLE') {
-						this.setState({ formnumber: this.state.formnumber + 1 });
-					} else {
-						this.setState({ formnumber: this.state.formnumber + 2 });
-					}
-				}
-			} else {
-				this.setState({ formnumber: this.state.formnumber + 1 });
-			}
+			this.setState({ formnumber: this.state.formnumber + 1 });
 		}
 	};
 
@@ -197,6 +198,11 @@ class IssuesForm extends React.Component {
 					<Text style={form.heading}>
 						{this.state.editdata != null ? `Issue # - ${this.state.editdata.id}` : 'Add issue'}
 					</Text>
+					{this.state.formnumber != 3 ? (
+						<TouchableOpacity activeOpacity={1} style={form.nextbutton} onPress={this.navigateFront}>
+							<Text style={{ color: '#fff', fontSize: 18 }}>{`Next `}</Text>
+						</TouchableOpacity>
+					) : null}
 				</View>
 				<ScrollView style={form.mainform} nestedScrollEnabled={true}>
 					<Text style={form.partnumber}>{`${this.state.formnumber}/3 `}</Text>
@@ -430,13 +436,7 @@ class IssuesForm extends React.Component {
 						</React.Fragment>
 					)}
 				</ScrollView>
-				{this.state.formnumber == 3 ? (
-					<Slidebutton submit={this.handleSubmit} />
-				) : (
-					<TouchableOpacity activeOpacity={1} style={form.editbutton} onPress={this.handleSubmit}>
-						<Text style={form.editbuttontext}>Next</Text>
-					</TouchableOpacity>
-				)}
+				<Slidebutton submit={this.handleSubmit} />
 			</React.Fragment>
 		);
 	}

@@ -85,12 +85,14 @@ export class GlobalContextProvider extends React.Component {
 	};
 
 	updatedata = async(path,table,data) => {
-		let res = await update_data(this.state.url, this.state.token, path);
+		let index = data.index
+		delete data["index"]
+		let res = await update_data(this.state.url, this.state.token, path,data);
 			if (res.message) {
 				console.log(res);
 			} else {
-				let ob = {...this.state[table]}
-				ob[data.id] = {...ob[data.id],data}
+				let ob = [...this.state[table]]
+				ob[index] = {...ob[index],...data}
 				if (table = "issuesdata"){
 					this.setState({"issuesdata":ob})
 				}

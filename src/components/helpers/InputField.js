@@ -65,9 +65,9 @@ class InputField extends React.Component {
 			}
 		}
 		if(err == ""){
-			this.setState({ value: text, error:err,source:correct });
+			this.setState({ value: text, error:err,source:correct },()=>this.props.getValue(this.props.name,this.state.value));
 		}else{
-			this.setState({ value: text, error:err,source:errorimage });
+			this.setState({ value: text, error:err,source:errorimage },()=>this.props.getValue(this.props.name,this.state.value));
 		}
 	};
 

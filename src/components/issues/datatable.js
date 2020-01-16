@@ -13,7 +13,7 @@ import forward from '../../assets/forward.png';
 
 const Row = (props) => {
 	return (
-		<TouchableOpacity activeOpacity={1} style={table.row} onPress={() => props.viewRow(props.rowdata)}>
+		<TouchableOpacity activeOpacity={1} style={table.row} onPress={() => props.viewRow(props.rowdata,props.index)}>
 			<Text style={table.text1}>{props.id}</Text>
 			<Text style={table.text2}>{props.rowdata.title}</Text>
 			<Text style={table.text}>{props.rowdata.status}</Text>
@@ -27,9 +27,10 @@ let Data = []
 class IssuesDataTable extends React.Component {
 	constructor(props) {
 		super(props);
+		this.index = null
 		Data = (props.context.issuesdata)? props.context.issuesdata : []
 		let filterobject = {
-			All: Data.length,
+			ALL: Data.length,
 			ASSIGNED: 0,
 			OPEN: 0,
 			DEFERRED: 0,
@@ -42,7 +43,7 @@ class IssuesDataTable extends React.Component {
 		}
 		this.state = {
 			showsearch: false,
-			activefilter: 'All',
+			activefilter: 'ALL',
 			loadeddata: Data.slice(0, 50),
 			start: 50,
 			refreshing: false,
@@ -51,8 +52,14 @@ class IssuesDataTable extends React.Component {
 		};
 	}
 
-	viewRow = (rowdata) => {
-		this.props.navigation.navigate('View',{rowdata})
+	viewRow = (rowdata,index) => {
+		this.index = index
+		rowdata["index"] = index
+		this.props.navigation.navigate('View',{rowdata,changeRow:this.changeRow})
+	}
+
+	changeRow = (data) => {
+		console.log(data)
 	}
 
 	addNewIssue = () => {
@@ -74,7 +81,7 @@ class IssuesDataTable extends React.Component {
 			this.setState({ refreshing: true, start: 50 });
 			let data = Data.slice(0, 50);
 			let filteredarray = [];
-			if (val != 'All') {
+			if (val != 'ALL') {
 				for (let i = 0; i < data.length; i++) {
 					if (data[i].status == val && data[i].id.toString().indexOf(this.state.searchtext) > -1) {
 						filteredarray.push(data[i]);
@@ -99,7 +106,7 @@ class IssuesDataTable extends React.Component {
 		this.setState({ refreshing: true });
 		let slicedarray = Data.slice(this.state.start, this.state.start + 50);
 		let filteredarray = [];
-		if (this.state.activefilter != 'All') {
+		if (this.state.activefilter != 'ALL') {
 			for (let i = 0; i < slicedarray.length; i++) {
 				if (
 					slicedarray[i].status == this.state.activefilter &&
@@ -192,7 +199,7 @@ class IssuesDataTable extends React.Component {
 				<FlatList
 					style={{ flex: 1, paddingTop: 5 ,backgroundColor:"#F6F7F9" }}
 					data={this.state.loadeddata}
-					renderItem={({ item }) => <Row key={item.id} id={item.id} rowdata={item} viewRow={this.viewRow} />}
+					renderItem={({ item ,index}) => <Row key={item.id} id={item.id} rowdata={item} viewRow={this.viewRow} index={index} />}
 					keyExtractor={(item) => item.id.toString()}
 					showsVerticalScrollIndicator={false}
 					refreshing={this.state.refreshing}
