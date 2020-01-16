@@ -5,7 +5,7 @@ import viewstyle from './styles/issuesview';
 
 import back from '../../assets/back.png';
 
-class PurchaseOrder extends React.Component {
+class IssueView extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -19,9 +19,13 @@ class PurchaseOrder extends React.Component {
 	goback = () => {
 		this.props.navigation.goBack(null);
 	};
+	
+	changedata = (data) => {
+		this.setState({ rowdata:{...this.state.rowdata,...data}})
+	}
 
 	editdata = () => {
-		this.props.navigation.navigate('Form', { rowdata: this.state.rowdata });
+		this.props.navigation.navigate('Form', { rowdata: this.state.rowdata, changedata: this.changedata });
 	};
 
 	convertdate = (date) => {
@@ -196,4 +200,4 @@ class PurchaseOrder extends React.Component {
 	}
 }
 
-export default PurchaseOrder;
+export default IssueView;

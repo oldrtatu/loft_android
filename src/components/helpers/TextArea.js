@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, Dimensions, Image } from 'react-native';
+import { StyleSheet, Text, TextInput, Dimensions, Image ,View} from 'react-native';
 
 import correct from '../../assets/correct.png';
 import errorimage from '../../assets/error.png';
@@ -12,7 +12,7 @@ import errorimage from '../../assets/error.png';
  * @param key
  * @param getValue
  */
-class InputField extends React.Component {
+class TextArea extends React.Component {
 	constructor(props) {
 		super(props);
 		this.validationarray = props.validate;
@@ -74,7 +74,7 @@ class InputField extends React.Component {
 	render() {
 		let props = this.props;
 		return (
-			<React.Fragment>
+			<View style={{width:Dimensions.get('window').width *0.85,alignSelf:"center"}}>
 				<TextInput
 					style={this.state.active ? styles.active : styles.input}
 					placeholder={props.placeholder}
@@ -83,7 +83,9 @@ class InputField extends React.Component {
 					defaultValue={this.state.value}
 					onChangeText={(text) => this.checkInput(text)}
 					editable={this.props.editable}
-					keyboardType={(this.props.keyboardType) ? this.props.keyboardType : "default"}
+                    keyboardType={(this.props.keyboardType) ? this.props.keyboardType : "default"}
+                    multiline={true}
+                    numberOfLines={4}
 				/>
 				<Text
 					style={[
@@ -105,7 +107,7 @@ class InputField extends React.Component {
 					/>
 				) : null}
 				{this.state.error != '' ? <Text style={styles.error}>{this.state.error}</Text> : null}
-			</React.Fragment>
+			</View>
 		);
 	}
 }
@@ -116,12 +118,12 @@ const styles = StyleSheet.create({
 		paddingLeft: 15,
 		color: '#131d4a',
 		fontSize: 12,
-		height: 55,
+		height: 155,
 		borderWidth: 1,
 		borderColor: 'rgba(230,230,230,0.6)',
 		backgroundColor: 'rgba(230,230,230,0.6)',
 		marginTop: 10,
-		paddingTop: 20,
+		paddingTop: 25,
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center'
 	},
@@ -130,12 +132,12 @@ const styles = StyleSheet.create({
 		paddingLeft: 15,
 		color: '#131d4a',
 		fontSize: 12,
-		height: 55,
+		height: 155,
 		borderWidth: 1,
 		borderLeftWidth: 3,
 		backgroundColor: 'transparent',
 		marginTop: 10,
-		paddingTop: 20,
+		paddingTop: 25,
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center',
 		borderTopColor: 'rgba(230,230,230,0.6)',
@@ -148,25 +150,28 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		fontWeight: '700',
 		color: 'rgba(80,86,101,0.36)',
-		marginTop: -47,
-		marginLeft: 30,
-		width: Dimensions.get('window').width * 0.85,
-		alignSelf: 'center'
+		width: Dimensions.get('window').width * 0.8,
+        alignSelf: 'center',
+        position:"absolute",
+        top:20,
+        left:15,
+        zIndex:1
 	},
 	validation: {
 		width: 18,
 		height: 18,
-		resizeMode: 'contain',
-		marginRight: 50,
-		marginTop: -10,
-		marginLeft: 'auto'
+        resizeMode: 'contain',
+        position:"absolute",
+        right:17,
+        top:30
 	},
 	error: {
 		color: '#D62246',
 		fontSize: 12,
-		marginLeft: 47,
-		marginTop: 22,
-		textTransform:"uppercase"
+        textTransform:"uppercase",
+        position:"absolute",
+        top:170,
+        left:15
 	}
 });
-export default InputField;
+export default TextArea;

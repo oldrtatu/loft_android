@@ -241,7 +241,7 @@ export default class ModalDropdown extends Component {
 
     const positionStyle = {
       height: dropdownHeight,
-      top: showInBottom ? this._buttonFrame.y + this._buttonFrame.h : Math.max(0, this._buttonFrame.y - dropdownHeight),
+      top: showInBottom ? this._buttonFrame.y + this._buttonFrame.h : Math.max(0, this._buttonFrame.y +50),
     };
 
     if (showInLeft) {
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute',
-    maxHeight: (33 + StyleSheet.hairlineWidth) * 4,
+    maxHeight: (35 + StyleSheet.hairlineWidth) * 4,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: 'lightgray',
     borderRadius: 2,
@@ -425,11 +425,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   list: {
-    //flexGrow: 1,
+    flexGrow: 1,
   },
   rowText: {
     paddingHorizontal: 15,
-    paddingVertical: 12,
+    paddingVertical: 10,
     fontSize: 12,
     color: 'gray',
     backgroundColor: 'white',

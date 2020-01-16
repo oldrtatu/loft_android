@@ -4,6 +4,7 @@ const GlobalContext = React.createContext();
 
 import { loginuser, change_password, change_userdata, upload_user_image } from './login';
 import { fetch_data } from './fetchdata';
+import { update_data} from './updatedata'
 
 export class GlobalContextProvider extends React.Component {
 	constructor(props) {
@@ -63,7 +64,7 @@ export class GlobalContextProvider extends React.Component {
 	};
 
 	fetchdata = async () => {
-		let arr = [ { path: '/po/issue', key: 'issuesdata' }, { path: '/po/po', key: 'podata' } , {path:'/archive/truck', key:'truckdata'} ];
+		let arr = [ { path: '/po/issue', key: 'issuesdata' }, { path: '/po/po', key: 'podata' } , {path:'/archive/truck', key:'truckdata'},{path:'/archive/class',key:'categorydata'} ];
 		for (let i in arr) {
 			let item = arr[i]
 			let res = await fetch_data(this.state.url, this.state.token, item.path);
@@ -76,10 +77,25 @@ export class GlobalContextProvider extends React.Component {
 					this.setState({ "podata": res });
 				}else if(item.key == "truckdata"){
 					this.setState({"truckdata":res})
+				}else if(item.key == "categorydata"){
+					this.setState({"categorydata":res})
 				}
 			}
 		}
 	};
+
+	updatedata = async(path,table,data) => {
+		let res = await update_data(this.state.url, this.state.token, path);
+			if (res.message) {
+				console.log(res);
+			} else {
+				let ob = {...this.state[table]}
+				ob[data.id] = {...ob[data.id],data}
+				if (table = "issuesdata"){
+					this.setState({"issuesdata":ob})
+				}
+			}
+	}
 
 	render() {
 		return (
@@ -90,7 +106,8 @@ export class GlobalContextProvider extends React.Component {
 					changepassword: this.changepassword,
 					changeuserdata: this.changeuserdata,
 					uploaduserimage: upload_user_image,
-					fetchdata: this.fetchdata
+					fetchdata: this.fetchdata,
+					updatedata:this.updatedata
 				}}
 			>
 				{this.props.children}

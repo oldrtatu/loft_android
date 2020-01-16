@@ -106,7 +106,7 @@ const form = StyleSheet.create({
 		fontWeight:"600"
 	},
     editbutton:{
-        backgroundColor:"#507df0",
+        backgroundColor:"#1CA49F",
         height:60,
         justifyContent:"center",
         alignItems:"center"
@@ -118,7 +118,7 @@ const form = StyleSheet.create({
 	tabswitch:{
 		backgroundColor:"#F6F7F9",
 		height:65,
-		width:Dimensions.get('window').width*0.8,
+		width:Dimensions.get('window').width*0.85,
 		alignSelf:"center",
 		marginTop:10,
 		flexDirection:"row"
@@ -127,6 +127,9 @@ const form = StyleSheet.create({
 		flex:1,
 		justifyContent:"center",
 		alignItems:"center"
+	},
+	tabtitle:{
+		fontSize:14
 	},
 	active:{
 		borderBottomWidth:3,
@@ -137,7 +140,7 @@ const form = StyleSheet.create({
 	},
 	checkmaincontainer:{
 		flex:1,
-		width:Dimensions.get('window').width*0.8,
+		width:Dimensions.get('window').width*0.85,
 		alignSelf:"center",
 		marginBottom:20
 	},
@@ -156,7 +159,7 @@ const form = StyleSheet.create({
 	checktext:{
 		flex:1,
 		color:"#131d4a",
-		fontSize:16,
+		fontSize:12,
 		paddingTop:10,
 		height:35,
 		marginLeft:10

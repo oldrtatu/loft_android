@@ -1,75 +1,56 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image, ScrollView, TextInput, Switch, SafeAreaView } from 'react-native';
+import { Text, View, TouchableOpacity, Image, ScrollView, Switch, SafeAreaView, Platform } from 'react-native';
 
 import form from './styles/formstyle';
 
-import { Slidebutton, DropDown, DatePicker, InputField, SuggestionField } from '../helpers';
+import { Slidebutton, DropDown, DatePicker, InputField, SuggestionField, TextArea } from '../helpers';
 import { GlobalContext } from '../../provider';
 
-import back from '../../assets/back.png';
+import Snackbar from 'react-native-snackbar';
 
-import truckdata from './sampledata.json';
-import trailerdata from './trailerdata.json';
+import back from '../../assets/back.png';
 
 const checkboxstartvalue = {
 	truck: {
 		driver: {
-			inside: {
-				front: false,
-				rear: false,
-				steer: false
-			},
-			outside: {
-				front: false,
-				rear: false,
-				steer: false
-			}
+			'BACK INSIDE': false,
+			'BACK OUTSIDE': false,
+			'FRONT INSIDE': false,
+			'FRONT OUTSIDE': false,
+			STEER: false
 		},
 		passenger: {
-			inside: {
-				front: false,
-				rear: false,
-				steer: false
-			},
-			outside: {
-				front: false,
-				rear: false,
-				steer: false
-			}
+			'BACK INSIDE': false,
+			'BACK OUTSIDE': false,
+			'FRONT INSIDE': false,
+			'FRONT OUTSIDE': false,
+			STEER: false
 		}
 	},
 	trailer: {
 		driver: {
-			inside: {
-				number1: false,
-				number2: false,
-				number3: false,
-				number4: false,
-				number5: false
-			},
-			outside: {
-				number1: false,
-				number2: false,
-				number3: false,
-				number4: false,
-				number5: false
-			}
+			'1 INSIDE': false,
+			'2 INSIDE': false,
+			'3 INSIDE': false,
+			'4 INSIDE': false,
+			'5 INSIDE': false,
+			'1 OUTSIDE': false,
+			'2 OUTSIDE': false,
+			'3 OUTSIDE': false,
+			'4 OUTSIDE': false,
+			'5 OUTSIDE': false
 		},
 		passenger: {
-			inside: {
-				number1: false,
-				number2: false,
-				number3: false,
-				number4: false,
-				number5: false
-			},
-			outside: {
-				number1: false,
-				number2: false,
-				number3: false,
-				number4: false,
-				number5: false
-			}
+			'1 INSIDE': false,
+			'2 INSIDE': false,
+			'3 INSIDE': false,
+			'4 INSIDE': false,
+			'5 INSIDE': false,
+			'1 OUTSIDE': false,
+			'2 OUTSIDE': false,
+			'3 OUTSIDE': false,
+			'4 OUTSIDE': false,
+			'5 OUTSIDE': false
 		}
 	}
 };
@@ -79,56 +60,130 @@ class IssuesForm extends React.Component {
 		super(props);
 		this.data = {
 			truck: props.context.truckdata,
-			trailer: props.context.trailerdata
+			trailer: props.context.trailerdata,
+			category: props.context.categorydata
 		};
+		this.previousdata = { ...props.navigation.getParam('rowdata') };
 		this.state = {
 			editdata: {
+				id: '',
 				title: '',
 				category: { name: '' },
 				division: { name: '' },
 				equipmentType: 'TRUCK',
 				truck: { unitNo: '' },
-				trailer: { unitNo: '' }
+				trailer: { unitNo: '' },
+				type: '',
+				status: '',
+				typeDriverSide: checkboxstartvalue.truck.driver,
+				typePassengerSide: checkboxstartvalue.truck.passenger,
+				odometer: '',
+				reportedOn: '',
+				dueOn: '',
+				postedOn: '',
+				period: '',
+				periodUnit: '',
+				description: ''
 			},
 			formnumber: 1,
-			override: false,
 			tab1: 'active',
 			tab2: 'notactive',
-			activetab: 1,
-			checkboxes: checkboxstartvalue,
-			activedrop: false
+			activetab: 1
 		};
 	}
 
 	addeddata = {};
 
 	componentDidMount() {
-		this.setState({ editdata: this.props.navigation.getParam('rowdata') }, () => console.log(this.state.editdata));
+		this.previousdata = { ...this.props.navigation.getParam('rowdata') };
+		this.setState(
+			{ editdata: JSON.parse(JSON.stringify({ ...this.props.navigation.getParam('rowdata') })) },
+			() => {
+				this.addeddata['id'] = this.state.editdata.id;
+			}
+		);
 	}
 
 	goback = () => {
 		if (this.state.formnumber == 1) {
 			this.props.navigation.goBack(null);
 		} else {
-			this.setState({ formnumber: this.state.formnumber - 1 });
+			if (this.state.formnumber == 3) {
+				if (this.state.editdata.type == 'AXLE') {
+					this.setState({ formnumber: this.state.formnumber - 1 });
+				} else {
+					this.setState({ formnumber: this.state.formnumber - 2 });
+				}
+			} else {
+				this.setState({ formnumber: this.state.formnumber - 1 });
+			}
 		}
 	};
 
 	handleSubmit = () => {
 		if (this.state.formnumber == 3) {
-			console.log(this.addeddata);
+			const { navigation } = this.props;
+			if (Object.keys(this.addeddata).length > 1) {
+				this.props.context.updatedata('/po/issue', 'issuesdata', this.addeddata);
+				navigation.goBack();
+				navigation.state.params.changedata(this.addeddata);
+			}else{
+				navigation.goBack()
+			}
 		} else {
-			this.setState({ formnumber: this.state.formnumber + 1 });
+			if (this.state.formnumber == 1) {
+				let err = '';
+				if (this.state.editdata.title == '') {
+					err = 'Enter title to continue';
+				} else if (
+					this.state.editdata.category == '' ||
+					this.state.editdata.category == null ||
+					this.state.editdata.category == undefined
+				) {
+					err = 'Select category';
+				}
+				if (err != '') {
+					Snackbar.show({
+						title: err,
+						duration: Snackbar.LENGTH_SHORT,
+						backgroundColor: '#D62246'
+					});
+					return;
+				} else {
+					if (this.state.editdata.type == 'AXLE') {
+						this.setState({ formnumber: this.state.formnumber + 1 });
+					} else {
+						this.setState({ formnumber: this.state.formnumber + 2 });
+					}
+				}
+			} else {
+				this.setState({ formnumber: this.state.formnumber + 1 });
+			}
 		}
 	};
 
 	getValue = (key, value) => {
-		if (value != this.state.editdata[key]) {
+		let ob = { ...this.state.editdata };
+		ob[key] = value;
+		this.setState({ editdata: ob });
+		if (value != this.previousdata[key]) {
 			this.addeddata[key] = value;
 		} else {
 			delete this.addeddata[key];
 		}
-		console.log(this.addeddata);
+	};
+
+	getUnit = (item) => {
+		let ob = { ...this.state.editdata };
+		ob['division'] = item.division;
+		ob[this.state.editdata.equipmentType.toLowerCase()] = { unitNo: item.unitNo, id: item.id };
+		this.setState({
+			editdata: ob
+		});
+	};
+
+	getCategory = (item) => {
+		this.setState({ editdata: { ...this.state.editdata, category: item } });
 	};
 
 	render() {
@@ -154,6 +209,7 @@ class IssuesForm extends React.Component {
 								validate={[ 'empty' ]}
 								name="title"
 								getValue={this.getValue}
+								editable={true}
 							/>
 							<DropDown
 								label="Equipment Type"
@@ -161,22 +217,25 @@ class IssuesForm extends React.Component {
 								value={this.state.editdata.equipmentType}
 								dropdown={[ 'TRUCK', 'TRAILER' ]}
 								getValue={this.getValue}
+								disabled={true}
 							/>
 							<SuggestionField
 								name="unitNo"
-								getValue={this.getValue}
+								getValue={this.getUnit}
 								placeholder="Enter unit number"
 								label="Unit number"
 								value={this.state.editdata[this.state.editdata.equipmentType.toLowerCase()]['unitNo']}
 								dropdowndata={this.data[this.state.editdata.equipmentType.toLowerCase()]}
+								editable={false}
 							/>
-							<InputField
+							<SuggestionField
 								placeholder="Enter category"
 								label="Category"
 								value={this.state.editdata.category.name}
-								validate={[ 'empty' ]}
-								name="category"
-								getValue={this.getValue}
+								name="name"
+								getValue={this.getCategory}
+								editable={true}
+								dropdowndata={this.data.category}
 							/>
 							<InputField
 								placeholder="Enter division"
@@ -185,23 +244,26 @@ class IssuesForm extends React.Component {
 								validate={[ 'empty' ]}
 								name="subsidiary"
 								getValue={this.getValue}
+								editable={false}
 							/>
-							{/* <DropDown
+							<DropDown
 								label="Type"
 								name="type"
-								value="Select"
-								dropdown={[ 'General', 'Truck', 'Trailer' ]}
-								setValue={this.setValue}
+								value={this.state.editdata.type}
+								dropdown={[ 'AXLE', 'GENERAL', 'RECURRENCE' ]}
+								getValue={this.getValue}
+								disabled={true}
 							/>
 							<DropDown
 								label="Status"
 								name="status"
-								value="Select"
-								dropdown={[ 'Open', 'Active', 'Inactive' ]}
-								setValue={this.setValue}
-							/> */}
+								value={this.state.editdata.status}
+								dropdown={[ 'OPEN', 'CANCELLED', 'DEFERRED' ]}
+								getValue={this.getValue}
+								disabled={false}
+							/>
 
-							<View style={{ height: 30 }} />
+							<View style={{ height: 70 }} />
 						</React.Fragment>
 					)}
 					{this.state.formnumber == 2 && (
@@ -223,450 +285,147 @@ class IssuesForm extends React.Component {
 								</TouchableOpacity>
 							</View>
 							{this.state.activetab == 1 &&
-							this.state.equipment == 'truck' && (
+							this.state.editdata.type == 'AXLE' && (
 								<View style={form.checkmaincontainer}>
-									<Text style={form.checkheading}>Inside</Text>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Front</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.driver.inside.front}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.driver.inside.front = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Steer</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.driver.inside.steer}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.driver.inside.steer = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Rear</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.driver.inside.rear}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.driver.inside.rear = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<Text style={form.checkheading}>Outside</Text>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Front</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.driver.outside.front}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.driver.outside.front = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Steer</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.driver.outside.steer}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.driver.outside.steer = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Rear</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.driver.outside.rear}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.driver.outside.rear = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
+									{Object.keys(this.state.editdata.typeDriverSide).map((item, i) => (
+										<View style={form.checkboxcontainer} key={i}>
+											<Text style={form.checktext}>{item}</Text>
+											<Switch
+												style={
+													Platform.OS == 'ios' ? (
+														{ transform: [ { scaleX: 0.6 }, { scaleY: 0.6 } ] }
+													) : (
+														{ transform: [ { scaleX: 0.8 }, { scaleY: 0.8 } ] }
+													)
+												}
+												value={this.state.editdata.typeDriverSide[item]}
+												onValueChange={(val) => {
+													let ob = { ...this.state.editdata };
+													ob.typeDriverSide[item] = val;
+													this.setState({ editdata: ob }, () => {
+														if (
+															JSON.stringify(this.previousdata.typeDriverSide) !==
+															JSON.stringify(this.state.editdata.typeDriverSide)
+														) {
+															this.addeddata['typeDriverSide'] = {
+																...this.state.editdata.typeDriverSide
+															};
+														} else {
+															delete this.addeddata['typeDriverSide'];
+														}
+													});
+												}}
+											/>
+										</View>
+									))}
 								</View>
 							)}
 							{this.state.activetab == 2 &&
-							this.state.equipment == 'truck' && (
+							this.state.editdata.type == 'AXLE' && (
 								<View style={form.checkmaincontainer}>
-									<Text style={form.checkheading}>Inside</Text>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Front</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.passenger.inside.front}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.passenger.inside.front = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Steer</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.passenger.inside.steer}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.passenger.inside.steer = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Rear</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.passenger.inside.rear}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.passenger.inside.rear = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<Text style={form.checkheading}>Outside</Text>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Front</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.passenger.outside.front}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.passenger.outside.front = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Steer</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.passenger.outside.steer}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.passenger.outside.steer = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Rear</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.truck.passenger.outside.rear}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.truck.passenger.outside.rear = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-								</View>
-							)}
-							{this.state.activetab == 1 &&
-							this.state.equipment == 'trailer' && (
-								<View style={form.checkmaincontainer}>
-									<Text style={form.checkheading}>Inside</Text>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 1</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.driver.inside.number1}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.driver.inside.number1 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 2</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.driver.inside.number2}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.driver.inside.number2 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 3</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.driver.inside.number3}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.driver.inside.number3 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 4</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.driver.inside.number4}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.driver.inside.number4 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 5</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.driver.inside.number5}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.driver.inside.number5 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<Text style={form.checkheading}>Outside</Text>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 1</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.driver.outside.number1}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.driver.outside.number1 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 2</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.driver.outside.number2}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.driver.outside.number2 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 3</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.driver.outside.number3}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.driver.outside.number3 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 4</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.driver.outside.number4}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.driver.outside.number4 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 5</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.driver.outside.number5}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.driver.outside.number5 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-								</View>
-							)}
-							{this.state.activetab == 2 &&
-							this.state.equipment == 'trailer' && (
-								<View style={form.checkmaincontainer}>
-									<Text style={form.checkheading}>Inside</Text>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 1</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.passenger.inside.number1}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.passenger.inside.number1 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 2</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.passenger.inside.number2}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.passenger.inside.number2 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 3</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.passenger.inside.number3}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.passenger.inside.number3 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 4</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.passenger.inside.number4}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.passenger.inside.number4 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 5</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.passenger.inside.number5}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.passenger.inside.number5 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<Text style={form.checkheading}>Outside</Text>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 1</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.passenger.outside.number1}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.passenger.outside.number1 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 2</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.passenger.outside.number2}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.passenger.outside.number2 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 3</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.passenger.outside.number3}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.passenger.outside.number3 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 4</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.passenger.outside.number4}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.passenger.outside.number4 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
-									<View style={form.checkboxcontainer}>
-										<Text style={form.checktext}>Number 5</Text>
-										<Switch
-											style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
-											value={this.state.checkboxes.trailer.passenger.outside.number5}
-											onValueChange={(val) => {
-												let ob = { ...this.state.checkboxes };
-												ob.trailer.passenger.outside.number5 = val;
-												this.setState({ checkboxes: ob });
-											}}
-										/>
-									</View>
+									{Object.keys(this.state.editdata.typePassengerSide).map((item, i) => (
+										<View style={form.checkboxcontainer} key={i}>
+											<Text style={form.checktext}>{item}</Text>
+											<Switch
+												style={
+													Platform.OS == 'ios' ? (
+														{ transform: [ { scaleX: 0.6 }, { scaleY: 0.6 } ] }
+													) : (
+														{ transform: [ { scaleX: 0.8 }, { scaleY: 0.8 } ] }
+													)
+												}
+												value={this.state.editdata.typePassengerSide[item]}
+												onValueChange={(val) => {
+													let ob = { ...this.state.editdata };
+													ob.typePassengerSide[item] = val;
+													this.setState({ editdata: ob }, () => {
+														if (
+															JSON.stringify(this.previousdata.typePassengerSide) !==
+															JSON.stringify(this.state.editdata.typePassengerSide)
+														) {
+															this.addeddata['typePassengerSide'] = {
+																...this.state.editdata.typePassengerSide
+															};
+														} else {
+															delete this.addeddata['typePassengerSide'];
+														}
+													});
+												}}
+											/>
+										</View>
+									))}
 								</View>
 							)}
 						</React.Fragment>
 					)}
 					{this.state.formnumber == 3 && (
 						<React.Fragment>
-							<Text style={[ form.label, { marginTop: 20 } ]}>Odometer</Text>
-							<TextInput
-								style={[ form.input, { marginTop: -25 } ]}
-								placeholder="Enter value"
-								keyboardType="numeric"
+							<InputField
+								placeholder="Odometer reading"
+								label="Odometer"
+								value={this.state.editdata.odometer.toString()}
+								validate={[ 'empty', 'number' ]}
+								name="odometer"
+								getValue={this.getValue}
+								editable={true}
+								keyBoardType="number-pad"
 							/>
-							<DatePicker label="Reported on" value="12-06-2019" name="repOn" setValue={this.setValue} />
-							<DatePicker label="Posted on" value="12-06-2019" name="repOn" setValue={this.setValue} />
-							<DatePicker label="Due on" value="12-06-2019" name="repOn" setValue={this.setValue} />
-							<Text style={[ form.label, { marginTop: 20 } ]}>Period</Text>
-							<TextInput
-								style={[ form.input, { marginTop: -25 } ]}
-								placeholder="Enter value"
-								keyboardType="numeric"
+							<DatePicker
+								label="Reported on"
+								value={this.state.editdata.reportedOn}
+								name="reportedOn"
+								setValue={this.getValue}
+								editable={false}
 							/>
-							<DropDown
-								label="Period unit"
-								name="periodUnit"
-								value="Select"
-								dropdown={[ 'Days', 'Weeks', 'Months', 'Years' ]}
-								setValue={this.setValue}
+							<DatePicker
+								label="Posted on"
+								value={this.state.editdata.postedOn}
+								name="postedOn"
+								setValue={this.getValue}
+								editable={false}
 							/>
-							<View style={{ height: 10 }} />
-							<Text style={[ form.label, { marginTop: 20 } ]}>Description</Text>
-							<TextInput
-								style={[ form.inputarea, { marginTop: -25 } ]}
+							{this.state.editdata.status == 'DEFERRED' ? (
+								<DatePicker
+									label="Due on"
+									value={this.state.editdata.dueOn}
+									name="dueOn"
+									setValue={this.getValue}
+									editable={true}
+									maximumDate={new Date(2030, 12, 12)}
+									minimumDate={new Date()}
+								/>
+							) : null}
+							{this.state.editdata.type == 'RECURRENCE' ? (
+								<React.Fragment>
+									<InputField
+										placeholder="Enter Period"
+										label="Period"
+										value={this.state.editdata.period.toString()}
+										validate={[ 'empty', 'number' ]}
+										name="period"
+										getValue={this.getValue}
+										editable={true}
+										keyBoardType="number-pad"
+									/>
+									<DropDown
+										label="Period Unit"
+										name="periodUnit"
+										value={this.state.editdata.periodUnit}
+										dropdown={[ 'DAYS', 'WEEKS', 'MONTHS', 'YEAR' ]}
+										getValue={this.getValue}
+										disabled={true}
+									/>
+								</React.Fragment>
+							) : null}
+							<TextArea
 								placeholder="Enter description"
-								multiline={true}
-								numberOfLines={4}
+								label="Description"
+								value={this.state.editdata.description}
+								validate={[ 'empty' ]}
+								name="description"
+								getValue={this.getValue}
+								editable={true}
+								keyBoardType="number-pad"
 							/>
 						</React.Fragment>
 					)}

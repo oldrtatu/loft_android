@@ -22,6 +22,13 @@ class DropDown extends React.Component {
 		};
 	}
 
+	UNSAFE_componentWillReceiveProps(newprops){
+		this.setState({
+			value: newprops.value,
+			dropdown: newprops.dropdown
+		})
+	}
+
 	render() {
 		return (
 			<View style={{ width: Dimensions.get('window').width * 0.85, alignSelf: 'center' }}>
@@ -31,6 +38,7 @@ class DropDown extends React.Component {
 					defaultValue={this.state.value}
 					getValue={this.props.getValue}
 					name={this.props.name}
+					disabled={this.props.disabled}
 				/>
 				<Text style={styles.label}>{`${this.props.label}  `}</Text>
 				<Image source={drop} style={styles.dropdownimage} />

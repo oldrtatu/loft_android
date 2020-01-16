@@ -50,11 +50,10 @@ class SuggestionField extends React.Component {
 	};
 
 	setValue = (item) => {
-		console.log('hi');
 		this.setState({
 			showResults: false,
 			value: item[this.props.name]
-		});
+		},()=>this.props.getValue(item));
 	};
 
 	render() {
@@ -65,11 +64,11 @@ class SuggestionField extends React.Component {
 						defaultValue={this.state.value}
 						placeholder={this.props.placeholder}
 						style={this.state.showResults ? styles.active : styles.inputfield}
-						onTouchStart={(e) => this.startEditing(e)}
+						onTouchStart={(e) =>{ (this.props.editable) ? this.startEditing(e):null}}
 						// onBlur={() => this.endEditing()}
 						onSubmitEditing={() => this.endEditing()}
 						onChangeText={(text) => this.searchValue(text)}
-						// blurOnSubmit={false}
+						editable={this.props.editable}
 					/>
 					<Text style={styles.label}>{`${this.props.label}  `}</Text>
 				</View>
