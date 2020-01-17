@@ -56,13 +56,6 @@ class DatePicker extends React.Component {
 
 	showdate = () => {
 		this.setState({ showdate: true });
-		// setTimeout(() => {
-		// 	Snackbar.show({
-		// 		title:"Could not open date picker",
-		// 		duration: Snackbar.LENGTH_SHORT,
-		// 		backgroundColor:"#D62246"
-		// 	})
-		// }, 500);
 	};
 
 	setDate = (date) => {

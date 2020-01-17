@@ -34,6 +34,24 @@ class InputField extends React.Component {
 		this.setState({ active: false },()=>this.props.getValue(this.props.name,this.state.value));
 	};
 
+	startEditing = () => {
+		let err = ''
+		for (let i = 0; i < this.validationarray.length; i++) {
+			let filter = this.validationarray[i];
+			if(err == ''){
+				err = this.validation(filter,this.state.value)
+				if (err != ''){
+					break
+				}
+			}
+		}
+		if (err != ''){
+			this.setState({ active: true, error:err,source:errorimage })
+		}else{
+			this.setState({ active: true, error:err,source:correct })
+		}
+	}
+
 	validation = (type,val) => {
 		switch (type) {
 			case 'empty':
@@ -78,7 +96,7 @@ class InputField extends React.Component {
 				<TextInput
 					style={this.state.active ? styles.active : styles.input}
 					placeholder={props.placeholder}
-					onTouchStart={() =>{ (this.props.editable) ? this.setState({ active: true }):null}}
+					onTouchStart={() =>{ (this.props.editable) ? this.startEditing():null}}
 					onBlur={() => this.endEditing()}
 					defaultValue={this.state.value}
 					onChangeText={(text) => this.checkInput(text)}

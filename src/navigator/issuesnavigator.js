@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import issues from '../components/issues/datatable'
 import ViewIssues from '../components/issues/view'
 import IssueForm from '../components/issues/form'
+import AddForm from '../components/issues/addform'
 
 const issue = createStackNavigator(
     {
@@ -24,7 +25,14 @@ const issue = createStackNavigator(
             navigationOptions:{
                 header:null
             }
+        },
+        AddForm:{
+            screen:AddForm,
+            navigationOptions:{
+                header:null
+            }
         }
+
     },
     {
         initialRouteName:'Issues',

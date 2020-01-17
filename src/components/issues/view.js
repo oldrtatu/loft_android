@@ -21,9 +21,7 @@ class IssueView extends React.Component {
 	};
 	
 	changedata = (data) => {
-		this.setState({ rowdata:{...this.state.rowdata,...data}},()=>{
-			this.props.navigation.state.params.changeRow(this.state.rowdata);
-		})
+		this.setState({ rowdata:{...this.state.rowdata,...data}})
 	}
 
 	editdata = () => {

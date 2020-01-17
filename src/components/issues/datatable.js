@@ -57,6 +57,18 @@ class IssuesDataTable extends React.Component {
 	UNSAFE_componentWillReceiveProps(newprops){
 		Data = convertback(newprops.context.issuesdata)
 		this.setState({ refreshing: true, start: 50 });
+		let filterobject = {
+			ALL: Data.length,
+			ASSIGNED: 0,
+			OPEN: 0,
+			DEFERRED: 0,
+			CANCELLED:0,
+			COMPLETE:0,
+			INCOMPLETE:0
+		};
+		for (let j = 0; j < Data.length; j++) {
+			filterobject[Data[j].status] += 1;
+		}
 		let data = Data.slice(0, 50);
 		let filteredarray = [];
 		if (this.state.activefilter != 'ALL') {
@@ -74,6 +86,7 @@ class IssuesDataTable extends React.Component {
 		}
 		this.setState({
 			loadeddata: filteredarray,
+			filters:filterobject,
 			refreshing: false
 		});
 	}
@@ -81,25 +94,11 @@ class IssuesDataTable extends React.Component {
 	viewRow = (rowdata,index) => {
 		this.index = index
 		rowdata["index"] = index
-		this.props.navigation.navigate('View',{rowdata,changeRow:this.changeRow})
-	}
-
-	changeRow = (data) => {
-		this.setState({refreshing:true})
-		let index = data.index
-
-		let previousvalue = {...this.state.loadeddata[index]}
-		let newvalue = {...data}
-
-		let filters = {...this.state.filters}
-		filters[previousvalue.status] -= 1
-		filters[newvalue.status] += 1
-
-		this.setState({refreshing:false,filters})
+		this.props.navigation.navigate('View',{rowdata})
 	}
 
 	addNewIssue = () => {
-		this.props.navigation.navigate('Form')
+		this.props.navigation.navigate('AddForm')
 	}
 
 	header = [ '#', 'Title', 'Status' ];

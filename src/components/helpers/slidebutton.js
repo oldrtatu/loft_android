@@ -40,6 +40,12 @@ class SlideButton extends React.Component {
 		this.state = { position };
 	}
 
+	UNSAFE_componentWillReceiveProps(newprops){
+		if(newprops.reload){
+			this.setState({position: new Animated.ValueXY()})
+		}
+	}
+
 	render() {
 		return (
 			<View style={styles.buttoncontainer}>

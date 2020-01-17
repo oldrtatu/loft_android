@@ -35,7 +35,9 @@ class SuggestionField extends React.Component {
 	};
 
 	endEditing = () => {
-		this.setState({ showResults: false });
+		if(this.state.showvalues.length == 0){
+			this.setState({ showResults: false });
+		}
 	};
 
 	searchValue = (text) => {
@@ -65,7 +67,7 @@ class SuggestionField extends React.Component {
 						placeholder={this.props.placeholder}
 						style={this.state.showResults ? styles.active : styles.inputfield}
 						onTouchStart={(e) =>{ (this.props.editable) ? this.startEditing(e):null}}
-						// onBlur={() => this.endEditing()}
+						onBlur={() => this.endEditing()}
 						onSubmitEditing={() => this.endEditing()}
 						onChangeText={(text) => this.searchValue(text)}
 						editable={this.props.editable}

@@ -55,15 +55,14 @@ const checkboxstartvalue = {
 	}
 };
 
-class IssuesForm extends React.Component {
+class AddForm extends React.Component {
 	constructor(props) {
 		super(props);
 		this.data = {
-			truck: props.context.truckdata,
-			trailer: props.context.trailerdata,
-			category: props.context.categorydata
+			truck: props.context.truckdata ? props.context.truckdata : [],
+			trailer: props.context.trailerdata ? props.context.trailerdata : [],
+			category: props.context.categorydata ? props.context.categorydata : []
 		};
-		this.previousdata = { ...props.navigation.getParam('rowdata') };
 		this.state = {
 			editdata: {
 				id: '',
@@ -73,45 +72,36 @@ class IssuesForm extends React.Component {
 				equipmentType: 'TRUCK',
 				truck: { unitNo: '' },
 				trailer: { unitNo: '' },
-				type: '',
-				status: '',
-				typeDriverSide: checkboxstartvalue.truck.driver,
-				typePassengerSide: checkboxstartvalue.truck.passenger,
+				type: 'SELECT',
+				status: 'OPEN',
+				typeDriverSide: JSON.parse(JSON.stringify(checkboxstartvalue.truck.driver)),
+				typePassengerSide: JSON.parse(JSON.stringify(checkboxstartvalue.truck.passenger)),
 				odometer: '',
 				reportedOn: '',
 				dueOn: '',
 				postedOn: '',
 				period: '',
-				periodUnit: '',
+				periodUnit: 'DAYS',
 				description: ''
 			},
 			formnumber: 1,
 			tab1: 'active',
 			tab2: 'notactive',
-			activetab: 1,
-			reload:false
+            activetab: 1,
+            reload:false
 		};
-	}
-
-	addeddata = {};
-
-	componentDidMount() {
-		this.previousdata = { ...this.props.navigation.getParam('rowdata') };
-		this.setState(
-			{ editdata: JSON.parse(JSON.stringify({ ...this.props.navigation.getParam('rowdata') })) },
-			() => {
-				this.addeddata['index'] = this.state.editdata.index;
-				this.addeddata['id'] = this.state.editdata.id;
-			}
-		);
 	}
 
 	validateFirstForm = () => {
 		let err = '';
 		if (this.state.editdata.title == '') {
 			err = 'Enter title';
+		} else if (this.state.editdata[this.state.editdata.equipmentType.toLowerCase()].unitNo == '') {
+			err = 'Enter Unit Number';
 		} else if (this.state.editdata.category.name == '') {
 			err = 'Enter category';
+		} else if (this.state.editdata.type == 'SELECT') {
+			err = 'Enter type';
 		}
 		return err;
 	};
@@ -141,7 +131,11 @@ class IssuesForm extends React.Component {
 		let err = '';
 		if (this.state.editdata.odometer == '') {
 			err = 'Enter odometer value';
-		} else if (this.state.editdata.status == 'DEFERRED') {
+		} else if (this.state.editdata.reportedOn == '') {
+			err = 'Select reporting date and time';
+		} else if (this.state.editdata.postedOn == '') {
+			err = 'Select posting date and time';
+		}else if (this.state.editdata.status == 'DEFERRED') {
 			if (this.state.editdata.dueOn == '') {
 				err = 'Select due on date and time';
 			}
@@ -151,6 +145,58 @@ class IssuesForm extends React.Component {
 			}
 		}
 		return err;
+	};
+
+	handleSubmit = () => {
+		let err = '';
+		err = this.validateFirstForm();
+		if (err == '' && this.state.editdata.type == 'AXLE') {
+			this.validateSecondForm();
+		}
+		if (err == '') {
+			this.validateThirdForm();
+		}
+		if (err == '') {
+            let addeddata = JSON.parse(JSON.stringify(this.state.editdata))
+
+            addeddata["categoryId"] = addeddata.category.id
+            delete addeddata["category"]
+
+            addeddata["divisionId"] = addeddata.division.id
+            delete addeddata["division"]
+
+            let equipment = addeddata.equipmentType.toLowerCase()
+            addeddata[`${equipment}Id`] = addeddata[equipment]["id"]
+            delete addeddata["truck"]
+            delete addeddata["trailer"]
+
+            if(addeddata.type != "AXLE"){
+                delete addeddata["typeDriverSide"]
+                delete addeddata["typePassengerSide"]
+            }
+            if(addeddata.status != "DEFERRED"){
+                delete addeddata["dueOn"]
+            }
+            if(addeddata.type != "RECURRENCE"){
+                delete addeddata["period"]
+                delete addeddata["periodUnit"]
+            }
+            if(addeddata.description == ""){
+                delete addeddata["description"]
+            }
+            delete addeddata["id"]
+
+            this.props.context.adddata('/po/issue', 'issuesdata', addeddata);
+            this.props.navigation.goBack();
+
+		} else {
+			Snackbar.show({
+				title: err,
+				duration: Snackbar.LENGTH_SHORT,
+				backgroundColor: '#D62246'
+            });
+            this.setState({reload:true},()=>this.setState({reload:false}))
+		}
 	};
 
 	goback = () => {
@@ -169,41 +215,10 @@ class IssuesForm extends React.Component {
 		}
 	};
 
-	handleSubmit = () => {
-		const { navigation } = this.props;
-		if (Object.keys(this.addeddata).length > 2) {
-			let err = '';
-			err = this.validateFirstForm();
-			if (err == '' && this.state.editdata.type == 'AXLE') {
-				this.validateSecondForm();
-			}
-			if (err == '') {
-				this.validateThirdForm();
-			}
-			if(err == ''){
-				if (this.addeddata.category) {
-					this.addeddata['categoryId'] = this.addeddata.category.id;
-					delete this.addeddata.category;
-				}
-				this.props.context.updatedata('/po/issue', 'issuesdata', this.addeddata);
-				navigation.goBack();
-				navigation.state.params.changedata(this.addeddata);
-			}else{
-				Snackbar.show({
-					title: err,
-					duration: Snackbar.LENGTH_SHORT,
-					backgroundColor: '#D62246'
-				});
-				this.setState({reload:true},()=>this.setState({reload:false}))
-			}
-		} else {
-			navigation.goBack();
-		}
-	};
-
 	navigateFront = () => {
 		if (this.state.formnumber == 1) {
-			let err = this.validateFirstForm();
+			let err = '';
+            err = this.validateFirstForm()
 			if (err != '') {
 				Snackbar.show({
 					title: err,
@@ -220,7 +235,7 @@ class IssuesForm extends React.Component {
 			}
 		} else {
 			let err = '';
-			err = this.validateSecondForm();
+            err = this.validateSecondForm()
 			if (err != '') {
 				Snackbar.show({
 					title: err,
@@ -234,13 +249,26 @@ class IssuesForm extends React.Component {
 	};
 
 	getValue = (key, value) => {
-		let ob = { ...this.state.editdata };
-		ob[key] = value;
-		this.setState({ editdata: ob });
-		if (value != this.previousdata[key]) {
-			this.addeddata[key] = value;
+		if (key == 'equipmentType') {
+			if (value != this.state.equipmentType) {
+				console.log(value);
+				let ob = JSON.parse(JSON.stringify(this.state.editdata));
+				ob['typeDriverSide'] = JSON.parse(JSON.stringify(checkboxstartvalue[value.toLowerCase()]['driver']));
+				ob['typePassengerSide'] = JSON.parse(
+					JSON.stringify(checkboxstartvalue[value.toLowerCase()]['passenger'])
+				);
+				ob['equipmentType'] = value;
+				this.setState(
+					{
+						editdata: JSON.parse(JSON.stringify(ob))
+					},
+					() => console.log(this.state.editdata)
+				);
+			}
 		} else {
-			delete this.addeddata[key];
+			let ob = { ...this.state.editdata };
+			ob[key] = value;
+			this.setState({ editdata: ob });
 		}
 	};
 
@@ -265,9 +293,7 @@ class IssuesForm extends React.Component {
 					<TouchableOpacity activeOpacity={1} style={form.backcontainer} onPress={this.goback}>
 						<Image source={back} style={form.backimage} />
 					</TouchableOpacity>
-					<Text style={form.heading}>
-						{this.state.editdata != null ? `Issue # - ${this.state.editdata.id}` : 'Add issue'}
-					</Text>
+					<Text style={form.heading}>{'Add issue '}</Text>
 					{this.state.formnumber != 3 ? (
 						<TouchableOpacity activeOpacity={1} style={form.nextbutton} onPress={this.navigateFront}>
 							<Text style={{ color: '#fff', fontSize: 18 }}>{`Next `}</Text>
@@ -293,7 +319,7 @@ class IssuesForm extends React.Component {
 								value={this.state.editdata.equipmentType}
 								dropdown={[ 'TRUCK', 'TRAILER' ]}
 								getValue={this.getValue}
-								disabled={true}
+								disabled={false}
 							/>
 							<SuggestionField
 								name="unitNo"
@@ -302,7 +328,7 @@ class IssuesForm extends React.Component {
 								label="Unit number"
 								value={this.state.editdata[this.state.editdata.equipmentType.toLowerCase()]['unitNo']}
 								dropdowndata={this.data[this.state.editdata.equipmentType.toLowerCase()]}
-								editable={false}
+								editable={true}
 							/>
 							<SuggestionField
 								placeholder="Enter category"
@@ -328,17 +354,16 @@ class IssuesForm extends React.Component {
 								value={this.state.editdata.type}
 								dropdown={[ 'AXLE', 'GENERAL', 'RECURRENCE' ]}
 								getValue={this.getValue}
-								disabled={true}
+								disabled={false}
 							/>
 							<DropDown
 								label="Status"
 								name="status"
 								value={this.state.editdata.status}
-								dropdown={[ 'OPEN', 'CANCELLED', 'DEFERRED' ]}
+								dropdown={[ 'OPEN', 'DEFERRED' ]}
 								getValue={this.getValue}
 								disabled={false}
 							/>
-
 							<View style={{ height: 70 }} />
 						</React.Fragment>
 					)}
@@ -378,18 +403,7 @@ class IssuesForm extends React.Component {
 												onValueChange={(val) => {
 													let ob = { ...this.state.editdata };
 													ob.typeDriverSide[item] = val;
-													this.setState({ editdata: ob }, () => {
-														if (
-															JSON.stringify(this.previousdata.typeDriverSide) !==
-															JSON.stringify(this.state.editdata.typeDriverSide)
-														) {
-															this.addeddata['typeDriverSide'] = {
-																...this.state.editdata.typeDriverSide
-															};
-														} else {
-															delete this.addeddata['typeDriverSide'];
-														}
-													});
+													this.setState({ editdata: ob });
 												}}
 											/>
 										</View>
@@ -414,18 +428,7 @@ class IssuesForm extends React.Component {
 												onValueChange={(val) => {
 													let ob = { ...this.state.editdata };
 													ob.typePassengerSide[item] = val;
-													this.setState({ editdata: ob }, () => {
-														if (
-															JSON.stringify(this.previousdata.typePassengerSide) !==
-															JSON.stringify(this.state.editdata.typePassengerSide)
-														) {
-															this.addeddata['typePassengerSide'] = {
-																...this.state.editdata.typePassengerSide
-															};
-														} else {
-															delete this.addeddata['typePassengerSide'];
-														}
-													});
+													this.setState({ editdata: ob });
 												}}
 											/>
 										</View>
@@ -451,14 +454,18 @@ class IssuesForm extends React.Component {
 								value={this.state.editdata.reportedOn}
 								name="reportedOn"
 								setValue={this.getValue}
-								editable={false}
+								editable={true}
+								maximumDate={new Date()}
+								minimumDate={new Date(2010, 0, 1)}
 							/>
 							<DatePicker
 								label="Posted on"
 								value={this.state.editdata.postedOn}
 								name="postedOn"
 								setValue={this.getValue}
-								editable={false}
+                                editable={true}
+								maximumDate={new Date()}
+								minimumDate={new Date()}
 							/>
 							{this.state.editdata.status == 'DEFERRED' ? (
 								<DatePicker
@@ -497,7 +504,7 @@ class IssuesForm extends React.Component {
 								placeholder="Enter description"
 								label="Description"
 								value={this.state.editdata.description}
-								validate={[ 'empty' ]}
+								validate={[]}
 								name="description"
 								getValue={this.getValue}
 								editable={true}
@@ -512,8 +519,8 @@ class IssuesForm extends React.Component {
 	}
 }
 
-const issueform = (props) => (
-	<GlobalContext.Consumer>{(context) => <IssuesForm context={context} {...props} />}</GlobalContext.Consumer>
+const issueaddform = (props) => (
+	<GlobalContext.Consumer>{(context) => <AddForm context={context} {...props} />}</GlobalContext.Consumer>
 );
 
-export default issueform;
+export default issueaddform;
