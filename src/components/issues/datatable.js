@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, TextInput, FlatList, Dimensions, SafeAreaView } from 'react-native';
 import {GlobalContext}  from '../../provider'
+import {convertback} from '../helpers/convertdata'
 
 import styles from './styles/filter';
 import table from './styles/table';
@@ -28,7 +29,8 @@ class IssuesDataTable extends React.Component {
 	constructor(props) {
 		super(props);
 		this.index = null
-		Data = (props.context.issuesdata)? props.context.issuesdata : []
+		Data = (props.context.issuesdata)? props.context.issuesdata : {}
+		Data = convertback(Data)
 		let filterobject = {
 			ALL: Data.length,
 			ASSIGNED: 0,
@@ -44,12 +46,36 @@ class IssuesDataTable extends React.Component {
 		this.state = {
 			showsearch: false,
 			activefilter: 'ALL',
-			loadeddata: Data.slice(0, 50),
+			loadeddata: Data.slice(0,50),
 			start: 50,
 			refreshing: false,
 			filters: filterobject,
 			searchtext: ''
 		};
+	}
+
+	UNSAFE_componentWillReceiveProps(newprops){
+		Data = convertback(newprops.context.issuesdata)
+		this.setState({ refreshing: true, start: 50 });
+		let data = Data.slice(0, 50);
+		let filteredarray = [];
+		if (this.state.activefilter != 'ALL') {
+			for (let i = 0; i < data.length; i++) {
+				if (data[i].status == this.state.activefilter && data[i].id.toString().indexOf(this.state.searchtext) > -1) {
+					filteredarray.push(data[i]);
+				}
+			}
+		} else {
+			for (let i = 0; i < data.length; i++) {
+				if (data[i].id.toString().indexOf(this.state.searchtext) > -1) {
+					filteredarray.push(data[i]);
+				}
+			}
+		}
+		this.setState({
+			loadeddata: filteredarray,
+			refreshing: false
+		});
 	}
 
 	viewRow = (rowdata,index) => {
@@ -59,7 +85,17 @@ class IssuesDataTable extends React.Component {
 	}
 
 	changeRow = (data) => {
-		console.log(data)
+		this.setState({refreshing:true})
+		let index = data.index
+
+		let previousvalue = {...this.state.loadeddata[index]}
+		let newvalue = {...data}
+
+		let filters = {...this.state.filters}
+		filters[previousvalue.status] -= 1
+		filters[newvalue.status] += 1
+
+		this.setState({refreshing:false,filters})
 	}
 
 	addNewIssue = () => {
@@ -103,30 +139,30 @@ class IssuesDataTable extends React.Component {
 	};
 
 	addData = () => {
-		this.setState({ refreshing: true });
-		let slicedarray = Data.slice(this.state.start, this.state.start + 50);
-		let filteredarray = [];
-		if (this.state.activefilter != 'ALL') {
-			for (let i = 0; i < slicedarray.length; i++) {
-				if (
-					slicedarray[i].status == this.state.activefilter &&
-					slicedarray[i].id.toString().indexOf(this.state.searchtext) > -1
-				) {
-					filteredarray.push(slicedarray[i]);
-				}
-			}
-		} else {
-			for (let i = 0; i < slicedarray.length; i++) {
-				if (slicedarray[i].id.toString().indexOf(this.state.searchtext) > -1) {
-					filteredarray.push(slicedarray[i]);
-				}
-			}
-		}
-		this.setState({
-			loadeddata: [ ...this.state.loadeddata, ...filteredarray ],
-			start: this.state.start + 50,
-			refreshing: false
-		});
+		// this.setState({ refreshing: true });
+		// let slicedarray = Data.slice(this.state.start, this.state.start + 50);
+		// let filteredarray = [];
+		// if (this.state.activefilter != 'ALL') {
+		// 	for (let i = 0; i < slicedarray.length; i++) {
+		// 		if (
+		// 			slicedarray[i].status == this.state.activefilter &&
+		// 			slicedarray[i].id.toString().indexOf(this.state.searchtext) > -1
+		// 		) {
+		// 			filteredarray.push(slicedarray[i]);
+		// 		}
+		// 	}
+		// } else {
+		// 	for (let i = 0; i < slicedarray.length; i++) {
+		// 		if (slicedarray[i].id.toString().indexOf(this.state.searchtext) > -1) {
+		// 			filteredarray.push(slicedarray[i]);
+		// 		}
+		// 	}
+		// }
+		// this.setState({
+		// 	loadeddata: [ ...this.state.loadeddata, ...filteredarray ],
+		// 	start: this.state.start + 50,
+		// 	refreshing: false
+		// });
 	};
 
 	render() {

@@ -5,6 +5,7 @@ const GlobalContext = React.createContext();
 import { loginuser, change_password, change_userdata, upload_user_image } from './login';
 import { fetch_data } from './fetchdata';
 import { update_data} from './updatedata'
+import {convertdata} from '../components/helpers/convertdata'
 
 export class GlobalContextProvider extends React.Component {
 	constructor(props) {
@@ -72,7 +73,8 @@ export class GlobalContextProvider extends React.Component {
 				console.log(res);
 			} else {
 				if(item.key == "issuesdata"){
-					this.setState({ "issuesdata": res });
+					let ob = convertdata(res)
+					this.setState({ "issuesdata": ob });
 				}else if(item.key == "podata"){
 					this.setState({ "podata": res });
 				}else if(item.key == "truckdata"){
@@ -85,14 +87,13 @@ export class GlobalContextProvider extends React.Component {
 	};
 
 	updatedata = async(path,table,data) => {
-		let index = data.index
 		delete data["index"]
 		let res = await update_data(this.state.url, this.state.token, path,data);
 			if (res.message) {
 				console.log(res);
 			} else {
-				let ob = [...this.state[table]]
-				ob[index] = {...ob[index],...data}
+				let ob = {...this.state[table]}
+				ob[data.id] = {...ob[data.id],...data}
 				if (table = "issuesdata"){
 					this.setState({"issuesdata":ob})
 				}
