@@ -20,18 +20,49 @@ class PurchaseOrder extends React.Component {
 		this.props.navigation.goBack(null);
 	};
 
+	changedata = (data) => {
+		this.setState({ rowdata: { ...this.state.rowdata, ...data } });
+	};
+
 	editdata = () => {
-		this.props.navigation.navigate('Form', {rowdata:this.state.rowdata})
-	}
+		this.props.navigation.navigate('Form', { rowdata: this.state.rowdata, changedata: this.changedata });
+	};
+
+	convertdate = (date) => {
+		let monthNames = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+		let formatted = new Date(Date.parse(date));
+
+		var hr = formatted.getHours();
+		var min = formatted.getMinutes();
+		var ampm = 'AM';
+		if (hr > 12) {
+			hr -= 12;
+			ampm = 'PM';
+		}
+		formatted =
+			monthNames[formatted.getMonth()] +
+			' ' +
+			formatted.getDate() +
+			', ' +
+			formatted.getFullYear() +
+			' ' +
+			hr +
+			':' +
+			min +
+			' ' +
+			ampm;
+		return formatted;
+	};
 
 	render() {
 		return this.state.rowdata != null ? (
 			<React.Fragment>
+				<SafeAreaView style={{ backgroundColor: '#507df0' }} />
 				<View style={viewstyle.topbar}>
 					<TouchableOpacity activeOpacity={1} style={viewstyle.backcontainer} onPress={this.goback}>
 						<Image source={back} style={viewstyle.backimage} />
 					</TouchableOpacity>
-					<Text style={viewstyle.heading}>Item name - {this.state.rowdata.name}</Text>
+					<Text style={viewstyle.heading}>Inventory # - {this.state.rowdata.id.toString()}</Text>
 				</View>
 				<ScrollView style={viewstyle.restarea}>
 					<View style={viewstyle.details}>
@@ -41,48 +72,61 @@ class PurchaseOrder extends React.Component {
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Item code</Text>
-							<Text style={viewstyle.righttext}>{this.state.rowdata.code}</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.item.code}</Text>
 						</View>
 					</View>
 					<View style={viewstyle.separator} />
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Current Quantity</Text>
-							<Text style={viewstyle.righttext}>125 pieces</Text>
+							<Text style={viewstyle.righttext}>{`${this.state.rowdata.currentQuantity} ${this.state
+								.rowdata.item.quantityUnit}`}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Status</Text>
 							<Text style={viewstyle.righttext}>{this.state.rowdata.status}</Text>
 						</View>
 						<View style={viewstyle.row}>
-							<Text style={viewstyle.lefttext}>Preferred vendor</Text>
-							<Text style={viewstyle.righttext}>John Barrett</Text>
+							<Text style={viewstyle.lefttext}>Cost per item</Text>
+							<Text style={viewstyle.righttext}>{`${this.state.rowdata.costPerItem} ${this.state
+								.rowdata.costUnit}`}</Text>
 						</View>
+						{this.state.rowdata.vendor ? (
+							<View style={viewstyle.row}>
+								<Text style={viewstyle.lefttext}>Preferred vendor</Text>
+								<Text style={viewstyle.righttext}>{this.state.rowdata.vendor.name}</Text>
+							</View>
+						) : null}
 					</View>
 					<View style={viewstyle.separator} />
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Inventory check date</Text>
-							<Text style={viewstyle.righttext}>6 Jan,2020</Text>
+							<Text style={viewstyle.righttext}>{this.convertdate(this.state.rowdata.checkDate)}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Reorder at</Text>
-							<Text style={viewstyle.righttext}>100 pieces</Text>
+							<Text style={viewstyle.righttext}>{`${this.state.rowdata.reorderAt} ${this.state.rowdata
+								.item.quantityUnit}`}</Text>
 						</View>
 					</View>
-					<View style={viewstyle.separator} />
-					<View style={viewstyle.details}>
-						<View style={viewstyle.paragraph}>
-							<Text style={viewstyle.longtextheading}>Notes</Text>
-							<Text style={viewstyle.longtext}>
-								Pellentesque habitant morbi tristique senectus etnete malesuada fames ac turpis egestas.
-								Ut arcu liberotert
-							</Text>
-						</View>
-					</View>
+					{this.state.rowdata.notes ? (
+						<React.Fragment>
+							<View style={viewstyle.separator} />
+							<View style={viewstyle.details}>
+								<View style={viewstyle.paragraph}>
+									<Text style={viewstyle.longtextheading}>Notes</Text>
+									<Text style={viewstyle.longtext}>
+										Pellentesque habitant morbi tristique senectus etnete malesuada fames ac turpis
+										egestas. Ut arcu liberotert
+									</Text>
+								</View>
+							</View>
+						</React.Fragment>
+					) : null}
 				</ScrollView>
 				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
-					<Text style={viewstyle.editbuttontext}>Tap to Edit</Text>
+					<Text style={viewstyle.editbuttontext}>Edit</Text>
 				</TouchableOpacity>
 			</React.Fragment>
 		) : (

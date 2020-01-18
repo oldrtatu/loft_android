@@ -69,7 +69,10 @@ export class GlobalContextProvider extends React.Component {
 			{ path: '/po/issue', key: 'issuesdata' },
 			{ path: '/po/po', key: 'podata' },
 			{ path: '/archive/truck', key: 'truckdata' },
-			{ path: '/archive/class', key: 'categorydata' }
+			{ path: '/archive/class', key: 'categorydata' },
+			{ path: '/archive/item', key:'itemdata'},
+			{ path: '/po/inventory', key: 'inventorydata'},
+			{ path: '/archive/vendor', key: 'vendordata'}
 		];
 		for (let i in arr) {
 			let item = arr[i];
@@ -86,6 +89,13 @@ export class GlobalContextProvider extends React.Component {
 					this.setState({ truckdata: res });
 				} else if (item.key == 'categorydata') {
 					this.setState({ categorydata: res });
+				} else if (item.key == 'itemdata') {
+					this.setState({ itemdata: res });
+				} else if (item.key == 'vendordata') {
+					this.setState({ vendordata: res });
+				} else if (item.key == 'inventorydata') {
+					let ob = convertdata(res);
+					this.setState({ inventorydata: ob });
 				}
 			}
 		}
@@ -99,8 +109,10 @@ export class GlobalContextProvider extends React.Component {
 		} else {
 			let ob = { ...this.state[table] };
 			ob[data.id] = { ...ob[data.id], ...data };
-			if ((table = 'issuesdata')) {
+			if (table = 'issuesdata') {
 				this.setState({ issuesdata: ob });
+			}if (table = 'inventorydata') {
+				this.setState({ inventorydata: ob });
 			}
 		}
 	};

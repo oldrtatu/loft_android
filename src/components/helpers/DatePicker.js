@@ -4,7 +4,6 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, Dimensions } from 'rea
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 import calender from '../../assets/calender.png';
-import Snackbar from 'react-native-snackbar';
 
 class DatePicker extends React.Component {
 	constructor(props) {

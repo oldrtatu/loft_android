@@ -55,7 +55,7 @@ class IssuesDataTable extends React.Component {
 	}
 
 	UNSAFE_componentWillReceiveProps(newprops){
-		Data = convertback(newprops.context.issuesdata)
+		Data = convertback((newprops.context.issuesdata)? newprops.context.issuesdata : {})
 		this.setState({ refreshing: true, start: 50 });
 		let filterobject = {
 			ALL: Data.length,
@@ -138,30 +138,30 @@ class IssuesDataTable extends React.Component {
 	};
 
 	addData = () => {
-		// this.setState({ refreshing: true });
-		// let slicedarray = Data.slice(this.state.start, this.state.start + 50);
-		// let filteredarray = [];
-		// if (this.state.activefilter != 'ALL') {
-		// 	for (let i = 0; i < slicedarray.length; i++) {
-		// 		if (
-		// 			slicedarray[i].status == this.state.activefilter &&
-		// 			slicedarray[i].id.toString().indexOf(this.state.searchtext) > -1
-		// 		) {
-		// 			filteredarray.push(slicedarray[i]);
-		// 		}
-		// 	}
-		// } else {
-		// 	for (let i = 0; i < slicedarray.length; i++) {
-		// 		if (slicedarray[i].id.toString().indexOf(this.state.searchtext) > -1) {
-		// 			filteredarray.push(slicedarray[i]);
-		// 		}
-		// 	}
-		// }
-		// this.setState({
-		// 	loadeddata: [ ...this.state.loadeddata, ...filteredarray ],
-		// 	start: this.state.start + 50,
-		// 	refreshing: false
-		// });
+		this.setState({ refreshing: true });
+		let slicedarray = Data.slice(this.state.start, this.state.start + 50);
+		let filteredarray = [];
+		if (this.state.activefilter != 'ALL') {
+			for (let i = 0; i < slicedarray.length; i++) {
+				if (
+					slicedarray[i].status == this.state.activefilter &&
+					slicedarray[i].id.toString().indexOf(this.state.searchtext) > -1
+				) {
+					filteredarray.push(slicedarray[i]);
+				}
+			}
+		} else {
+			for (let i = 0; i < slicedarray.length; i++) {
+				if (slicedarray[i].id.toString().indexOf(this.state.searchtext) > -1) {
+					filteredarray.push(slicedarray[i]);
+				}
+			}
+		}
+		this.setState({
+			loadeddata: [ ...this.state.loadeddata, ...filteredarray ],
+			start: this.state.start + 50,
+			refreshing: false
+		});
 	};
 
 	render() {

@@ -1,130 +1,208 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image, ScrollView, TextInput, PanResponder, Animated } from 'react-native';
+import { Text, View, TouchableOpacity, Image, ScrollView, SafeAreaView } from 'react-native';
+import { InputField, IncrementField, DropDown, SuggestionField, DatePicker, TextArea,Slidebutton } from '../helpers';
+import { GlobalContext } from '../../provider';
 
 import form from './styles/formstyle';
-import AutoFillTwoFields from '../helpers/AutoFillTwoFields';
-import IncrementField from '../helpers/IncrementField';
-import DropDown from '../helpers/DropDown';
-import DatePicker from '../helpers/DatePicker';
-import Slidebutton from '../helpers/slidebutton'
 
 import back from '../../assets/back.png';
-
-import autofill from './autofilldata.json';
+import Snackbar from 'react-native-snackbar';
 
 class InventoryForm extends React.Component {
 	constructor(props) {
 		super(props);
+		this.previousdata = JSON.parse(JSON.stringify(props.navigation.getParam('rowdata')));
+		this.data = {
+			item: props.context.itemdata,
+			vendor: props.context.vendordata
+		};
 		this.state = {
-			editdata: null,
-			error: {
-				name: 'start',
-				code: 'start',
-				aquan: 'start'
+			editdata: {
+				name: '',
+				item: { code: '', quantityUnit: '' },
+				currentQuantity: '0',
+				unit: '',
+				status: '',
+				vendor: { name: '' },
+				checkDate: '',
+				reorderAt: '',
+				notes: '',
+				costPerItem:'',
+				costUnit:''
 			},
-			itemdata: autofill
+			reload:false
 		};
 	}
-
-
 
 	addeddata = {};
 
 	componentDidMount() {
-		this.setState({ editdata: this.props.navigation.getParam('rowdata') });
+		this.setState({ editdata: this.props.navigation.getParam('rowdata') }, () => console.log(this.state.rowdata));
 	}
 
 	goback = () => {
 		this.props.navigation.goBack(null);
 	};
 
-	setItem = (value) => {
-		let ob = { ...this.addeddata };
-		ob['name'] = value.name;
-		ob['code'] = value.name;
-		this.addeddata = ob;
+	handleSubmit = () => {
+		const { navigation } = this.props;
+		let err = this.validateForm()
+		if(err == ''){
+			if(Object.keys(this.addeddata).length>0){
+				this.addeddata['id'] = this.state.editdata.id
+				this.props.context.updatedata('/po/inventory', 'inventorydata', this.addeddata);
+				navigation.goBack();
+				navigation.state.params.changedata(this.addeddata);
+			}
+		}else{
+			Snackbar.show({
+				title:err,
+				duration:Snackbar.LENGTH_SHORT,
+				backgroundColor:"#D62246"
+			})
+			this.setState({reload:true},()=>this.setState({reload:false}))
+		}
 	};
 
-	setValue = (field, value) => {
-		let ob = { ...this.addeddata };
-		ob[field] = value;
-		this.addeddata = ob;
-	};
-
-	handleSubmit=()=>{
-		console.log(this.addeddata)
+	validateForm = () => {
+		if(this.state.editdata.name == ''){
+			return "Enter item name"
+		}else if(this.state.editdata.currentQuantity == '' || parseInt(this.state.editdata.currentQuantity) == 0){
+			return "Enter current quantity"
+		}else if(this.state.editdata.costPerItem == '' || parseInt(this.state.editdata.costPerItem) == 0){
+			return "Enter cost per item"
+		}else if(this.state.editdata.reorderAt == '' || parseInt(this.state.editdata.reorderAt) == 0){
+			return "Enter re order at quantity"
+		}else{
+			return ''
+		}
 	}
+
+	getValue = (key, value) => {
+		let ob = { ...this.state.editdata };
+		ob[key] = value;
+		this.setState({ editdata: ob });
+		if (value != this.previousdata[key]) {
+			this.addeddata[key] = value;
+		} else {
+			delete this.addeddata[key];
+		}
+	};
+
+	getVendor = (item) => {
+		if(item == null || item == undefined || item == ''){
+			this.addeddata['VendorId'] = null
+		}else{
+			this.setState({ editdata: { ...this.state.editdata, vendor: item } });
+		}
+	};
 
 	render() {
 		return (
 			<React.Fragment>
+				<SafeAreaView style={{ backgroundColor: '#507df0' }} />
 				<View style={form.topbar}>
 					<TouchableOpacity activeOpacity={1} style={form.backcontainer} onPress={this.goback}>
 						<Image source={back} style={form.backimage} />
 					</TouchableOpacity>
-					<Text style={form.heading}>
-						{this.state.editdata != null ? this.state.editdata.name : 'Add inventory'}
-					</Text>
+					<Text style={form.heading}>{`Inventory # -${this.state.editdata.id}`}</Text>
 				</View>
 				<ScrollView style={form.mainform} nestedScrollEnabled={true}>
-					<AutoFillTwoFields
-						list={this.state.itemdata}
-						startSuggestingFrom={1}
-						inputStyle={ form.input}
-						suggestBoxStyle={form.suggestbox}
-						label={[ 'Item name', 'Item code' ]}
-						placeholder={[ 'Enter item name', 'Enter item code' ]}
-						field1="name"
-						field2="code"
-						value={
-							this.state.editdata != null ? (
-								[ this.state.editdata.name, this.state.editdata.code.toString() ]
-							) : (
-								[ '', '' ]
-							)
-						}
-						setItem={this.setItem}
+					<View style={{ height: 10 }} />
+					<InputField
+						placeholder="Enter inventory name"
+						label="Inventory name"
+						value={this.state.editdata.name}
+						validate={[ 'empty' ]}
+						name="name"
+						getValue={this.getValue}
+						editable={true}
+					/>
+					<InputField
+						placeholder="Enter item name"
+						label="Item name"
+						value={this.state.editdata.item.name}
+						validate={[ 'empty' ]}
+						name="itemname"
+						getValue={this.getValue}
+						editable={false}
+					/>
+					<InputField
+						placeholder="Enter item code"
+						label="Item code"
+						value={this.state.editdata.item.code}
+						validate={[ 'empty' ]}
+						name="itemcode"
+						getValue={this.getValue}
+						editable={false}
 					/>
 					<IncrementField
-						value="0"
-						setNumbers={this.setValue}
-						name="aquan"
-						unit="pieces"
-						label="Actual Quantity"
-					/>
-					<IncrementField
-						value="0"
-						setNumbers={this.setValue}
-						name="squan"
-						unit="pieces"
-						label="In stock Quantity"
+						label="Current Quantity"
+						placeholder="Enter current quantity"
+						value={this.state.editdata.currentQuantity.toString()}
+						unit={this.state.editdata.item.quantityUnit}
+						getValue={this.getValue}
+						name="currentQuantity"
 					/>
 					<DropDown
 						label="Status"
 						name="status"
-						value="Select"
-						dropdown={[ 'Active', 'Inactive' ]}
-						setValue={this.setValue}
+						value={this.state.editdata.status}
+						dropdown={[ 'ACTIVE', 'INACTIVE' ]}
+						getValue={this.getValue}
+						disabled={false}
 					/>
-					<View style={{height:10}}/>
-					<DatePicker label="Inventory check date" value="12-06-2019" name="invcheck" setValue={this.setValue} />
 					<IncrementField
-						value="0"
-						setNumbers={this.setValue}
-						name="reorderat"
-						unit="pieces"
-						label="Reorder at"
+						label="Cost per item"
+						placeholder="Cost per item"
+						value={this.state.editdata.costPerItem.toString()}
+						unit={this.state.editdata.costUnit}
+						getValue={this.getValue}
+						name="costPerItem"
 					/>
-
-					<Text style={[ form.label, { marginTop: 20 } ]}>Preferred Vendor</Text>
-					<TextInput style={[ form.input, { marginTop: -25 } ]} placeholder="Enter preferrred vendor" />
-					<Text style={[ form.label, { marginTop: 20 } ]}>Notes</Text>
-					<TextInput style={[ form.inputarea, { marginTop: -25 } ]} placeholder="Enter notes" multiline={true} numberOfLines={4} />
+					<SuggestionField
+						name="name"
+						getValue={this.getVendor}
+						placeholder="Enter preferred vendor"
+						label="Preferred vendor"
+						value={this.state.editdata.vendor.name}
+						dropdowndata={this.data.vendor}
+						editable={true}
+					/>
+					<DatePicker
+						label="Inventory check date"
+						value={this.state.editdata.checkDate}
+						name="checkDate"
+						setValue={this.getValue}
+						editable={true}
+					/>
+					<IncrementField
+						label="Reorder at"
+						placeholder="Reorder at quantity"
+						value={this.state.editdata.reorderAt.toString()}
+						unit={this.state.editdata.item.quantityUnit}
+						getValue={this.getValue}
+						name="reorderAt"
+					/>
+					<TextArea
+						placeholder="Enter notes"
+						label="Notes"
+						value={this.state.editdata.notes}
+						validate={[]}
+						name="notes"
+						getValue={this.getValue}
+						editable={true}
+					/>
+					<View style={{height:70}}/>
 				</ScrollView>
-				<Slidebutton submit={this.handleSubmit} />
+				<Slidebutton submit={this.handleSubmit} reload={this.state.reload} />
 			</React.Fragment>
 		);
 	}
 }
 
-export default InventoryForm;
+const inventoryform = (props) => (
+	<GlobalContext.Consumer>{(context) => <InventoryForm context={context} {...props} />}</GlobalContext.Consumer>
+);
+
+export default inventoryform;

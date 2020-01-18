@@ -497,11 +497,10 @@ class IssuesForm extends React.Component {
 								placeholder="Enter description"
 								label="Description"
 								value={this.state.editdata.description}
-								validate={[ 'empty' ]}
+								validate={[ ]}
 								name="description"
 								getValue={this.getValue}
 								editable={true}
-								keyBoardType="number-pad"
 							/>
 						</React.Fragment>
 					)}

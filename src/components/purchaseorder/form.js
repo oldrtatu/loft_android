@@ -7,9 +7,6 @@ import DropDown from '../helpers/DropDown'
 import DatePicker from '../helpers/DatePicker'
 
 
-import truckdata from '../issues/sampledata.json';
-import trailerdata from '../issues/trailerdata.json';
-
 import back from '../../assets/back.png';
 
 class POForm extends React.Component {

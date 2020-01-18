@@ -6,26 +6,34 @@ const styles = StyleSheet.create({
         borderTopEndRadius:10,
         borderTopStartRadius:10,
         backgroundColor:"#fff",
-        height:60,
+        height:50,
         flexDirection:"row",
         marginTop:-10,
+        borderBottomEndRadius:10,
+        borderBottomStartRadius:10,
+        elevation:1,
         shadowColor:"#000",
-        shadowOpacity:0.6,
-        shadowOffset:{width:0,height:2},
-        elevation:2
+        shadowOpacity:0.2,
+        shadowOffset:{width:0,height:-3}
     },
     header1:{
         fontSize:17,
         fontWeight:"bold",
         marginLeft:25,
-        marginRight:15,
-        flex:1,
+        width:60,
+        alignSelf:"center",
+    },
+    header2:{
+        fontSize:17,
+        fontWeight:"bold",
+        flex:2,
         alignSelf:"center"
     },
     header:{
         fontSize:17,
         fontWeight:"bold",
         marginRight:15,
+        marginLeft:10,
         flex:1,
         alignSelf:"center"
     },
@@ -33,7 +41,7 @@ const styles = StyleSheet.create({
         marginRight:15,
         alignSelf:"center",
         paddingHorizontal:10,
-        paddingVertical:8,
+        paddingVertical:5,
         backgroundColor:"#1CA49F",
         justifyContent:"center",
         borderRadius:5
@@ -44,25 +52,25 @@ const styles = StyleSheet.create({
     },
     row:{
         flexDirection:"row",
-        height:35,
-        shadowColor:"#000",
-        shadowOpacity:0.6,
-        shadowOffset:{width:0,height:2},
-        elevation:2,
+        paddingVertical:10,
         marginBottom:1,
         alignContent:"center",
         backgroundColor:"#fff",
-        borderRadius:3
+        borderRadius:10
     },
     text1:{
-        fontSize:15,
+        fontSize:14,
         marginLeft:25,
-        marginRight:15,
-        flex:1,
+        width:60,
+        alignSelf:"center"
+    },
+    text2:{
+        fontSize:14,
+        flex:2,
         alignSelf:"center"
     },
     text:{
-        fontSize:15,
+        fontSize:14,
         marginRight:15,
         flex:1,
         alignSelf:"center"
@@ -72,8 +80,7 @@ const styles = StyleSheet.create({
         height:14,
         resizeMode:"contain",
         marginRight:20,
-        marginLeft:5,
-        marginTop:10
+        alignSelf:"center"
     }
 })
 
