@@ -4,6 +4,7 @@ import { createStackNavigator } from 'react-navigation-stack';
 import inventory from '../components/inventory/datatable'
 import ViewInventory from '../components/inventory/view'
 import InventoryForm from '../components/inventory/form'
+import AddForm from '../components/inventory/addform'
 
 const inventorynav = createStackNavigator(
     {
@@ -21,6 +22,12 @@ const inventorynav = createStackNavigator(
         },
         Form:{
             screen:InventoryForm,
+            navigationOptions:{
+                header:null
+            }
+        },
+        Add:{
+            screen:AddForm,
             navigationOptions:{
                 header:null
             }

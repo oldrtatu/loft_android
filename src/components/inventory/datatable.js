@@ -80,7 +80,7 @@ class InventoryTable extends React.Component {
 	}
 
 	addNewInventory = () => {
-		this.props.navigation.navigate('Form')
+		this.props.navigation.navigate('Add')
 	}
 
 	viewRow = (rowdata) => {

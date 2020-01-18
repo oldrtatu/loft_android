@@ -117,8 +117,7 @@ class PurchaseOrder extends React.Component {
 								<View style={viewstyle.paragraph}>
 									<Text style={viewstyle.longtextheading}>Notes</Text>
 									<Text style={viewstyle.longtext}>
-										Pellentesque habitant morbi tristique senectus etnete malesuada fames ac turpis
-										egestas. Ut arcu liberotert
+										{this.state.rowdata.notes}
 									</Text>
 								</View>
 							</View>

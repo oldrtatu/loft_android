@@ -1,17 +1,18 @@
-import React from 'react';
-import { Text, View, TouchableOpacity, Image, ScrollView, SafeAreaView } from 'react-native';
-import { InputField, IncrementField, DropDown, SuggestionField, DatePicker, TextArea,Slidebutton } from '../helpers';
-import { GlobalContext } from '../../provider';
+import React from 'react'
+import { Text, View, TouchableOpacity, Image, ScrollView, Switch, SafeAreaView, Platform } from 'react-native';
 
 import form from './styles/formstyle';
 
-import back from '../../assets/back.png';
+import { Slidebutton, DropDown, DatePicker, InputField, SuggestionField, TextArea,IncrementField } from '../helpers';
+import { GlobalContext } from '../../provider';
+
 import Snackbar from 'react-native-snackbar';
 
-class InventoryForm extends React.Component {
-	constructor(props) {
-		super(props);
-		this.previousdata = JSON.parse(JSON.stringify(props.navigation.getParam('rowdata')));
+import back from '../../assets/back.png';
+
+class AddForm extends React.Component {
+    constructor(props){
+        super(props)
         this.data = {
 			item: props.context.itemdata ? props.context.itemdata : [],
 			vendor: props.context.vendordata ? props.context.vendordata : []
@@ -19,41 +20,62 @@ class InventoryForm extends React.Component {
 		this.state = {
 			editdata: {
 				name: '',
-				item: { code: '', quantityUnit: '',name:'' },
+				item: { code: '', quantityUnit: '', name:'' },
 				currentQuantity: '0',
 				unit: '',
-				status: '',
+				status: 'ACTIVE',
 				vendor: { name: '' },
 				checkDate: '',
-				reorderAt: '',
+				reorderAt: '0',
 				notes: '',
-				costPerItem:'',
-				costUnit:''
+				costPerItem:'0',
+				costUnit:'CAD'
 			},
 			reload:false
 		};
-	}
+    }
 
-	addeddata = {};
-
-	componentDidMount() {
-		this.setState({ editdata: this.props.navigation.getParam('rowdata') });
-	}
-
-	goback = () => {
+    goback = () => {
 		this.props.navigation.goBack(null);
-	};
-
-	handleSubmit = () => {
+    };
+    
+    validateForm = () => {
+		if(this.state.editdata.name == ''){
+			return "Enter item name"
+		}else if(this.state.editdata.item.name == ''){
+			return "Select item"
+		}else if(this.state.editdata.currentQuantity == '' || parseInt(this.state.editdata.currentQuantity) == 0){
+			return "Enter current quantity"
+		}else if(this.state.editdata.costPerItem == '' || parseInt(this.state.editdata.costPerItem) == 0){
+			return "Enter cost per item"
+		}else if(this.state.editdata.reorderAt == '' || parseInt(this.state.editdata.reorderAt) == 0){
+			return "Enter re order at quantity"
+		}else if(this.state.editdata.checkDate == ''){
+			return "Select check date"
+		}else{
+			return ''
+		}
+    }
+    
+    handleSubmit = () => {
 		const { navigation } = this.props;
 		let err = this.validateForm()
 		if(err == ''){
-			if(Object.keys(this.addeddata).length>0){
-				this.addeddata['id'] = this.state.editdata.id
-				this.props.context.updatedata('/po/inventory', 'inventorydata', this.addeddata);
-				navigation.goBack();
-				navigation.state.params.changedata(this.addeddata);
-			}
+            let addeddata = {...this.state.editdata}
+            addeddata["itemId"] = this.state.editdata.item.id
+            delete addeddata["item"]
+
+            if(this.state.editdata.vendor.name != ''){
+                addeddata["vendorId"] = this.state.editdata.vendor.id
+                delete addeddata["vendor"]
+            }else{
+                delete addeddata["vendor"]
+            }
+            if(this.state.editdata.notes == ''){
+                delete addeddata.notes
+            }
+            this.props.context.adddata('/po/inventory', 'inventorydata', addeddata);
+            this.props.navigation.goBack();
 		}else{
 			Snackbar.show({
 				title:err,
@@ -62,50 +84,29 @@ class InventoryForm extends React.Component {
 			})
 			this.setState({reload:true},()=>this.setState({reload:false}))
 		}
-	};
-
-	validateForm = () => {
-		if(this.state.editdata.name == ''){
-			return "Enter item name"
-		}else if(this.state.editdata.currentQuantity == '' || parseInt(this.state.editdata.currentQuantity) == 0){
-			return "Enter current quantity"
-		}else if(this.state.editdata.costPerItem == '' || parseInt(this.state.editdata.costPerItem) == 0){
-			return "Enter cost per item"
-		}else if(this.state.editdata.reorderAt == '' || parseInt(this.state.editdata.reorderAt) == 0){
-			return "Enter re order at quantity"
-		}else{
-			return ''
-		}
-	}
-
-	getValue = (key, value) => {
+    };
+    getValue = (key, value) => {
 		let ob = { ...this.state.editdata };
 		ob[key] = value;
 		this.setState({ editdata: ob });
-		if (value != this.previousdata[key]) {
-			this.addeddata[key] = value;
-		} else {
-			delete this.addeddata[key];
-		}
 	};
 
 	getVendor = (item) => {
-		if(item == null || item == undefined || item == ''){
-			this.addeddata['VendorId'] = null
-		}else{
-			this.setState({ editdata: { ...this.state.editdata, vendor: item } });
-		}
+		this.setState({ editdata: { ...this.state.editdata, vendor: item } });
+    };
+    getItem = (item) => {
+		this.setState({ editdata: { ...this.state.editdata, item } });
 	};
 
-	render() {
-		return (
-			<React.Fragment>
+    render(){
+        return(
+            <React.Fragment>
 				<SafeAreaView style={{ backgroundColor: '#507df0' }} />
 				<View style={form.topbar}>
 					<TouchableOpacity activeOpacity={1} style={form.backcontainer} onPress={this.goback}>
 						<Image source={back} style={form.backimage} />
 					</TouchableOpacity>
-					<Text style={form.heading}>{`Inventory # -${this.state.editdata.id}`}</Text>
+					<Text style={form.heading}>{`Add inventory`}</Text>
 				</View>
 				<ScrollView style={form.mainform} nestedScrollEnabled={true}>
 					<View style={{ height: 10 }} />
@@ -118,23 +119,23 @@ class InventoryForm extends React.Component {
 						getValue={this.getValue}
 						editable={true}
 					/>
-					<InputField
+					<SuggestionField
+						name="name"
+						getValue={this.getItem}
 						placeholder="Enter item name"
 						label="Item name"
 						value={this.state.editdata.item.name}
-						validate={[ 'empty' ]}
-						name="itemname"
-						getValue={this.getValue}
-						editable={false}
+						dropdowndata={this.data.item}
+						editable={true}
 					/>
-					<InputField
+					<SuggestionField
+						name="code"
+						getValue={this.getItem}
 						placeholder="Enter item code"
 						label="Item code"
 						value={this.state.editdata.item.code}
-						validate={[ 'empty' ]}
-						name="itemcode"
-						getValue={this.getValue}
-						editable={false}
+						dropdowndata={this.data.item}
+						editable={true}
 					/>
 					<IncrementField
 						label="Current Quantity"
@@ -149,6 +150,14 @@ class InventoryForm extends React.Component {
 						name="status"
 						value={this.state.editdata.status}
 						dropdown={[ 'ACTIVE', 'INACTIVE' ]}
+						getValue={this.getValue}
+						disabled={false}
+					/>
+					<DropDown
+						label="Cost Unit"
+						name="costUnit"
+						value={this.state.editdata.costUnit}
+						dropdown={[ 'CAD', 'USD' ]}
 						getValue={this.getValue}
 						disabled={false}
 					/>
@@ -194,15 +203,16 @@ class InventoryForm extends React.Component {
 						editable={true}
 					/>
 					<View style={{height:70}}/>
-				</ScrollView>
+                </ScrollView>
 				<Slidebutton submit={this.handleSubmit} reload={this.state.reload} />
-			</React.Fragment>
-		);
-	}
+            </React.Fragment>
+        )
+    }
 }
 
+
 const inventoryform = (props) => (
-	<GlobalContext.Consumer>{(context) => <InventoryForm context={context} {...props} />}</GlobalContext.Consumer>
+	<GlobalContext.Consumer>{(context) => <AddForm context={context} {...props} />}</GlobalContext.Consumer>
 );
 
 export default inventoryform;
