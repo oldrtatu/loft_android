@@ -9,7 +9,8 @@ import {
 	TouchableOpacity,
 	Modal,
 	Switch,
-	Dimensions
+	Dimensions,
+	Platform
 } from 'react-native';
 
 import camera from '../../assets/camera.png';
@@ -382,7 +383,7 @@ class Settings extends React.Component {
 									<Switch
 										onValueChange={(e) => this.changeswitch(e, i)}
 										value={this.state.swtiches[i]}
-										style={{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
+										style={Platform.OS =='ios' ? { transform: [ { scaleX: 0.6 }, { scaleY: 0.6 } ] }:{ transform: [ { scaleX: 0.75 }, { scaleY: 0.75 } ] }}
 									/>
 								</View>
 							))}

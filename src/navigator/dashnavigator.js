@@ -4,7 +4,6 @@ import { createStackNavigator } from 'react-navigation-stack';
 import Dashboard from '../components/dashboard';
 import SettingsNav from './settingsnavigator';
 
-import {GlobalContextProvider} from '../provider'
 
 const dashboard = createStackNavigator(
 	{

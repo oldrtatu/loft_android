@@ -46,7 +46,7 @@ const modal = StyleSheet.create({
         height:40,
         alignSelf:"center",
         marginTop:5,
-        fontSize:16
+        fontSize:12
     },
     savebutton:{
         width:100,
@@ -54,7 +54,7 @@ const modal = StyleSheet.create({
         paddingVertical:4,
         paddingHorizontal:8,
         backgroundColor:"#1CA49F",
-        fontSize:16,
+        fontSize:14,
         alignContent:"center",
         justifyContent:"center",
         color:"#fff",
@@ -70,7 +70,7 @@ const modal = StyleSheet.create({
     },
     text:{
         flex:1,
-        fontSize:17,
+        fontSize:12,
         lineHeight:40
     },
     container2:{

@@ -13,83 +13,129 @@ const viewstyle = StyleSheet.create({
         height:110,
         paddingVertical:45,
         paddingHorizontal:25,
-        alignContent:"center"
+        alignContent:"center",
+        alignSelf:"flex-start"
     },
     backimage:{
-        width:20,
-        height:20,
+        width:18,
+        height:18,
         resizeMode:"contain"
     },
     heading:{
         flex:1,
         color:"#fff",
-        fontSize:20,
-        alignSelf:"center"
+        fontSize:18,
+        fontWeight:"bold",
+        alignSelf:"center",
+        position:"absolute",
+        width:"100%",
+        textAlign:"center",
+        zIndex:-1
     },
     restarea:{
         flex:1,
-        borderTopEndRadius:5,
-        borderTopStartRadius:5,
+        borderRadius:10,
         marginTop:-10,
-        backgroundColor:"#fff"
+        backgroundColor:"#fff",
+        shadowColor:"#000",
+        shadowOpacity:0.2,
+        shadowOffset:{width:0,height:-10},
+        elevation:0
     },
     details:{
-        width:Dimensions.get('window').width * 0.8,
+        width:Dimensions.get('window').width * 0.9,
         alignSelf:"center",
-        paddingVertical:20
+        paddingVertical:13
     },
     row:{
-        height:30,
+        height:31,
         flexDirection:"row",
         flex:1,
         alignItems:"center"
     },
     lefttext:{
         flex:1,
-        fontSize:17,
-        fontWeight:"700",
-        color:"#8991A2"
+        fontSize:14,
+        fontWeight:"600",
+        color:"#8991A2",
+        letterSpacing:-0.5
     },
     righttext:{
-        fontSize:17,
-        color:"#131d4a"
+        fontSize:14,
+        color:"#131d4a",
+        letterSpacing:-0.5
     },
     separator:{
-        width:Dimensions.get('window').width * 0.8,
+        width:Dimensions.get('window').width * 0.9,
         alignSelf:"center",
         height:1,
-        backgroundColor:"#707070"
+        backgroundColor:"#f2f2f2"
     },
     paragraph:{
         flex:1
     },
     longtextheading:{
         flex:1,
-        fontSize:17,
-        fontWeight:"700",
-        color:"#8991A2"
+        fontSize:14,
+        fontWeight:"600",
+        color:"#8991A2",
+        letterSpacing:-0.5
     },
     longtext:{
         paddingVertical:5,
         flex:1,
-        fontSize:17,
+        fontSize:13,
         color:"#131d4a",
-        textAlign:"justify"
+        textAlign:"justify",
+        letterSpacing:-0.5
     },
     leftissuetext:{
         flex:1,
-        fontSize:17,
+        fontSize:14,
         color:"#131d4a"
     },
     editbutton:{
-        backgroundColor:"#507df0",
+        backgroundColor:"#2196F3",
         height:60,
         justifyContent:"center",
         alignItems:"center"
     },
     editbuttontext:{
         color:"#fff",
-        fontSize:18
+        fontSize:15,
+        fontWeight:"400",
+        elevation:1
+    },
+    driverside:{
+        flexDirection:"row",
+        flexWrap:"wrap",
+        paddingVertical:5,
+        marginTop:5
+    },
+    true:{
+        backgroundColor:"#D62246",
+        paddingVertical:10,
+        paddingHorizontal:20,
+        borderRadius:20,
+        marginRight:10,
+        marginBottom:12
+    },
+    fault:{
+        color:"#fff",
+        fontSize:12
+    },
+    false:{
+        borderColor:"#1CA49F",
+        borderWidth:1,
+        paddingVertical:10,
+        paddingHorizontal:20,
+        borderRadius:20,
+        marginRight:10,
+        marginBottom:12
+    },
+    correct:{
+        color:"#1CA49F",
+        fontSize:12
     }
 })
 

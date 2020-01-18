@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     label:{
         color:"#8991A2",
         fontWeight:"700",
-        fontSize:17
+        fontSize:14
     },
     textinput:{
         height:40,
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         marginTop:7,
         paddingLeft:20,
         color:"#131D4A",
-        fontSize: 15,
+        fontSize: 12,
         borderColor:"#E6E6E6"
     },
     separator:{
@@ -77,13 +77,13 @@ const styles = StyleSheet.create({
     },
     forwardtitle:{
         flex:1,
-        fontSize:17,
+        fontSize:14,
         color:"#8991A2",
         fontWeight:"700",
     },
     forwardarrow:{
-        width:15,
-        height:15,
+        width:12,
+        height:12,
         resizeMode:"contain",
     },
     password:{
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
         justifyContent:"center"
     },
     passwordtitle:{
-        fontSize:17,
+        fontSize:14,
         color:"#fff",
         fontWeight:"700"
     },
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
         marginBottom:20
     },
     logouttitle:{
-        fontSize:17,
+        fontSize:14,
         color:"#D62246",
         fontWeight:"700"
     },

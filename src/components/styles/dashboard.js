@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 	},
 	navheading: {
 		color: '#fff',
-		fontSize: 24,
+		fontSize: 20,
 		fontWeight: 'bold',
 		flex: 1
 	},
@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
 		marginRight: 25
 	},
 	settings: {
-		width: 25,
-		height: 25,
+		width: 20,
+		height: 20,
 		marginHorizontal: 7.5,
 		resizeMode: 'contain'
 	},
@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
 	},
 	card1: {
 		backgroundColor: '#fff',
-		width: '90%',
-		height: 150,
+		width: Dimensions.get('window').width * 0.85,
+		height: 130,
 		alignSelf: 'center',
 		shadowColor: '#000000',
 		shadowOpacity: 0.2,
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
 		marginBottom: -30
 	},
 	cardimage: {
-		width: 26,
-		height: 26,
+		width: 20,
+		height: 20,
 		marginTop: 20,
 		marginLeft: 20,
 		resizeMode: 'contain'
@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
 	cardtitle: {
 		color: '#131d4a',
 		marginLeft: 20,
-		marginTop: 20,
-		fontSize: 20,
+		marginTop: 10,
+		fontSize: 14,
 		fontWeight: '700'
 	},
 	cardinfo: {
@@ -90,45 +90,54 @@ const styles = StyleSheet.create({
 	active: {
 		backgroundColor: '#1CA49F',
 		color: '#fff',
-		paddingVertical: 4,
+		paddingVertical: 5,
 		paddingHorizontal: 8,
-		borderRadius: 5
+		borderRadius: 2,
+		fontSize:12,
+		overflow:"hidden"
 	},
 	normal: {
 		backgroundColor: '#E6E6E6',
-		paddingVertical: 4,
+		paddingVertical: 5,
 		paddingHorizontal: 8,
-		borderRadius: 5
+		borderRadius: 2,
+		fontSize:12,
+		overflow:"hidden"
 	},
 	alert: {
 		backgroundColor: '#D62246',
 		color: '#fff',
-		paddingVertical: 4,
+		paddingVertical: 5,
 		paddingHorizontal: 8,
-		borderRadius: 5
+		borderRadius: 2,
+		fontSize:12,
+		overflow:"hidden"
 	},
 	open: {
 		backgroundColor: '#F68257',
 		color: '#fff',
-		paddingVertical: 4,
+		paddingVertical: 5,
 		paddingHorizontal: 8,
-		borderRadius: 5
+		borderRadius: 2,
+		fontSize:12,
+		overflow:"hidden"
 	},
 	info: {
 		flex: 1,
 		flexDirection: 'row',
-		height: 25
+		height: 24
 	},
 	text: {
 		lineHeight: 25,
 		marginLeft: 10,
-		flexWrap:"wrap"
+		flexWrap:"wrap",
+		fontSize:12
 	},
 	restarea: {
 		marginTop: 30,
 		flex: 1,
 		flexDirection: 'row',
-		width: Dimensions.get('window').width * 0.9,
+		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center',
 		marginBottom: 30
 	},

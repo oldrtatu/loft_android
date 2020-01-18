@@ -124,8 +124,14 @@ export class GlobalContextProvider extends React.Component {
 			let ob = { ...this.state[table] };
 			ob[res.id] = { ...res };
 			if (table == 'issuesdata') {
+				ob[res.id]["division"] = {...data["division"]}
+				ob[res.id]["category"] = data["category"]
+				ob[res.id][data.equipmentType.toLowerCase()] = data[data.equipmentType.toLowerCase()]
+				console.log(ob)
 				this.setState({ issuesdata: ob });
 			}else if (table == 'inventorydata') {
+				ob[res.id]["item"] = data["item"]
+				ob[res.id]["vendor"] = data["vendor"]
 				this.setState({ inventorydata: ob });
 			}
 		}

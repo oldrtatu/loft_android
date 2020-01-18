@@ -67,8 +67,12 @@ class PurchaseOrder extends React.Component {
 				<ScrollView style={viewstyle.restarea}>
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
-							<Text style={viewstyle.lefttext}>Item name</Text>
+							<Text style={viewstyle.lefttext}>Inventory name</Text>
 							<Text style={viewstyle.righttext}>{this.state.rowdata.name}</Text>
+						</View>
+						<View style={viewstyle.row}>
+							<Text style={viewstyle.lefttext}>Item name</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.item.name}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Item code</Text>

@@ -48,6 +48,7 @@ class InventoryTable extends React.Component {
 
 	UNSAFE_componentWillReceiveProps(newprops){
 		Data = convertback((newprops.context.inventorydata)? newprops.context.inventorydata : {})
+		console.log(Data)
 		this.setState({ refreshing: true, start: 50 });
 		let filterobject = {
 			ALL: Data.length,

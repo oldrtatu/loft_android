@@ -63,14 +63,11 @@ class AddForm extends React.Component {
 		if(err == ''){
             let addeddata = {...this.state.editdata}
             addeddata["itemId"] = this.state.editdata.item.id
-            delete addeddata["item"]
 
             if(this.state.editdata.vendor.name != ''){
                 addeddata["vendorId"] = this.state.editdata.vendor.id
-                delete addeddata["vendor"]
-            }else{
-                delete addeddata["vendor"]
-            }
+			}
+			
             if(this.state.editdata.notes == ''){
                 delete addeddata.notes
             }

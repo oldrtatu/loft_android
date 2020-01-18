@@ -160,15 +160,11 @@ class AddForm extends React.Component {
             let addeddata = JSON.parse(JSON.stringify(this.state.editdata))
 
             addeddata["categoryId"] = addeddata.category.id
-            delete addeddata["category"]
 
-            addeddata["divisionId"] = addeddata.division.id
-            delete addeddata["division"]
-
+			addeddata["divisionId"] = addeddata.division.id
+			
             let equipment = addeddata.equipmentType.toLowerCase()
             addeddata[`${equipment}Id`] = addeddata[equipment]["id"]
-            delete addeddata["truck"]
-            delete addeddata["trailer"]
 
             if(addeddata.type != "AXLE"){
                 delete addeddata["typeDriverSide"]

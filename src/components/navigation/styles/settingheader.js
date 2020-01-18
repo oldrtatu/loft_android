@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     button:{
         width:50,
         height:50,
-        padding:14,
+        padding:18,
         marginTop:10
     },
     image:{
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     },
     text:{
         color:"#fff",
-        fontSize:24,
+        fontSize:18,
         fontWeight:"bold",
         flex:1,
         alignSelf:"center",

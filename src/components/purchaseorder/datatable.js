@@ -9,6 +9,7 @@ import close from '../../assets/whiteclose.png';
 import forward from '../../assets/forward.png';
 
 import {GlobalContext} from '../../provider'
+import { convertback } from '../helpers/convertdata';
 
 let Data = []
 
@@ -26,9 +27,11 @@ const Row = (props) => {
 class PODataTable extends React.Component {
 	constructor(props) {
 		super(props);
-		Data = (props.context.podata != undefined && props.context.podata != null)? props.context.podata : []
+		console.log(props.context.podata)
+		Data = convertback((props.context.podata != undefined && props.context.podata != null)? props.context.podata : [])
+		console.log(Data)
 		let filterobject = {
-			All: Data.length,
+			ALL: Data.length,
 			ACTIVE: 0,
 			COMPLETE: 0,
 			INVOICED: 0,
@@ -52,7 +55,7 @@ class PODataTable extends React.Component {
 		this.props.navigation.navigate('View',{rowdata})
 	}
 
-	header = [ 'PO #', 'Equipment', 'Status' ];
+	header = [ '#', 'Equipment type', 'Status' ];
 
 	addPO = () => {
 		this.props.navigation.navigate('Form')
@@ -71,7 +74,7 @@ class PODataTable extends React.Component {
 			this.setState({ refreshing: true, start: 50 });
 			let data = Data.slice(0, 50);
 			let filteredarray = [];
-			if (val != 'All') {
+			if (val != 'ALL') {
 				for (let i = 0; i < data.length; i++) {
 					if (data[i].status == val && data[i].id.toString().indexOf(this.state.searchtext) > -1) {
 						filteredarray.push(data[i]);
@@ -96,7 +99,7 @@ class PODataTable extends React.Component {
 		this.setState({ refreshing: true });
 		let slicedarray = Data.slice(this.state.start, this.state.start + 50);
 		let filteredarray = [];
-		if (this.state.activefilter != 'All') {
+		if (this.state.activefilter != 'ALL') {
 			for (let i = 0; i < slicedarray.length; i++) {
 				if (
 					slicedarray[i].status == this.state.activefilter &&
@@ -187,7 +190,7 @@ class PODataTable extends React.Component {
 					</View>
 				</SafeAreaView>
 				<FlatList
-					style={{ flex: 1, marginTop: 5 }}
+					style={{ flex: 1, paddingTop: 5 ,backgroundColor:"#F6F7F9" }}
 					data={this.state.loadeddata}
 					renderItem={({ item }) => <Row key={item.id} id={item.id} rowdata={item} viewRow={this.viewRow} />}
 					keyExtractor={(item) => item.id.toString()}
