@@ -7,5 +7,6 @@ import IncrementField from './IncrementField'
 import DropDown from './DropDown'
 import SuggestionField from './SuggestionField'
 import TextArea from './TextArea'
+import AttachmentField from './Attachments'
 
-export {DatePicker,Slidebutton,IncrementField,InputField,DropDown,SuggestionField,TextArea}
+export {DatePicker,Slidebutton,IncrementField,InputField,DropDown,SuggestionField,TextArea,AttachmentField}

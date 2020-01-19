@@ -27,9 +27,7 @@ const Row = (props) => {
 class PODataTable extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log(props.context.podata)
-		Data = convertback((props.context.podata != undefined && props.context.podata != null)? props.context.podata : [])
-		console.log(Data)
+		// Data = convertback((props.context.podata != undefined && props.context.podata != null)? props.context.podata : [])
 		let filterobject = {
 			ALL: Data.length,
 			ACTIVE: 0,
@@ -42,7 +40,7 @@ class PODataTable extends React.Component {
 		}
 		this.state = {
 			showsearch: false,
-			activefilter: 'All',
+			activefilter: 'ALL',
 			loadeddata: Data.slice(0, 50),
 			start: 50,
 			refreshing: false,
@@ -51,14 +49,49 @@ class PODataTable extends React.Component {
 		};
 	}
 
+	UNSAFE_componentWillReceiveProps(newprops){
+		Data = convertback((newprops.context.podata)? newprops.context.podata : {})
+		this.setState({ refreshing: true, start: 50 });
+		let filterobject = {
+			ALL: Data.length,
+			ACTIVE: 0,
+			COMPLETE: 0,
+			INVOICED: 0,
+			'ENTERED IN QB': 0
+		};
+		for (let j = 0; j < Data.length; j++) {
+			filterobject[Data[j].status] += 1;
+		}
+		let data = Data.slice(0, 50);
+		let filteredarray = [];
+		if (this.state.activefilter != 'ALL') {
+			for (let i = 0; i < data.length; i++) {
+				if (data[i].status == this.state.activefilter && data[i].id.toString().indexOf(this.state.searchtext) > -1) {
+					filteredarray.push(data[i]);
+				}
+			}
+		} else {
+			for (let i = 0; i < data.length; i++) {
+				if (data[i].id.toString().indexOf(this.state.searchtext) > -1) {
+					filteredarray.push(data[i]);
+				}
+			}
+		}
+		this.setState({
+			loadeddata: filteredarray,
+			filters:filterobject,
+			refreshing: false
+		});
+	}
+
 	viewRow = (rowdata) => {
 		this.props.navigation.navigate('View',{rowdata})
 	}
 
-	header = [ '#', 'Equipment type', 'Status' ];
+	header = [ '#', 'Equipment Type', 'Status' ];
 
 	addPO = () => {
-		this.props.navigation.navigate('Form')
+		this.props.navigation.navigate('Add')
 	}
 
 	changesearch = () => {

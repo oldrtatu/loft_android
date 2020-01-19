@@ -29,7 +29,7 @@ const MainApp = createBottomTabNavigator(
         Notifications: TestScreen
 	},
 	{
-		initialRouteName: 'Dashboard',
+		initialRouteName: 'Purchase Order',
 		tabBarComponent: (props) => <Nav {...props}/>
 		
 	}
