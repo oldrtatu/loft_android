@@ -8,5 +8,6 @@ import DropDown from './DropDown'
 import SuggestionField from './SuggestionField'
 import TextArea from './TextArea'
 import AttachmentField from './Attachments'
+import TimePicker from './TimePicker'
 
-export {DatePicker,Slidebutton,IncrementField,InputField,DropDown,SuggestionField,TextArea,AttachmentField}
+export {DatePicker,Slidebutton,IncrementField,InputField,DropDown,SuggestionField,TextArea,AttachmentField,TimePicker}

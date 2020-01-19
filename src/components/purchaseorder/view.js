@@ -13,7 +13,7 @@ class PurchaseOrder extends React.Component {
 		};
 	}
 	componentDidMount() {
-		this.setState({ rowdata: this.props.navigation.getParam('rowdata') },()=>console.log(this.state.rowdata));
+		this.setState({ rowdata: this.props.navigation.getParam('rowdata') });
 	}
 
 	goback = () => {
@@ -21,7 +21,11 @@ class PurchaseOrder extends React.Component {
 	};
 
 	editdata = () => {
-		this.props.navigation.navigate('Form', {rowdata:this.state.rowdata})
+		this.props.navigation.navigate('Form', { rowdata: this.state.rowdata,changedata:this.changedata });
+	};
+
+	changedata = (data) =>{
+		this.setState({rowdata:{...this.state.rowdata,...data}})
 	}
 
 	render() {
@@ -37,26 +41,28 @@ class PurchaseOrder extends React.Component {
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Unit Number</Text>
-							<Text style={viewstyle.righttext}>12345</Text>
+							<Text style={viewstyle.righttext}>
+								{this.state.rowdata[this.state.rowdata.equipmentType.toLowerCase()]['unitNo']}
+							</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Equipment Type</Text>
 							<Text style={viewstyle.righttext}>{this.state.rowdata.equipmentType}</Text>
 						</View>
 						<View style={viewstyle.row}>
-							<Text style={viewstyle.lefttext}>Subsidiary</Text>
-							<Text style={viewstyle.righttext}>Tango Zulu</Text>
+							<Text style={viewstyle.lefttext}>Division</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.division.name}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Category</Text>
-							<Text style={viewstyle.righttext}>Sample text</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.category.name}</Text>
 						</View>
 					</View>
 					<View style={viewstyle.separator} />
 					<View style={viewstyle.details}>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Type</Text>
-							<Text style={viewstyle.righttext}>General</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.poType}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Status</Text>
@@ -64,66 +70,70 @@ class PurchaseOrder extends React.Component {
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Reporting Time</Text>
-							<Text style={viewstyle.righttext}>9 Jul, 2019 12:30 PM</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.reportingTime}</Text>
 						</View>
 					</View>
 					<View style={viewstyle.separator} />
 					<View style={viewstyle.details}>
-						<View style={viewstyle.row}>
-							<Text style={viewstyle.lefttext}>Vendor name</Text>
-							<Text style={viewstyle.righttext}>John Barrett</Text>
-						</View>
+						{this.state.rowdata.vendor && (
+							<View style={viewstyle.row}>
+								<Text style={viewstyle.lefttext}>Vendor name</Text>
+								<Text style={viewstyle.righttext}>{this.state.rowdata.vendor.name}</Text>
+							</View>
+						)}
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Created by</Text>
-							<Text style={viewstyle.righttext}>John Doe</Text>
+							<Text style={viewstyle.righttext}>{`${this.state.rowdata.createdBy.firstName} ${this.state
+								.rowdata.createdBy.lastName}`}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Assigned by</Text>
-							<Text style={viewstyle.righttext}>John Doe</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.assignedBy}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Assigned to</Text>
-							<Text style={viewstyle.righttext}>Neil Patrick</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.assignedTo}</Text>
 						</View>
 					</View>
-					<View style={viewstyle.separator} />
-					<View style={viewstyle.details}>
-						<View style={viewstyle.paragraph}>
-							<Text style={viewstyle.longtextheading}>PO Notes</Text>
-							<Text style={viewstyle.longtext}>
-								Pellentesque habitant morbi tristique senectus etnete malesuada fames ac turpis egestas.
-								Ut arcu liberotert
-							</Text>
-						</View>
-					</View>
-					<View style={viewstyle.separator} />
-					<View style={viewstyle.details}>
-						<View style={viewstyle.paragraph}>
-							<Text style={viewstyle.longtextheading}>Vendor Notes</Text>
-							<Text style={viewstyle.longtext}>
-								Pellentesque habitant morbi tristique senectus etnete malesuada fames ac turpis egestas.
-								Ut arcu liberotert
-							</Text>
-						</View>
-					</View>
-					<View style={viewstyle.separator} />
-					<View style={viewstyle.details}>
-						<View style={viewstyle.paragraph}>
-							<Text style={viewstyle.longtextheading}>Issues</Text>
-							<View style={viewstyle.row}>
-								<Text style={viewstyle.leftissuetext}>3001</Text>
-								<Text style={viewstyle.righttext}>Active</Text>
+					{this.state.rowdata.poNotes ? (
+						<React.Fragment>
+							<View style={viewstyle.separator} />
+							<View style={viewstyle.details}>
+								<View style={viewstyle.paragraph}>
+									<Text style={viewstyle.longtextheading}>PO Notes</Text>
+									<Text style={viewstyle.longtext}>{this.state.rowdata.poNotes}</Text>
+								</View>
 							</View>
-							<View style={viewstyle.row}>
-								<Text style={viewstyle.leftissuetext}>3004</Text>
-								<Text style={viewstyle.righttext}>Incomplete</Text>
+						</React.Fragment>
+					) : null}
+					{this.state.rowdata.vendorNotes ? (
+						<React.Fragment>
+							<View style={viewstyle.separator} />
+							<View style={viewstyle.details}>
+								<View style={viewstyle.paragraph}>
+									<Text style={viewstyle.longtextheading}>Vendor Notes</Text>
+									<Text style={viewstyle.longtext}>{this.state.rowdata.vendorNotes}</Text>
+								</View>
 							</View>
-							<View style={viewstyle.row}>
-								<Text style={viewstyle.leftissuetext}>3143</Text>
-								<Text style={viewstyle.righttext}>Complete</Text>
+						</React.Fragment>
+					) : null}
+					{this.state.rowdata.issues ? (
+						<React.Fragment>
+							<View style={viewstyle.separator} />
+							<View style={viewstyle.details}>
+								<View style={viewstyle.paragraph}>
+									<Text style={viewstyle.longtextheading}>Issues</Text>
+									{this.state.rowdata.issues.map((item, i) => (
+										<View style={viewstyle.row} key={i}>
+											<Text style={viewstyle.leftissuetext}>{item.id}</Text>
+											<Text style={viewstyle.righttext}>{item.status}</Text>
+										</View>
+									))}
+								</View>
 							</View>
-						</View>
-					</View>
+						</React.Fragment>
+					) : null}
+					<View style={{ height: 80 }} />
 				</ScrollView>
 				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
 					<Text style={viewstyle.editbuttontext}>{`EDIT `}</Text>

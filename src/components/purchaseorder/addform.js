@@ -1,27 +1,20 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image, ScrollView, Switch, SafeAreaView, Platform } from 'react-native';
+import { Text, View, TouchableOpacity, Image, ScrollView, Dimensions, SafeAreaView, Platform, Modal } from 'react-native';
 
 import form from './styles/formstyle';
 
-import {
-	Slidebutton,
-	DropDown,
-	DatePicker,
-	InputField,
-	SuggestionField,
-	TextArea,
-	AttachmentField
-} from '../helpers';
-import IssueDropDown from '../helpers/IssueLinkDropDown'
+import { Slidebutton, DropDown, InputField, SuggestionField, TextArea, AttachmentField, TimePicker } from '../helpers';
+import IssueDropDown from '../helpers/IssueLinkDropDown';
 import { GlobalContext } from '../../provider';
 import Snackbar from 'react-native-snackbar';
 import { convertback } from '../helpers/convertdata';
 import { SwipeListView } from 'react-native-swipe-list-view';
-
+import { UIActivityIndicator } from 'react-native-indicators';
+import { add_attachment } from '../../provider/updatedata';
 
 import back from '../../assets/back.png';
-import viewrow from '../../assets/viewdata.png'
-import deleterow from '../../assets/deleterow.png'
+import viewrow from '../../assets/viewdata.png';
+import deleterow from '../../assets/deleterow.png';
 
 class AddForm extends React.Component {
 	constructor(props) {
@@ -31,7 +24,8 @@ class AddForm extends React.Component {
 			trailer: props.context.trailerdata ? props.context.trailerdata : [],
 			category: props.context.categorydata ? props.context.categorydata : [],
 			vendor: props.context.vendordata ? props.context.vendordata : [],
-			issues: props.context.issuesdata ? convertback(props.context.issuesdata) : []
+			issues: props.context.issuesdata ? convertback(props.context.issuesdata) : [],
+			user: props.context.user_data
 		};
 		this.state = {
 			editdata: {
@@ -42,13 +36,13 @@ class AddForm extends React.Component {
 				division: { name: '' },
 				type: 'ISSUES',
 				status: 'ACTIVE',
-				createdBy: 'Yash Malik',
-				assignedBy: 'Yash Malik',
+				createdBy: `${this.data.user.firstName} ${this.data.user.lastName}`,
+				assignedBy: `${this.data.user.firstName} ${this.data.user.lastName}`,
 				vendor: { name: '' },
-				reportedOn: '',
-				assignedTo: 'Neil Patrick',
-				ponotes: '',
-				vendornotes: '',
+				reportingTime: '',
+				assignedTo: `${this.data.user.firstName} ${this.data.user.lastName}`,
+				poNotes: '',
+				vendorNotes: '',
 				issues: [],
 				addedissues: [],
 				height: 20
@@ -56,7 +50,8 @@ class AddForm extends React.Component {
 			issuevalue: '',
 			formnumber: 1,
 			reload: false,
-			refreshing:false
+			refreshing: false,
+			uploading: false
 		};
 	}
 
@@ -66,40 +61,47 @@ class AddForm extends React.Component {
 		if (this.state.formnumber == 1) {
 			this.props.navigation.goBack(null);
 		} else {
-			this.setState({ formnumber: this.state.formnumber - 1 });
+			if (this.state.formnumber == 3) {
+				if (this.state.editdata.type == 'ISSUES') {
+					this.setState({ formnumber: this.state.formnumber - 1 });
+				} else {
+					this.setState({ formnumber: this.state.formnumber - 2 });
+				}
+			} else {
+				this.setState({ formnumber: this.state.formnumber - 1 });
+			}
 		}
 	};
 
 	validateFirstForm = () => {
 		let err = '';
-		// if (this.state.editdata[this.state.editdata.equipmentType.toLowerCase()].unitNo == '') {
-		// 	err = 'Enter Unit Number';
-		// } else if (this.state.editdata.category.name == '') {
-		// 	err = 'Enter category';
-		// }
+		if (this.state.editdata[this.state.editdata.equipmentType.toLowerCase()].unitNo == '') {
+			err = 'Enter Unit Number';
+		} else if (this.state.editdata.category.name == '') {
+			err = 'Enter category';
+		}
 		return err;
 	};
 
 	validateSecondForm = () => {
-		// if(this.state.editdata.addedissues.length == 0){
-		// 	return 'Add issues'
-		// }
+		if (this.state.editdata.addedissues.length == 0) {
+			return 'Add issues';
+		}
 		return '';
 	};
 
 	validateThirdForm = () => {
-		// if(this.state.editdata.reportedOn == ''){
-		// 	return 'Enter reporting date'
-		// }else{
-		// 	return ''
-		// }
-		return '';
+		if (this.state.editdata.reportedOn == '') {
+			return 'Enter reporting date';
+		} else {
+			return '';
+		}
 	};
 
-	handleSubmit = () => {
+	handleSubmit = async () => {
 		let err = '';
 		err = this.validateFirstForm();
-		if (err == '' && this.state.editdata.type == 'AXLE') {
+		if (err == '' && this.state.editdata.type == 'ISSUES') {
 			this.validateSecondForm();
 		}
 		if (err == '') {
@@ -108,8 +110,80 @@ class AddForm extends React.Component {
 		if (err == '') {
 			let addeddata = JSON.parse(JSON.stringify(this.state.editdata));
 
-			// this.props.context.adddata('/po/po', 'podata', addeddata);
-			// this.props.navigation.goBack();
+			delete addeddata['height'];
+			delete addeddata['issues'];
+
+			addeddata['issues'] = [ ...addeddata['addedissues'] ];
+			delete addeddata['addedissues'];
+
+			addeddata['categoryId'] = addeddata.category.id;
+			addeddata['divisionId'] = addeddata.division.id;
+			addeddata['createdById'] = this.data.user.id;
+			addeddata['createdBy'] = {
+				firstName: this.data.user.firstName,
+				lastName: this.data.user.lastName,
+				id: this.data.user.id
+			};
+			if (addeddata.vendor.name == '') {
+				addeddata.vendor = null;
+			} else {
+				addeddata['vendorId'] = addeddata.vendor.id;
+			}
+			delete addeddata.vendorNotes;
+
+			addeddata['poType'] = addeddata.type
+			delete addeddata.type
+
+			addeddata[`${addeddata.equipmentType.toLowerCase()}Id`] =
+				addeddata[addeddata.equipmentType.toLowerCase()]['id'];
+			if (addeddata.equipmentType.toLowerCase() == 'truck') {
+				delete addeddata.trailer;
+			} else {
+				delete addeddata.truck;
+			}
+			this.setState({ uploading: true }, async () => {
+				let str = '';
+				for (let i in this.files) {
+					if (this.files[i]['new']) {
+						let form = new FormData();
+						let data = this.files[i]
+						if (this.files[i]['type'] == 'application/pdf') {
+							form.append('file', {
+								name: data.name,
+								type: data.type,
+								uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', '')
+							});
+						} else {
+							form.append('file', {
+								name: data.fileName,
+								type: data.type,
+								uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', '')
+							});
+						}
+						await add_attachment(this.props.context.url, this.props.context.token, form)
+							.then((res) => {
+								str += res.url;
+								str += ','
+							})
+							.catch((err) => {
+								Snackbar.show({
+									title: err.message,
+									backgroundColor: '#D62246',
+									duration: Snackbar.LENGTH_SHORT
+								});
+							});
+					}
+				}
+				if (str != ''){
+					str = str.substring(0, str.length-1)
+				}
+				this.setState({ uploading: false }, () => {
+					addeddata['attachments'] = str
+					this.props.context.adddata('/po/po', 'podata', addeddata);
+					this.props.navigation.goBack();
+				});
+			});
+
 		} else {
 			Snackbar.show({
 				title: err,
@@ -184,7 +258,7 @@ class AddForm extends React.Component {
 	};
 
 	getVendor = (item) => {
-		this.setState({ editdata: { ...this.state.editdata, vendor: item } });
+		this.setState({ editdata: { ...this.state.editdata, vendor: item, vendorNotes: item.notes } });
 	};
 
 	sendfiles = (data) => {
@@ -196,43 +270,45 @@ class AddForm extends React.Component {
 	};
 
 	viewIssue = (item) => {
-		this.props.navigation.navigate('ViewIssue',{rowdata:item})
-	}
+		this.props.navigation.navigate('ViewIssue', { rowdata: item });
+	};
 
-	addIssue =(data)=>{
-		this.setState({refreshing:true})
-		let addedissues = [...this.state.editdata.addedissues]
-		addedissues.push(data.item)
-		let issues = [...this.state.editdata.issues]
-		issues.splice(data.index,1)
+	addIssue = (data) => {
+		this.setState({ refreshing: true });
+		let addedissues = [ ...this.state.editdata.addedissues ];
+		data.item.status = 'ASSIGNED';
+		addedissues.push(data.item);
+		let issues = [ ...this.state.editdata.issues ];
+		issues.splice(data.index, 1);
+
 		this.setState({
-			editdata:{
+			editdata: {
 				...this.state.editdata,
 				addedissues,
 				issues,
-				height:addedissues.length*75
+				height: addedissues.length * 75
 			},
-			refreshing:false
-		})
-		
-	}
+			refreshing: false
+		});
+	};
 
-	deleteissue=(data)=>{
-		this.setState({refreshing:true})
-		let addedissues = [...this.state.editdata.addedissues]
-		addedissues.splice(data.index,1)
-		let issues = [...this.state.editdata.issues]
-		issues.push(data.item)
+	deleteissue = (data) => {
+		this.setState({ refreshing: true });
+		let addedissues = [ ...this.state.editdata.addedissues ];
+		addedissues.splice(data.index, 1);
+		let issues = [ ...this.state.editdata.issues ];
+		data.item.status = 'OPEN';
+		issues.push(data.item);
 		this.setState({
-			editdata:{
+			editdata: {
 				...this.state.editdata,
 				addedissues,
 				issues,
-				height:addedissues.length*75
+				height: addedissues.length * 75
 			},
-			refreshing:false
-		})
-	}
+			refreshing: false
+		});
+	};
 
 	render() {
 		return (
@@ -340,10 +416,10 @@ class AddForm extends React.Component {
 							dropdowndata={this.data.vendor}
 							editable={true}
 						/>
-						<DatePicker
-							label="Reported On"
+						<TimePicker
+							label="Reporting Time"
 							value={this.state.editdata.reportedOn}
-							name="reportedOn"
+							name="reportingTime"
 							setValue={this.getValue}
 							editable={true}
 						/>
@@ -359,28 +435,28 @@ class AddForm extends React.Component {
 						<TextArea
 							placeholder="Enter PO notes"
 							label="PO notes"
-							value={this.state.editdata.ponotes}
+							value={this.state.editdata.poNotes}
 							validate={[]}
-							name="ponotes"
+							name="poNotes"
 							getValue={this.getValue}
 							editable={true}
 						/>
 						<TextArea
 							placeholder="Enter vendor notes"
 							label="Vendor notes"
-							value={this.state.editdata.vendornotes}
+							value={this.state.editdata.vendorNotes}
 							validate={[]}
-							name="vendornotes"
+							name="vendorNotes"
 							getValue={this.getValue}
-							editable={true}
+							editable={false}
 						/>
 						<AttachmentField sendfiles={this.sendfiles} />
-						<View style={{height:80}}/>
+						<View style={{ height: 80 }} />
 					</ScrollView>
 				)}
 				{this.state.formnumber == 2 && (
 					<View style={form.mainform}>
-						<Text style={[form.partnumber,{flex:0}]}>{`${this.state.formnumber}/3 `}</Text>
+						<Text style={[ form.partnumber, { flex: 0 } ]}>{`${this.state.formnumber}/3 `}</Text>
 						<Text style={form.already}>Already added</Text>
 						<SwipeListView
 							data={this.state.editdata.addedissues}
@@ -400,15 +476,15 @@ class AddForm extends React.Component {
 							refreshing={this.state.refreshing}
 							renderHiddenItem={(data) => (
 								<View style={form.rowback}>
-									<TouchableOpacity style={form.addissue} onPressIn={()=>this.viewIssue(data.item)}>
+									<TouchableOpacity style={form.addissue} onPressIn={() => this.viewIssue(data.item)}>
 										<Image source={viewrow} style={form.backimage} />
 									</TouchableOpacity>
-									<TouchableOpacity style={form.deleteissue} onPressIn={()=>this.deleteissue(data)}>
+									<TouchableOpacity style={form.deleteissue} onPressIn={() => this.deleteissue(data)}>
 										<Image source={deleterow} style={form.backimage} />
 									</TouchableOpacity>
 								</View>
 							)}
-							style={{maxHeight:this.state.editdata.height}}
+							style={{ maxHeight: this.state.editdata.height }}
 						/>
 						<Text style={form.already}>Available</Text>
 						<SwipeListView
@@ -429,10 +505,10 @@ class AddForm extends React.Component {
 							refreshing={this.state.refreshing}
 							renderHiddenItem={(data) => (
 								<View style={form.rowback}>
-									<TouchableOpacity style={form.addnewissue} onPressIn={()=>this.addIssue(data)}>
+									<TouchableOpacity style={form.addnewissue} onPressIn={() => this.addIssue(data)}>
 										<Text style={form.addissuetext}>ADD</Text>
 									</TouchableOpacity>
-									<TouchableOpacity style={form.addissue} onPressIn={()=>this.viewIssue(data.item)}>
+									<TouchableOpacity style={form.addissue} onPressIn={() => this.viewIssue(data.item)}>
 										<Image source={viewrow} style={form.backimage} />
 									</TouchableOpacity>
 								</View>
@@ -440,6 +516,28 @@ class AddForm extends React.Component {
 						/>
 					</View>
 				)}
+				<Modal animated={false} visible={this.state.uploading}>
+					<View
+						style={{
+							backgroundColor: '#000',
+							width: Dimensions.get('window').width,
+							height: Dimensions.get('window').height,
+							opacity: 0.7
+						}}
+					/>
+					<View
+						style={{
+							position: 'absolute',
+							top: 0,
+							justifyContent: 'center',
+							width: Dimensions.get('window').width,
+							height: Dimensions.get('window').height
+						}}
+					>
+						<UIActivityIndicator color="#fff" size={50} />
+					</View>
+				</Modal>
+				<Slidebutton submit={this.handleSubmit} reload={this.state.reload} />
 			</React.Fragment>
 		);
 	}
