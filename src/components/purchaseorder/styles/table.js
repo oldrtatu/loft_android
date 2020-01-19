@@ -17,20 +17,20 @@ const styles = StyleSheet.create({
         shadowOffset:{width:0,height:-3}
     },
     header1:{
-        fontSize:17,
+        fontSize:14,
         fontWeight:"bold",
         marginLeft:25,
         width:60,
         alignSelf:"center"
     },
     header2:{
-        fontSize:17,
+        fontSize:14,
         fontWeight:"bold",
         flex:2,
         alignSelf:"center"
     },
     header:{
-        fontSize:17,
+        fontSize:14,
         fontWeight:"bold",
         marginRight:15,
         marginLeft:10,
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     },
     addtext:{
         color:"#fff",
-        fontSize:17
+        fontSize:14
     },
     row:{
         flexDirection:"row",
@@ -59,18 +59,18 @@ const styles = StyleSheet.create({
         borderRadius:10
     },
     text1:{
-        fontSize:14,
+        fontSize:12,
         marginLeft:25,
         width:60,
         alignSelf:"center"
     },
     text2:{
-        fontSize:14,
+        fontSize:12,
         flex:2,
         alignSelf:"center"
     },
     text:{
-        fontSize:14,
+        fontSize:12,
         marginRight:15,
         flex:1,
         alignSelf:"center"

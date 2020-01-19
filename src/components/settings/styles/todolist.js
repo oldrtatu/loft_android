@@ -48,7 +48,14 @@ const styles = StyleSheet.create({
         marginRight:20,
         marginLeft:5,
         marginTop:5
-    }
+	},
+	rowback:{
+		alignItems: 'center',
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingLeft: 15
+	}
 })
 
 export default styles

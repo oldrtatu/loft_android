@@ -17,7 +17,7 @@ const Row = (props) => {
 	return (
 		<TouchableOpacity activeOpacity={1} style={table.row} onPress={() => props.viewRow(props.rowdata)}>
 			<Text style={table.text1}>{props.id}</Text>
-			<Text style={table.text}>{props.rowdata.equipment}</Text>
+			<Text style={table.text2}>{props.rowdata.equipment}</Text>
 			<Text style={table.text}>{props.rowdata.status}</Text>
 			<Image source={forward} style={table.forward} />
 		</TouchableOpacity>
@@ -214,7 +214,7 @@ class PODataTable extends React.Component {
 						</ScrollView>
 						<View style={table.tableheader}>
 							{this.header.map((item, i) => (
-								<Text key={i} style={i == 0 ? table.header1 : table.header}>{item}</Text>
+								<Text key={i} style={i == 0 ? table.header1 : ((i == 1) ? table.header2 : table.header)}>{item}</Text>
 							))}
 							<TouchableOpacity style={table.addbutton} onPress={this.addPO}>
 								<Text style={table.addtext}>+Add</Text>

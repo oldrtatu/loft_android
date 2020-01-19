@@ -1,10 +1,23 @@
 import React from 'react';
-import { Text, StyleSheet, Dimensions, TouchableOpacity, View, Alert, Image, ScrollView } from 'react-native';
+import {
+	Text,
+	StyleSheet,
+	Dimensions,
+	TouchableOpacity,
+	View,
+	Alert,
+	Image,
+	ScrollView,
+	Modal,
+	SafeAreaView,
+	Platform
+} from 'react-native';
 import Snackbar from 'react-native-snackbar';
 import ImagePicker from 'react-native-image-picker';
 import ImageView from 'react-native-image-viewing';
 import DocumentPicker from 'react-native-document-picker';
-import Pdf from 'react-native-pdf';
+import PDF from 'react-native-pdf';
+import RNFetchBlob from 'rn-fetch-blob';
 
 import deleteimage from '../../assets/error.png';
 
@@ -24,9 +37,9 @@ class AttachmentField extends React.Component {
 			value: [],
 			height: 55,
 			imageview: false,
-            viewimage: '',
-            source:"",
-            pdfview:false
+			viewimage: '',
+			source: '',
+			pdfview: false
 		};
 	}
 
@@ -67,7 +80,7 @@ class AttachmentField extends React.Component {
 			let ob = { ...res };
 			ob['new'] = true;
 			value.push(ob);
-			this.setState({ value, height: 55 + value.length * 35 });
+			this.setState({ value, height: 55 + value.length * 35 },()=>this.props.sendfiles(this.state.value));
 		}
 	};
 
@@ -81,6 +94,7 @@ class AttachmentField extends React.Component {
 		}
 		this.setState({ value, height: 55 + value.length * 35 });
 	};
+
 	viewRow = (item) => {
 		let name = item.name.toLowerCase();
 		if (name.includes('.png') || name.includes('.jpg') || name.includes('.jpeg')) {
@@ -92,10 +106,12 @@ class AttachmentField extends React.Component {
 			}
 		} else if (name.includes('.pdf')) {
 			if (item.new) {
-				this.setState({
-                    source:{uri:item.uri},
-                    pdfview:true
-                })
+				if (Platform.OS == 'ios') {
+					RNFetchBlob.ios.openDocument(item.uri);
+				} else if (Platform.OS == 'android') {
+					const android = RNFetchBlob.android;
+					android.actionViewIntent(item.uri, 'application/pdf');
+				}
 			}
 		}
 	};
@@ -113,7 +129,7 @@ class AttachmentField extends React.Component {
 				ob['name'] = res.fileName;
 				ob['new'] = true;
 				arr.push(ob);
-				this.setState({ value: arr, height: 55 + arr.length * 35 });
+				this.setState({ value: arr, height: 55 + arr.length * 35 },()=>this.props.sendfiles(this.state.value));
 			}
 			if (err != '') {
 				Snackbar.show({
@@ -161,7 +177,6 @@ class AttachmentField extends React.Component {
 					visible={this.state.imageview}
 					onRequestClose={() => this.setState({ imageview: false })}
 				/>
-				{this.state.pdfview && <Pdf source={this.state.source} style={styles.pdf} />}
 			</View>
 		);
 	}
@@ -226,6 +241,20 @@ const styles = StyleSheet.create({
 		flex: 1,
 		width: Dimensions.get('window').width,
 		height: Dimensions.get('window').height
+	},
+	closebutton: {
+		position: 'absolute',
+		top: 50,
+		right: 20,
+		width: 80,
+		height: 30,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: '#D52246'
+	},
+	closetext: {
+		fontSize: 12,
+		color: '#fff'
 	}
 });
 

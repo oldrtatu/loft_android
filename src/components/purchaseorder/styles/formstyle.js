@@ -113,6 +113,19 @@ const form = StyleSheet.create({
 		paddingTop:10,
 		height:35,
 		marginLeft:10
+	},
+	rowback:{
+		alignItems: 'center',
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+		paddingLeft: 15,
+		width:Dimensions.get('window').width*0.85,
+		alignSelf:"center"
+	},
+	addissue:{
+		position:'absolute',
+		right:0
 	}
 });
 

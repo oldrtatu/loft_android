@@ -44,7 +44,7 @@ class SuggestionField extends React.Component {
 		const list = [];
 		let key = this.props.name;
 		this.state.dropdowndata.forEach((item) => {
-			if (item[key].includes(text)) {
+			if (item[key].toString().includes(text)) {
 				list.push(item);
 			}
 		});

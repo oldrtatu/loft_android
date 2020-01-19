@@ -3,12 +3,23 @@ import { Text, View, TouchableOpacity, Image, ScrollView, Switch, SafeAreaView, 
 
 import form from './styles/formstyle';
 
-import { Slidebutton, DropDown, DatePicker, InputField, SuggestionField, TextArea, IncrementField, AttachmentField } from '../helpers';
+import {
+	Slidebutton,
+	DropDown,
+	DatePicker,
+	InputField,
+	SuggestionField,
+	TextArea,
+	IncrementField,
+	AttachmentField
+} from '../helpers';
 import { GlobalContext } from '../../provider';
 
 import Snackbar from 'react-native-snackbar';
 
 import back from '../../assets/back.png';
+import { convertback } from '../helpers/convertdata';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 class AddForm extends React.Component {
 	constructor(props) {
@@ -17,7 +28,8 @@ class AddForm extends React.Component {
 			truck: props.context.truckdata ? props.context.truckdata : [],
 			trailer: props.context.trailerdata ? props.context.trailerdata : [],
 			category: props.context.categorydata ? props.context.categorydata : [],
-			vendor: props.context.vendordata ? props.context.vendordata : []
+			vendor: props.context.vendordata ? props.context.vendordata : [],
+			issues: props.context.issuesdata ? convertback(props.context.issuesdata) : []
 		};
 		this.state = {
 			editdata: {
@@ -26,7 +38,7 @@ class AddForm extends React.Component {
 				trailer: { unitNo: '' },
 				category: { name: '' },
 				division: { name: '' },
-				type: 'GENERAL',
+				type: 'ISSUES',
 				status: 'ACTIVE',
 				createdBy: 'Yash Malik',
 				assignedBy: 'Yash Malik',
@@ -34,12 +46,15 @@ class AddForm extends React.Component {
 				reportedOn: '',
 				assignedTo: 'Neil Patrick',
 				ponotes: '',
-				vendornotes: ''
+				vendornotes: '',
+				issues: this.data.issues
 			},
-			formnumber: 3,
+			issuevalue: '',
+			formnumber: 2,
 			reload: false
 		};
 	}
+	files = [];
 
 	goback = () => {
 		if (this.state.formnumber == 1) {
@@ -103,7 +118,11 @@ class AddForm extends React.Component {
 				});
 				return;
 			} else {
-				this.setState({ formnumber: this.state.formnumber + 1 });
+				if (this.state.editdata.type == 'ISSUES') {
+					this.setState({ formnumber: this.state.formnumber + 1 });
+				} else {
+					this.setState({ formnumber: this.state.formnumber + 2 });
+				}
 			}
 		} else {
 			let err = '';
@@ -116,7 +135,7 @@ class AddForm extends React.Component {
 				});
 				return;
 			}
-			this.setState({ formnumber: this.state.formnumber + 1 });
+			if (this.state.editdata.type == 'ISSUES') this.setState({ formnumber: this.state.formnumber + 1 });
 		}
 	};
 
@@ -125,8 +144,36 @@ class AddForm extends React.Component {
 		ob[key] = value;
 		this.setState({ editdata: ob });
 	};
+
+	getUnit = (item) => {
+		let ob = { ...this.state.editdata };
+		ob['division'] = item.division;
+		ob[this.state.editdata.equipmentType.toLowerCase()] = { unitNo: item.unitNo, id: item.id };
+		let issues = [];
+		for (let i in this.data.issues) {
+			let issue = this.data.issues[i];
+			console.log(item.unitNo);
+			if (issue.equipmentType == this.state.editdata.equipmentType && issue.status == 'OPEN') {
+				if (issue[issue.equipmentType.toLowerCase()]['unitNo'] == item.unitNo) {
+					issues.push(issue);
+				}
+			}
+		}
+		ob['issues'] = issues;
+		this.setState({
+			editdata: ob
+		});
+	};
+
 	getVendor = (item) => {
 		this.setState({ editdata: { ...this.state.editdata, vendor: item } });
+	};
+
+	sendfiles = (data) => {
+		this.files = data;
+	};
+	getIssue = (key, value) => {
+		return;
 	};
 
 	render() {
@@ -138,140 +185,167 @@ class AddForm extends React.Component {
 						<Image source={back} style={form.backimage} />
 					</TouchableOpacity>
 					<Text style={form.heading}>{'Add PO '}</Text>
-					{this.state.formnumber != 3 ? (
+					{this.state.formnumber == 1 ? (
+						<TouchableOpacity activeOpacity={1} style={form.nextbutton} onPress={this.navigateFront}>
+							<Text style={{ color: '#fff', fontSize: 18 }}>{`Next `}</Text>
+						</TouchableOpacity>
+					) : null}
+					{this.state.formnumber == 2 && this.state.editdata.type == 'ISSUES' ? (
 						<TouchableOpacity activeOpacity={1} style={form.nextbutton} onPress={this.navigateFront}>
 							<Text style={{ color: '#fff', fontSize: 18 }}>{`Next `}</Text>
 						</TouchableOpacity>
 					) : null}
 				</View>
-				<ScrollView style={form.mainform} nestedScrollEnabled={true}>
-					<Text style={form.partnumber}>{`${this.state.formnumber}/3 `}</Text>
-					{this.state.formnumber == 1 && (
-						<React.Fragment>
-							<DropDown
-								label="Equipment Type"
-								name="equipmentType"
-								value={this.state.editdata.equipmentType}
-								dropdown={[ 'TRUCK', 'TRAILER' ]}
-								getValue={this.getValue}
-								disabled={false}
-							/>
-							<SuggestionField
-								name="unitNo"
-								getValue={this.getUnit}
-								placeholder="Enter unit number"
-								label="Unit number"
-								value={this.state.editdata[this.state.editdata.equipmentType.toLowerCase()]['unitNo']}
-								dropdowndata={this.data[this.state.editdata.equipmentType.toLowerCase()]}
-								editable={true}
-							/>
-							<SuggestionField
-								placeholder="Enter category"
-								label="Category"
-								value={this.state.editdata.category.name}
-								name="name"
-								getValue={this.getCategory}
-								editable={true}
-								dropdowndata={this.data.category}
-							/>
-							<InputField
-								placeholder="Enter division"
-								label="Division"
-								value={this.state.editdata.division.name}
-								validate={[ 'empty' ]}
-								name="subsidiary"
-								getValue={this.getValue}
-								editable={false}
-							/>
-							<DropDown
-								label="Type"
-								name="type"
-								value={this.state.editdata.type}
-								dropdown={[ 'GENERAL', 'INVENTORY', 'ISSUES' ]}
-								getValue={this.getValue}
-								disabled={false}
-							/>
-							<DropDown
-								label="Status"
-								name="status"
-								value={this.state.editdata.status}
-								dropdown={[ 'ACTIVE' ]}
-								getValue={this.getValue}
-								disabled={false}
-							/>
-							<InputField
-								placeholder="Enter user name"
-								label="Created by"
-								value={this.state.editdata.createdBy}
-								validate={[ 'empty' ]}
-								name="createdBy"
-								getValue={this.getValue}
-								editable={false}
-							/>
-							<InputField
-								placeholder="Enter user name"
-								label="Assigned by"
-								value={this.state.editdata.assignedBy}
-								validate={[ 'empty' ]}
-								name="assignedBy"
-								getValue={this.getValue}
-								editable={false}
-							/>
-						</React.Fragment>
-					)}
-					{this.state.formnumber == 2 && (
-						<React.Fragment>
-							<SuggestionField
-								name="name"
-								getValue={this.getVendor}
-								placeholder="Enter preferred vendor"
-								label="Preferred vendor"
-								value={this.state.editdata.vendor.name}
-								dropdowndata={this.data.vendor}
-								editable={true}
-							/>
-							<DatePicker
-								label="Reported On"
-								value={this.state.editdata.reportedOn}
-								name="reportedOn"
-								setValue={this.getValue}
-								editable={true}
-							/>
-							<InputField
-								placeholder="Enter user name"
-								label="Assigned to"
-								value={this.state.editdata.assignedTo}
-								validate={[ 'empty' ]}
-								name="assignedTo"
-								getValue={this.getValue}
-								editable={false}
-							/>
-							<TextArea
-								placeholder="Enter PO notes"
-								label="PO notes"
-								value={this.state.editdata.ponotes}
-								validate={[]}
-								name="ponotes"
-								getValue={this.getValue}
-								editable={true}
-							/>
-							<TextArea
-								placeholder="Enter vendor notes"
-								label="Vendor notes"
-								value={this.state.editdata.vendornotes}
-								validate={[]}
-								name="vendornotes"
-								getValue={this.getValue}
-								editable={true}
-							/>
-						</React.Fragment>
-					)}
-                    {
-                        this.state.formnumber == 3 && (
-                            <AttachmentField/>
-                        )
-                    }
-				</ScrollView>
+				{this.state.formnumber == 1 && (
+					<ScrollView style={form.mainform} nestedScrollEnabled={true}>
+						<Text style={form.partnumber}>{`${this.state.formnumber}/3 `}</Text>
+						<DropDown
+							label="Equipment Type"
+							name="equipmentType"
+							value={this.state.editdata.equipmentType}
+							dropdown={[ 'TRUCK', 'TRAILER' ]}
+							getValue={this.getValue}
+							disabled={false}
+						/>
+						<SuggestionField
+							name="unitNo"
+							getValue={this.getUnit}
+							placeholder="Enter unit number"
+							label="Unit number"
+							value={this.state.editdata[this.state.editdata.equipmentType.toLowerCase()]['unitNo']}
+							dropdowndata={this.data[this.state.editdata.equipmentType.toLowerCase()]}
+							editable={true}
+						/>
+						<SuggestionField
+							placeholder="Enter category"
+							label="Category"
+							value={this.state.editdata.category.name}
+							name="name"
+							getValue={this.getCategory}
+							editable={true}
+							dropdowndata={this.data.category}
+						/>
+						<InputField
+							placeholder="Enter division"
+							label="Division"
+							value={this.state.editdata.division.name}
+							validate={[ 'empty' ]}
+							name="subsidiary"
+							getValue={this.getValue}
+							editable={false}
+						/>
+						<DropDown
+							label="Type"
+							name="type"
+							value={this.state.editdata.type}
+							dropdown={[ 'GENERAL', 'ISSUES' ]}
+							getValue={this.getValue}
+							disabled={false}
+						/>
+						<DropDown
+							label="Status"
+							name="status"
+							value={this.state.editdata.status}
+							dropdown={[ 'ACTIVE' ]}
+							getValue={this.getValue}
+							disabled={false}
+						/>
+						<InputField
+							placeholder="Enter user name"
+							label="Created by"
+							value={this.state.editdata.createdBy}
+							validate={[ 'empty' ]}
+							name="createdBy"
+							getValue={this.getValue}
+							editable={false}
+						/>
+						<InputField
+							placeholder="Enter user name"
+							label="Assigned by"
+							value={this.state.editdata.assignedBy}
+							validate={[ 'empty' ]}
+							name="assignedBy"
+							getValue={this.getValue}
+							editable={false}
+						/>
+					</ScrollView>
+				)}
+				{this.state.formnumber == 3 && (
+					<ScrollView style={form.mainform} nestedScrollEnabled={true}>
+						<Text style={form.partnumber}>{`${this.state.formnumber}/3 `}</Text>
+						<SuggestionField
+							name="name"
+							getValue={this.getVendor}
+							placeholder="Enter preferred vendor"
+							label="Preferred vendor"
+							value={this.state.editdata.vendor.name}
+							dropdowndata={this.data.vendor}
+							editable={true}
+						/>
+						<DatePicker
+							label="Reported On"
+							value={this.state.editdata.reportedOn}
+							name="reportedOn"
+							setValue={this.getValue}
+							editable={true}
+						/>
+						<InputField
+							placeholder="Enter user name"
+							label="Assigned to"
+							value={this.state.editdata.assignedTo}
+							validate={[ 'empty' ]}
+							name="assignedTo"
+							getValue={this.getValue}
+							editable={false}
+						/>
+						<TextArea
+							placeholder="Enter PO notes"
+							label="PO notes"
+							value={this.state.editdata.ponotes}
+							validate={[]}
+							name="ponotes"
+							getValue={this.getValue}
+							editable={true}
+						/>
+						<TextArea
+							placeholder="Enter vendor notes"
+							label="Vendor notes"
+							value={this.state.editdata.vendornotes}
+							validate={[]}
+							name="vendornotes"
+							getValue={this.getValue}
+							editable={true}
+						/>
+						<AttachmentField sendfiles={this.sendfiles} />
+					</ScrollView>
+				)}
+				{this.state.formnumber == 2 && (
+					<View style={form.mainform}>
+						<Text style={[form.partnumber,{flex:0}]}>{`${this.state.formnumber}/3 `}</Text>
+						<SwipeListView
+							data={this.state.editdata.issues}
+							renderItem={(data) => (
+								<DropDown
+									label={`${data.item.id.toString()} - ${data.item.title}`}
+									name="status"
+									value={data.item.status}
+									dropdown={[ 'OPEN' ]}
+									getValue={this.getIssue}
+									disabled={true}
+								/>
+							)}
+							keyExtractor={(data) => data.id.toString()}
+							rightOpenValue={-40}
+							leftOpenValue={0}
+							renderHiddenItem={(data) => (
+								<TouchableOpacity style={form.rowback}>
+									<Text style={form.addissue}>ADD</Text>
+								</TouchableOpacity>
+							)}
+							style={{flex:1}}
+						/>
+					</View>
+				)}
 			</React.Fragment>
 		);
 	}

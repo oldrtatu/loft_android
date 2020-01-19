@@ -35,6 +35,12 @@ class ToDoList extends React.Component {
 							</TouchableOpacity>
 						)}
 						style={styles.liststyle}
+						leftOpenValue={100}
+						renderHiddenItem={data => (
+							<TouchableOpacity style={styles.rowback}>
+								<Text>Delete</Text>
+							</TouchableOpacity>
+						)}
 					/>
 				</View>
 			</SafeAreaView>
