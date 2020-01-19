@@ -136,6 +136,18 @@ const viewstyle = StyleSheet.create({
     correct:{
         color:"#1CA49F",
         fontSize:12
+    },
+    attachments:{
+        height:30,
+        width:Dimensions.get('window').width * 0.9,
+        alignSelf:"center",
+        justifyContent:"center",
+        marginVertical:3
+    },
+    attachmentsname:{
+        fontSize:13,
+        letterSpacing:-0.5,
+        color:"#507df0"
     }
 })
 

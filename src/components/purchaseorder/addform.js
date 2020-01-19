@@ -91,8 +91,8 @@ class AddForm extends React.Component {
 	};
 
 	validateThirdForm = () => {
-		if (this.state.editdata.reportedOn == '') {
-			return 'Enter reporting date';
+		if (this.state.editdata.reportingTime == '') {
+			return 'Enter reporting time';
 		} else {
 			return '';
 		}

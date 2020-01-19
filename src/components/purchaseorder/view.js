@@ -2,6 +2,8 @@ import React from 'react';
 import { Text, ScrollView, TouchableOpacity, View, Image, ActivityIndicator, SafeAreaView } from 'react-native';
 
 import viewstyle from './styles/poview';
+import { GlobalContext } from '../../provider';
+import RNFetchBlob from 'rn-fetch-blob'
 
 import back from '../../assets/back.png';
 
@@ -21,12 +23,28 @@ class PurchaseOrder extends React.Component {
 	};
 
 	editdata = () => {
-		this.props.navigation.navigate('Form', { rowdata: this.state.rowdata,changedata:this.changedata });
+		this.props.navigation.navigate('Form', { rowdata: this.state.rowdata, changedata: this.changedata });
 	};
 
-	changedata = (data) =>{
-		this.setState({rowdata:{...this.state.rowdata,...data}})
-	}
+	changedata = (data) => {
+		this.setState({ rowdata: { ...this.state.rowdata, ...data } });
+	};
+
+	viewAttachment = (item) => {
+		let extension = item.substring(item.lastIndexOf('.'), item.length);
+		if (extension == '.pdf') {
+			console.log(this.props.context.url+item)
+			RNFetchBlob.fetch('GET',this.props.context.url+item,{
+				Authorization: `Bearer ${this.props.context.token}`
+			}).then(res=>{
+				const android = RNFetchBlob.android;
+				console.log(res.data)
+				// android.actionViewIntent(res.path,'application/pdf')
+			}).catch((err)=>{
+				console.log(err)
+			})
+		}
+	};
 
 	render() {
 		return this.state.rowdata != null ? (
@@ -133,6 +151,28 @@ class PurchaseOrder extends React.Component {
 							</View>
 						</React.Fragment>
 					) : null}
+					{this.state.rowdata.attachments ? (
+						<React.Fragment>
+							<View style={viewstyle.separator} />
+							<View style={viewstyle.details}>
+								<View style={viewstyle.paragraph}>
+									<Text style={viewstyle.longtextheading}>Attachments</Text>
+									{this.state.rowdata.attachments.split(',').map((item, i) => (
+										<TouchableOpacity
+											activeOpacity={0.5}
+											onPress={() => this.viewAttachment(item)}
+											key={i}
+											style={viewstyle.attachments}
+										>
+											<Text style={viewstyle.attachmentsname}>
+												{item.substring(item.indexOf('Z') + 1, item.length)}
+											</Text>
+										</TouchableOpacity>
+									))}
+								</View>
+							</View>
+						</React.Fragment>
+					) : null}
 					<View style={{ height: 80 }} />
 				</ScrollView>
 				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
@@ -145,4 +185,7 @@ class PurchaseOrder extends React.Component {
 	}
 }
 
-export default PurchaseOrder;
+const poview = (props) => (
+	<GlobalContext.Consumer>{(context) => <PurchaseOrder context={context} {...props} />}</GlobalContext.Consumer>
+);
+export default poview;

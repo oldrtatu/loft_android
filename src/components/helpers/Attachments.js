@@ -110,7 +110,6 @@ class AttachmentField extends React.Component {
 					RNFetchBlob.ios.openDocument(item.uri);
 				} else if (Platform.OS == 'android') {
 					const android = RNFetchBlob.android;
-					console.log(item)
 					android.actionViewIntent(item.uri, 'application/pdf');
 				}
 			}
