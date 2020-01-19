@@ -129,7 +129,7 @@ class PurchaseOrder extends React.Component {
 					) : null}
 				</ScrollView>
 				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
-					<Text style={viewstyle.editbuttontext}>Edit</Text>
+					<Text style={viewstyle.editbuttontext}>{`EDIT `}</Text>
 				</TouchableOpacity>
 			</React.Fragment>
 		) : (

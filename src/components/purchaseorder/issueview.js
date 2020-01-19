@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, ScrollView, TouchableOpacity, View, Image, ActivityIndicator, SafeAreaView } from 'react-native';
 
-import viewstyle from './styles/issuesview';
+import viewstyle from '../issues/styles/issuesview';
 
 import back from '../../assets/back.png';
 
@@ -13,20 +13,11 @@ class IssueView extends React.Component {
 		};
 	}
 	componentDidMount() {
-		console.log(this.props.navigation.getParam('rowdata'))
 		this.setState({ rowdata: this.props.navigation.getParam('rowdata') });
 	}
 
 	goback = () => {
 		this.props.navigation.goBack(null);
-	};
-	
-	changedata = (data) => {
-		this.setState({ rowdata:{...this.state.rowdata,...data}})
-	}
-
-	editdata = () => {
-		this.props.navigation.navigate('Form', { rowdata: this.state.rowdata, changedata: this.changedata });
 	};
 
 	convertdate = (date) => {
@@ -191,9 +182,6 @@ class IssueView extends React.Component {
 						</React.Fragment>
 					) : null}
 				</ScrollView>
-				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
-					<Text style={viewstyle.editbuttontext}>{`EDIT `}</Text>
-				</TouchableOpacity>
 			</React.Fragment>
 		) : (
 			<ActivityIndicator />

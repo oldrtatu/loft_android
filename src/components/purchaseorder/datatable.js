@@ -17,7 +17,7 @@ const Row = (props) => {
 	return (
 		<TouchableOpacity activeOpacity={1} style={table.row} onPress={() => props.viewRow(props.rowdata)}>
 			<Text style={table.text1}>{props.id}</Text>
-			<Text style={table.text2}>{props.rowdata.equipment}</Text>
+			<Text style={table.text2}>{props.rowdata.equipmentType}</Text>
 			<Text style={table.text}>{props.rowdata.status}</Text>
 			<Image source={forward} style={table.forward} />
 		</TouchableOpacity>
@@ -27,7 +27,7 @@ const Row = (props) => {
 class PODataTable extends React.Component {
 	constructor(props) {
 		super(props);
-		// Data = convertback((props.context.podata != undefined && props.context.podata != null)? props.context.podata : [])
+		Data = convertback((props.context.podata != undefined && props.context.podata != null)? props.context.podata : [])
 		let filterobject = {
 			ALL: Data.length,
 			ACTIVE: 0,

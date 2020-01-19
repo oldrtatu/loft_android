@@ -127,6 +127,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    packagingOptions {
+        pickFirsts = ['lib/arm64-v8a/libc++_shared.so','lib/x86/libc++_shared.so','lib/x86_64/libc++_shared.so','lib/armeabi-v7a/libc++_shared.so']
+    }
+
     defaultConfig {
         applicationId "com.loft_app"
         minSdkVersion rootProject.ext.minSdkVersion

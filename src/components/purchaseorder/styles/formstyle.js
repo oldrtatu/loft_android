@@ -116,16 +116,55 @@ const form = StyleSheet.create({
 	},
 	rowback:{
 		alignItems: 'center',
-        flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
 		paddingLeft: 15,
 		width:Dimensions.get('window').width*0.85,
-		alignSelf:"center"
+		height:55,
+		alignSelf:"center",
+		marginTop:10
 	},
 	addissue:{
 		position:'absolute',
-		right:0
+		right:0,
+		width:50,
+		height:55,
+		justifyContent:'center',
+		alignItems:'center',
+		backgroundColor:"#507df0",
+		zIndex:10
+	},
+	addissuetext:{
+		color:"#fff",
+		fontSize:12
+	},
+	already:{
+		color:"#131d4a",
+		fontSize:14,
+		marginTop:0,
+		width:Dimensions.get('window').width*0.85,
+		alignSelf:'center',
+		fontWeight:'500'
+	},
+	deleteissue:{
+		position:'absolute',
+		left:0,
+		width:50,
+		height:55,
+		justifyContent:'center',
+		alignItems:'center',
+		backgroundColor:"#D62246",
+		zIndex:10
+	},
+	addnewissue:{
+		position:'absolute',
+		left:0,
+		width:50,
+		height:55,
+		justifyContent:'center',
+		alignItems:'center',
+		backgroundColor:"#1CA49F",
+		zIndex:10
 	}
 });
 

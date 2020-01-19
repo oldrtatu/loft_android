@@ -60,7 +60,7 @@ class AttachmentField extends React.Component {
 	};
 
 	addDocuments = async () => {
-		let results = await DocumentPicker.pickMultiple({ type: DocumentPicker.types.pdf }).catch((err) => {
+		let results = await DocumentPicker.pickMultiple({ type: DocumentPicker.types.pdf,readContent:true }).catch((err) => {
 			if (DocumentPicker.isCancel(err)) {
 				Snackbar.show({
 					title: 'Cancelled document picker',
@@ -110,6 +110,7 @@ class AttachmentField extends React.Component {
 					RNFetchBlob.ios.openDocument(item.uri);
 				} else if (Platform.OS == 'android') {
 					const android = RNFetchBlob.android;
+					console.log(item)
 					android.actionViewIntent(item.uri, 'application/pdf');
 				}
 			}
@@ -151,7 +152,7 @@ class AttachmentField extends React.Component {
 				>
 					<Text style={styles.label}>Attachments</Text>
 				</TouchableOpacity>
-				<ScrollView style={styles.value} showsVerticalScrollIndicator={true}>
+				<ScrollView style={[styles.value,{height:this.state.height}]} showsVerticalScrollIndicator={true}>
 					{this.state.value.map((item, i) => (
 						<View key={i} style={styles.attachmentrow}>
 							<TouchableOpacity
@@ -189,6 +190,7 @@ const styles = StyleSheet.create({
 		color: '#131d4a',
 		fontSize: 12,
 		maxHeight: 100,
+		minHeight:100,
 		backgroundColor: 'rgba(230,230,230,0.6)',
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center',

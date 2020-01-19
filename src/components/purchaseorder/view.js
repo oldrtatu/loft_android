@@ -13,7 +13,7 @@ class PurchaseOrder extends React.Component {
 		};
 	}
 	componentDidMount() {
-		this.setState({ rowdata: this.props.navigation.getParam('rowdata') });
+		this.setState({ rowdata: this.props.navigation.getParam('rowdata') },()=>console.log(this.state.rowdata));
 	}
 
 	goback = () => {
@@ -41,7 +41,7 @@ class PurchaseOrder extends React.Component {
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Equipment Type</Text>
-							<Text style={viewstyle.righttext}>{this.state.rowdata.equipment}</Text>
+							<Text style={viewstyle.righttext}>{this.state.rowdata.equipmentType}</Text>
 						</View>
 						<View style={viewstyle.row}>
 							<Text style={viewstyle.lefttext}>Subsidiary</Text>
@@ -126,7 +126,7 @@ class PurchaseOrder extends React.Component {
 					</View>
 				</ScrollView>
 				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
-					<Text style={viewstyle.editbuttontext}>Tap to Edit</Text>
+					<Text style={viewstyle.editbuttontext}>{`EDIT `}</Text>
 				</TouchableOpacity>
 			</React.Fragment>
 		) : (

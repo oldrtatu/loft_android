@@ -5,6 +5,7 @@ import purchaseorder from '../components/purchaseorder/datatable'
 import ViewPurchaseOrder from '../components/purchaseorder/view'
 import POForm from '../components/purchaseorder/form'
 import AddForm from '../components/purchaseorder/addform'
+import IssueView from '../components/purchaseorder/issueview'
 
 const purchase = createStackNavigator(
     {
@@ -28,6 +29,12 @@ const purchase = createStackNavigator(
         },
         Add:{
             screen:AddForm,
+            navigationOptions:{
+                header:null
+            }
+        },
+        ViewIssue:{
+            screen:IssueView,
             navigationOptions:{
                 header:null
             }

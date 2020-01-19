@@ -10,16 +10,18 @@ import {
 	InputField,
 	SuggestionField,
 	TextArea,
-	IncrementField,
 	AttachmentField
 } from '../helpers';
+import IssueDropDown from '../helpers/IssueLinkDropDown'
 import { GlobalContext } from '../../provider';
-
 import Snackbar from 'react-native-snackbar';
-
-import back from '../../assets/back.png';
 import { convertback } from '../helpers/convertdata';
 import { SwipeListView } from 'react-native-swipe-list-view';
+
+
+import back from '../../assets/back.png';
+import viewrow from '../../assets/viewdata.png'
+import deleterow from '../../assets/deleterow.png'
 
 class AddForm extends React.Component {
 	constructor(props) {
@@ -47,13 +49,17 @@ class AddForm extends React.Component {
 				assignedTo: 'Neil Patrick',
 				ponotes: '',
 				vendornotes: '',
-				issues: this.data.issues
+				issues: [],
+				addedissues: [],
+				height: 20
 			},
 			issuevalue: '',
-			formnumber: 2,
-			reload: false
+			formnumber: 1,
+			reload: false,
+			refreshing:false
 		};
 	}
+
 	files = [];
 
 	goback = () => {
@@ -75,10 +81,18 @@ class AddForm extends React.Component {
 	};
 
 	validateSecondForm = () => {
+		// if(this.state.editdata.addedissues.length == 0){
+		// 	return 'Add issues'
+		// }
 		return '';
 	};
 
 	validateThirdForm = () => {
+		// if(this.state.editdata.reportedOn == ''){
+		// 	return 'Enter reporting date'
+		// }else{
+		// 	return ''
+		// }
 		return '';
 	};
 
@@ -165,6 +179,10 @@ class AddForm extends React.Component {
 		});
 	};
 
+	getCategory = (item) => {
+		this.setState({ editdata: { ...this.state.editdata, category: item } });
+	};
+
 	getVendor = (item) => {
 		this.setState({ editdata: { ...this.state.editdata, vendor: item } });
 	};
@@ -172,9 +190,49 @@ class AddForm extends React.Component {
 	sendfiles = (data) => {
 		this.files = data;
 	};
+
 	getIssue = (key, value) => {
 		return;
 	};
+
+	viewIssue = (item) => {
+		this.props.navigation.navigate('ViewIssue',{rowdata:item})
+	}
+
+	addIssue =(data)=>{
+		this.setState({refreshing:true})
+		let addedissues = [...this.state.editdata.addedissues]
+		addedissues.push(data.item)
+		let issues = [...this.state.editdata.issues]
+		issues.splice(data.index,1)
+		this.setState({
+			editdata:{
+				...this.state.editdata,
+				addedissues,
+				issues,
+				height:addedissues.length*75
+			},
+			refreshing:false
+		})
+		
+	}
+
+	deleteissue=(data)=>{
+		this.setState({refreshing:true})
+		let addedissues = [...this.state.editdata.addedissues]
+		addedissues.splice(data.index,1)
+		let issues = [...this.state.editdata.issues]
+		issues.push(data.item)
+		this.setState({
+			editdata:{
+				...this.state.editdata,
+				addedissues,
+				issues,
+				height:addedissues.length*75
+			},
+			refreshing:false
+		})
+	}
 
 	render() {
 		return (
@@ -317,15 +375,46 @@ class AddForm extends React.Component {
 							editable={true}
 						/>
 						<AttachmentField sendfiles={this.sendfiles} />
+						<View style={{height:80}}/>
 					</ScrollView>
 				)}
 				{this.state.formnumber == 2 && (
 					<View style={form.mainform}>
 						<Text style={[form.partnumber,{flex:0}]}>{`${this.state.formnumber}/3 `}</Text>
+						<Text style={form.already}>Already added</Text>
+						<SwipeListView
+							data={this.state.editdata.addedissues}
+							renderItem={(data) => (
+								<IssueDropDown
+									label={`${data.item.id.toString()} - ${data.item.title}`}
+									name="status"
+									value={'ASSIGNED'}
+									dropdown={[ 'ASSIGNED' ]}
+									getValue={this.getIssue}
+									disabled={true}
+								/>
+							)}
+							keyExtractor={(data) => data.id.toString()}
+							rightOpenValue={-70}
+							leftOpenValue={70}
+							refreshing={this.state.refreshing}
+							renderHiddenItem={(data) => (
+								<View style={form.rowback}>
+									<TouchableOpacity style={form.addissue} onPressIn={()=>this.viewIssue(data.item)}>
+										<Image source={viewrow} style={form.backimage} />
+									</TouchableOpacity>
+									<TouchableOpacity style={form.deleteissue} onPressIn={()=>this.deleteissue(data)}>
+										<Image source={deleterow} style={form.backimage} />
+									</TouchableOpacity>
+								</View>
+							)}
+							style={{maxHeight:this.state.editdata.height}}
+						/>
+						<Text style={form.already}>Available</Text>
 						<SwipeListView
 							data={this.state.editdata.issues}
 							renderItem={(data) => (
-								<DropDown
+								<IssueDropDown
 									label={`${data.item.id.toString()} - ${data.item.title}`}
 									name="status"
 									value={data.item.status}
@@ -335,14 +424,19 @@ class AddForm extends React.Component {
 								/>
 							)}
 							keyExtractor={(data) => data.id.toString()}
-							rightOpenValue={-40}
-							leftOpenValue={0}
+							rightOpenValue={-70}
+							leftOpenValue={70}
+							refreshing={this.state.refreshing}
 							renderHiddenItem={(data) => (
-								<TouchableOpacity style={form.rowback}>
-									<Text style={form.addissue}>ADD</Text>
-								</TouchableOpacity>
+								<View style={form.rowback}>
+									<TouchableOpacity style={form.addnewissue} onPressIn={()=>this.addIssue(data)}>
+										<Text style={form.addissuetext}>ADD</Text>
+									</TouchableOpacity>
+									<TouchableOpacity style={form.addissue} onPressIn={()=>this.viewIssue(data.item)}>
+										<Image source={viewrow} style={form.backimage} />
+									</TouchableOpacity>
+								</View>
 							)}
-							style={{flex:1}}
 						/>
 					</View>
 				)}
