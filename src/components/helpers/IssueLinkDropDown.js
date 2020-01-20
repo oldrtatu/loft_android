@@ -28,6 +28,9 @@ class DropDown extends React.Component {
 			dropdown: newprops.dropdown
 		})
 	}
+	getValue = (key,value)=>{
+		this.props.getValue(key,value,this.props.index)
+	}
 
 	render() {
 		return (
@@ -36,7 +39,7 @@ class DropDown extends React.Component {
 					options={this.state.dropdown}
 					style={styles.input}
 					defaultValue={this.state.value}
-					getValue={this.props.getValue}
+					getValue={this.getValue}
 					name={this.props.name}
 					disabled={this.props.disabled}
 				/>

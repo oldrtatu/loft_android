@@ -108,12 +108,16 @@ export class GlobalContextProvider extends React.Component {
 			console.log(res);
 		} else {
 			let ob = { ...this.state[table] };
+			console.log(data,"hey")
 			ob[data.id] = { ...ob[data.id], ...data };
-			if (table = 'issuesdata') {
+			if (table == 'issuesdata') {
 				this.setState({ issuesdata: ob });
-			}if (table = 'inventorydata') {
+			}else if (table == 'inventorydata') {
 				this.setState({ inventorydata: ob });
+			}else if(table == 'podata'){
+				this.setState({ podata: ob });
 			}
+
 		}
 	};
 	adddata = async (path, table, data) => {

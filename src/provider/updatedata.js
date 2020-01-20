@@ -21,6 +21,7 @@ export function update_data(url,token,path,data){
         })
         .catch(err=>{
             if(err.response){
+                console.log(err.response)
                 resolve({"message": "Not found"})
             }else{
                 resolve({"message":"Network error"})

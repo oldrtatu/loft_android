@@ -18,6 +18,7 @@ import ImageView from 'react-native-image-viewing';
 import DocumentPicker from 'react-native-document-picker';
 import PDF from 'react-native-pdf';
 import RNFetchBlob from 'rn-fetch-blob';
+import { GlobalContext } from '../../provider';
 
 import deleteimage from '../../assets/error.png';
 
@@ -43,6 +44,12 @@ class AttachmentField extends React.Component {
 		};
 	}
 
+	componentDidMount() {
+		if (this.props.files != null) {
+			this.setState({ value: [ ...this.props.files.split(',') ] }, () => console.log(this.state.value));
+		}
+	}
+
 	chooseType = () => {
 		Alert.alert(
 			'Select attachment type',
@@ -60,7 +67,10 @@ class AttachmentField extends React.Component {
 	};
 
 	addDocuments = async () => {
-		let results = await DocumentPicker.pickMultiple({ type: DocumentPicker.types.pdf,readContent:true }).catch((err) => {
+		let results = await DocumentPicker.pickMultiple({
+			type: DocumentPicker.types.pdf,
+			readContent: true
+		}).catch((err) => {
 			if (DocumentPicker.isCancel(err)) {
 				Snackbar.show({
 					title: 'Cancelled document picker',
@@ -80,7 +90,7 @@ class AttachmentField extends React.Component {
 			let ob = { ...res };
 			ob['new'] = true;
 			value.push(ob);
-			this.setState({ value, height: 55 + value.length * 35 },()=>this.props.sendfiles(this.state.value));
+			this.setState({ value, height: 55 + value.length * 35 }, () => this.props.sendfiles(this.state.value));
 		}
 	};
 
@@ -96,13 +106,47 @@ class AttachmentField extends React.Component {
 	};
 
 	viewRow = (item) => {
-		let name = item.name.toLowerCase();
+		let name = ''
+		if(item.name){
+			name = item.name.toLowerCase();
+		}else{
+			name = item.toLowerCase();
+		}
 		if (name.includes('.png') || name.includes('.jpg') || name.includes('.jpeg')) {
 			if (item.new) {
 				this.setState({
 					viewimage: [ { uri: item.uri } ],
 					imageview: true
 				});
+			}else {
+				let extension = item.substring(item.lastIndexOf('.') + 1, item.length);
+				let name = item.substring(item.indexOf('Z') + 1, item.length);
+				let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
+				RNFetchBlob.config({
+					addAndroidDownloads: {
+						useDownloadManager: true,
+						title: name,
+						description: 'View document',
+						mime: `application/${extension}`,
+						mediaScannable: true,
+						path: path,
+						notification: true
+					}
+				})
+					.fetch('GET', this.props.context.url + item, {
+						Authorization: `Bearer ${this.props.context.token}`
+					})
+					.then((res) => {
+						if ((Platform.OS = 'android')) {
+							const android = RNFetchBlob.android;
+							android.actionViewIntent(res.path(), `application/${extension}`);
+						} else {
+							RNFetchBlob.ios.openDocument(res.path());
+						}
+					})
+					.catch((err) => {
+						console.log(err);
+					});
 			}
 		} else if (name.includes('.pdf')) {
 			if (item.new) {
@@ -112,6 +156,35 @@ class AttachmentField extends React.Component {
 					const android = RNFetchBlob.android;
 					android.actionViewIntent(item.uri, 'application/pdf');
 				}
+			} else {
+				let extension = item.substring(item.lastIndexOf('.') + 1, item.length);
+				let name = item.substring(item.indexOf('Z') + 1, item.length);
+				let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
+				RNFetchBlob.config({
+					addAndroidDownloads: {
+						useDownloadManager: true,
+						title: name,
+						description: 'View document',
+						mime: `application/${extension}`,
+						mediaScannable: true,
+						path: path,
+						notification: true
+					}
+				})
+					.fetch('GET', this.props.context.url + item, {
+						Authorization: `Bearer ${this.props.context.token}`
+					})
+					.then((res) => {
+						if ((Platform.OS = 'android')) {
+							const android = RNFetchBlob.android;
+							android.actionViewIntent(res.path(), `application/${extension}`);
+						} else {
+							RNFetchBlob.ios.openDocument(res.path());
+						}
+					})
+					.catch((err) => {
+						console.log(err);
+					});
 			}
 		}
 	};
@@ -129,7 +202,9 @@ class AttachmentField extends React.Component {
 				ob['name'] = res.fileName;
 				ob['new'] = true;
 				arr.push(ob);
-				this.setState({ value: arr, height: 55 + arr.length * 35 },()=>this.props.sendfiles(this.state.value));
+				this.setState({ value: arr, height: 55 + arr.length * 35 }, () =>
+					this.props.sendfiles(this.state.value)
+				);
 			}
 			if (err != '') {
 				Snackbar.show({
@@ -151,7 +226,7 @@ class AttachmentField extends React.Component {
 				>
 					<Text style={styles.label}>Attachments</Text>
 				</TouchableOpacity>
-				<ScrollView style={[styles.value,{height:this.state.height}]} showsVerticalScrollIndicator={true}>
+				<ScrollView style={[ styles.value, { height: this.state.height } ]} showsVerticalScrollIndicator={true}>
 					{this.state.value.map((item, i) => (
 						<View key={i} style={styles.attachmentrow}>
 							<TouchableOpacity
@@ -159,7 +234,7 @@ class AttachmentField extends React.Component {
 								onPress={() => this.viewRow(item)}
 								style={styles.attachmentname}
 							>
-								<Text style={styles.name}>{item.name}</Text>
+								<Text style={styles.name}>{item.name ? item.name : item.replace('/uploads/', '')}</Text>
 							</TouchableOpacity>
 							<TouchableOpacity
 								activeOpacity={1}
@@ -189,7 +264,7 @@ const styles = StyleSheet.create({
 		color: '#131d4a',
 		fontSize: 12,
 		maxHeight: 100,
-		minHeight:100,
+		minHeight: 100,
 		backgroundColor: 'rgba(230,230,230,0.6)',
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center',
@@ -259,4 +334,8 @@ const styles = StyleSheet.create({
 	}
 });
 
-export default AttachmentField;
+const attachment = (props) => (
+	<GlobalContext.Consumer>{(context) => <AttachmentField context={context} {...props} />}</GlobalContext.Consumer>
+);
+
+export default attachment;

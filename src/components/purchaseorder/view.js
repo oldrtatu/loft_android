@@ -1,9 +1,18 @@
 import React from 'react';
-import { Text, ScrollView, TouchableOpacity, View, Image, ActivityIndicator, SafeAreaView } from 'react-native';
+import {
+	Text,
+	ScrollView,
+	TouchableOpacity,
+	View,
+	Image,
+	ActivityIndicator,
+	SafeAreaView,
+	Platform
+} from 'react-native';
 
 import viewstyle from './styles/poview';
 import { GlobalContext } from '../../provider';
-import RNFetchBlob from 'rn-fetch-blob'
+import RNFetchBlob from 'rn-fetch-blob';
 
 import back from '../../assets/back.png';
 
@@ -27,23 +36,45 @@ class PurchaseOrder extends React.Component {
 	};
 
 	changedata = (data) => {
+		if(data.issues){
+			for(let i in data.issues){
+				if(data.issues[i].status == 'OPEN'){
+					data.issues.splice(i,1)
+				}
+			}
+		}
 		this.setState({ rowdata: { ...this.state.rowdata, ...data } });
 	};
 
 	viewAttachment = (item) => {
-		let extension = item.substring(item.lastIndexOf('.'), item.length);
-		if (extension == '.pdf') {
-			console.log(this.props.context.url+item)
-			RNFetchBlob.fetch('GET',this.props.context.url+item,{
+		let extension = item.substring(item.lastIndexOf('.')+1, item.length);
+		let name = item.substring(item.indexOf('Z') + 1, item.length);
+		let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
+		RNFetchBlob.config({
+			addAndroidDownloads: {
+				useDownloadManager: true,
+				title: name,
+				description: 'View document',
+				mime: `application/${extension}`,
+				mediaScannable: true,
+				path: path,
+				notification: true
+			}
+		})
+			.fetch('GET', this.props.context.url + item, {
 				Authorization: `Bearer ${this.props.context.token}`
-			}).then(res=>{
-				const android = RNFetchBlob.android;
-				console.log(res.data)
-				// android.actionViewIntent(res.path,'application/pdf')
-			}).catch((err)=>{
-				console.log(err)
 			})
-		}
+			.then((res) => {
+				if ((Platform.OS = 'android')) {
+					const android = RNFetchBlob.android;
+					android.actionViewIntent(res.path(), `application/${extension}`);
+				} else {
+					RNFetchBlob.ios.openDocument(res.path());
+				}
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	render() {
