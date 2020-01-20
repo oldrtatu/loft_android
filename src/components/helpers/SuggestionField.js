@@ -54,8 +54,8 @@ class SuggestionField extends React.Component {
 	setValue = (item) => {
 		this.setState({
 			showResults: false,
-			value: item[this.props.name]
-		},()=>this.props.getValue(item));
+			value: item[this.props.name].toString()
+		},()=>{this.props.getValue(item)});
 	};
 
 	render() {

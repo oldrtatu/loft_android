@@ -130,7 +130,7 @@ class InputField extends React.Component {
 
 const styles = StyleSheet.create({
 	input: {
-		flex: 1,
+		// flex:1,
 		paddingLeft: 15,
 		color: '#131d4a',
 		fontSize: 12,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
 		alignSelf: 'center'
 	},
 	active: {
-		flex: 1,
+		// flex:1,
 		paddingLeft: 15,
 		color: '#131d4a',
 		fontSize: 12,
@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
 		borderLeftColor: '#5988FF',
 	},
 	label: {
-		flex: 1,
 		fontSize: 12,
 		fontWeight: '700',
 		color: 'rgba(80,86,101,0.36)',

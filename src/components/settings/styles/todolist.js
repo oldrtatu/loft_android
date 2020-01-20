@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 		color:"#fff",
 		paddingVertical:5,
 		marginLeft:35,
-		fontSize:16
+		fontSize:14
 	},
 	liststyle:{
 		marginTop:-150,
@@ -29,14 +29,14 @@ const styles = StyleSheet.create({
 	row:{
 		backgroundColor:"white",
 		marginVertical:2,
-		height:70,
+		height:55,
 		paddingLeft:20,
 		borderRadius:5,
 		flexDirection:"row",
 		alignItems:"center"
 	},
     text:{
-        fontSize:15,
+        fontSize:12,
         marginRight:15,
         flex:1,
         alignSelf:"center"
@@ -50,11 +50,32 @@ const styles = StyleSheet.create({
         marginTop:5
 	},
 	rowback:{
-		alignItems: 'center',
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingLeft: 15
+		width:50,
+		height:55,
+		marginTop:2,
+		justifyContent:'center',
+		alignItems:'center',
+		backgroundColor:"#D62246",
+		borderRadius:5,
+		overflow:'hidden'
+	},
+	deleteimage:{
+		height:15,
+		width:15,
+		resizeMode:'contain'
+	},
+	newbutton:{
+		height:70,
+		position:'absolute',
+		bottom:0,
+		width:Dimensions.get('window').width,
+		alignItems:'center',
+		justifyContent:'center',
+		backgroundColor:"#507df0"
+	},
+	newtext:{
+		fontSize:14,
+		color:"#fff"
 	}
 })
 
