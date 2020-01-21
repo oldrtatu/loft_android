@@ -151,10 +151,10 @@ class AddForm extends React.Component {
 		let err = '';
 		err = this.validateFirstForm();
 		if (err == '' && this.state.editdata.type == 'AXLE') {
-			this.validateSecondForm();
+			err = this.validateSecondForm();
 		}
 		if (err == '') {
-			this.validateThirdForm();
+			err = this.validateThirdForm();
 		}
 		if (err == '') {
             let addeddata = JSON.parse(JSON.stringify(this.state.editdata))

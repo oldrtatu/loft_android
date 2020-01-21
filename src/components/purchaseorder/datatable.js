@@ -158,7 +158,7 @@ class PODataTable extends React.Component {
 	render() {
 		return (
 			<React.Fragment>
-				<SafeAreaView style={{backgroundColor:"#507df0"}}>
+				<SafeAreaView style={{backgroundColor:"#507df0"}} >
 					<View style={styles.container}>
 						<View style={styles.topbar}>
 							{this.state.showsearch == false ? (

@@ -5,7 +5,7 @@ const GlobalContext = React.createContext();
 import { loginuser, change_password, change_userdata, upload_user_image } from './login';
 import { fetch_data } from './fetchdata';
 import { update_data, add_data } from './updatedata';
-import { convertdata } from '../components/helpers/convertdata';
+import { convertdata, convertback } from '../components/helpers/convertdata';
 
 export class GlobalContextProvider extends React.Component {
 	constructor(props) {
@@ -70,9 +70,9 @@ export class GlobalContextProvider extends React.Component {
 			{ path: '/po/po', key: 'podata' },
 			{ path: '/archive/truck', key: 'truckdata' },
 			{ path: '/archive/class', key: 'categorydata' },
-			{ path: '/archive/item', key:'itemdata'},
-			{ path: '/po/inventory', key: 'inventorydata'},
-			{ path: '/archive/vendor', key: 'vendordata'}
+			{ path: '/archive/item', key: 'itemdata' },
+			{ path: '/po/inventory', key: 'inventorydata' },
+			{ path: '/archive/vendor', key: 'vendordata' }
 		];
 		for (let i in arr) {
 			let item = arr[i];
@@ -84,7 +84,8 @@ export class GlobalContextProvider extends React.Component {
 					let ob = convertdata(res);
 					this.setState({ issuesdata: ob });
 				} else if (item.key == 'podata') {
-					this.setState({ podata: res });
+					let ob = convertdata(res);
+					this.setState({ podata: ob });
 				} else if (item.key == 'truckdata') {
 					this.setState({ truckdata: res });
 				} else if (item.key == 'categorydata') {
@@ -102,22 +103,52 @@ export class GlobalContextProvider extends React.Component {
 	};
 
 	updatedata = async (path, table, data) => {
-		delete data['index'];
-		let res = await update_data(this.state.url, this.state.token, path, data);
+		if (table == 'issuesdata') {
+			delete data.index;
+		}
+		let d = JSON.parse(JSON.stringify(data));
+		let res = await update_data(this.state.url, this.state.token, path, JSON.parse(JSON.stringify(data)));
 		if (res.message) {
 			console.log(res);
 		} else {
 			let ob = { ...this.state[table] };
-			console.log(data,"hey")
-			ob[data.id] = { ...ob[data.id], ...data };
+			if (table != 'podata') {
+				ob[d.id] = { ...ob[d.id], ...d };
+			}
 			if (table == 'issuesdata') {
 				this.setState({ issuesdata: ob });
-			}else if (table == 'inventorydata') {
+			} else if (table == 'inventorydata') {
 				this.setState({ inventorydata: ob });
-			}else if(table == 'podata'){
-				this.setState({ podata: ob });
+			} else if (table == 'podata') {
+				if (d.issues) {
+					let issues = {...this.state.issuesdata};
+					let po = {...ob[d.id]}
+					for (let issue of d.issues) {
+						issues[issue.id].status = issue.status;
+						if (issue.status == 'OPEN') {
+							issues[issue.id].POId = null;
+							for (let i in po.issues){
+								if(po.issues[i].id == issue.id){
+									po.issues.splice(i,1)
+									break
+								}
+							}
+						}else{
+							issues[issue.id].POId = d.id;
+							issues[issue.id].status = issue.status
+							let previousissues = convertdata(po.issues)
+							previousissues[issue.id] = {...issues[issue.id]}
+							po.issues = convertback(previousissues)
+						}
+					}
+					delete d.issues
+					ob[d.id] = { ...po, ...d };
+					this.setState({ issuesdata: issues, podata: ob });
+				} else {
+					ob[d.id] = { ...ob[d.id], ...d };
+					this.setState({ podata: ob });
+				}
 			}
-
 		}
 	};
 	adddata = async (path, table, data) => {
@@ -128,25 +159,25 @@ export class GlobalContextProvider extends React.Component {
 			let ob = { ...this.state[table] };
 			ob[res.id] = { ...res };
 			if (table == 'issuesdata') {
-				ob[res.id]["division"] = {...data["division"]}
-				ob[res.id]["category"] = data["category"]
-				ob[res.id][data.equipmentType.toLowerCase()] = data[data.equipmentType.toLowerCase()]
+				ob[res.id]['division'] = { ...data['division'] };
+				ob[res.id]['category'] = data['category'];
+				ob[res.id][data.equipmentType.toLowerCase()] = data[data.equipmentType.toLowerCase()];
 				this.setState({ issuesdata: ob });
-			}else if (table == 'inventorydata') {
-				ob[res.id]["item"] = data["item"]
-				ob[res.id]["vendor"] = data["vendor"]
+			} else if (table == 'inventorydata') {
+				ob[res.id]['item'] = data['item'];
+				ob[res.id]['vendor'] = data['vendor'];
 				this.setState({ inventorydata: ob });
-			}else if (table == 'podata') {
-				console.log(res)
-				ob[res.id] = {...res,...data}
-				let issuesdata = {...this.state.issuesdata}
-				if(data.poType == 'ISSUES'){
-					for(let i in data.issues){
-						let issue = data.issues[i]
-						issuesdata[issue.id]['POId'] = res.id
+			} else if (table == 'podata') {
+				console.log(res);
+				ob[res.id] = { ...res, ...data };
+				let issuesdata = { ...this.state.issuesdata };
+				if (data.poType == 'ISSUES') {
+					for (let i in data.issues) {
+						let issue = data.issues[i];
+						issuesdata[issue.id]['POId'] = res.id;
 					}
 				}
-				this.setState({ podata: ob,issuesdata });
+				this.setState({ podata: ob, issuesdata });
 			}
 		}
 	};

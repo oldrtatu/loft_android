@@ -24,7 +24,7 @@ class AddForm extends React.Component {
 			trailer: props.context.trailerdata ? props.context.trailerdata : [],
 			category: props.context.categorydata ? props.context.categorydata : [],
 			vendor: props.context.vendordata ? props.context.vendordata : [],
-			issues: props.context.issuesdata ? convertback(props.context.issuesdata) : [],
+			issues: props.context.issuesdata ? JSON.parse(JSON.stringify(convertback(props.context.issuesdata))) : [],
 			user: props.context.user_data
 		};
 		this.state = {
@@ -102,10 +102,10 @@ class AddForm extends React.Component {
 		let err = '';
 		err = this.validateFirstForm();
 		if (err == '' && this.state.editdata.type == 'ISSUES') {
-			this.validateSecondForm();
+			err = this.validateSecondForm();
 		}
 		if (err == '') {
-			this.validateThirdForm();
+			err = this.validateThirdForm();
 		}
 		if (err == '') {
 			let addeddata = JSON.parse(JSON.stringify(this.state.editdata));
@@ -115,6 +115,13 @@ class AddForm extends React.Component {
 
 			addeddata['issues'] = [ ...addeddata['addedissues'] ];
 			delete addeddata['addedissues'];
+
+			if(this.state.editdata.type == 'ISSUES'){
+				let issues = (this.props.context.issuesdata)?this.props.context.issuesdata:{}
+				for(let issue of addeddata.issues){
+					issues[issue.id].status= 'ASSIGNED'
+				}
+			}
 
 			addeddata['categoryId'] = addeddata.category.id;
 			addeddata['divisionId'] = addeddata.division.id;
@@ -141,48 +148,13 @@ class AddForm extends React.Component {
 			} else {
 				delete addeddata.truck;
 			}
-			this.setState({ uploading: true }, async () => {
-				let str = '';
-				for (let i in this.files) {
-					if (this.files[i]['new']) {
-						let form = new FormData();
-						let data = this.files[i]
-						if (this.files[i]['type'] == 'application/pdf') {
-							form.append('file', {
-								name: data.name,
-								type: data.type,
-								uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', '')
-							});
-						} else {
-							form.append('file', {
-								name: data.fileName,
-								type: data.type,
-								uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', '')
-							});
-						}
-						await add_attachment(this.props.context.url, this.props.context.token, form)
-							.then((res) => {
-								str += res.url;
-								str += ','
-							})
-							.catch((err) => {
-								Snackbar.show({
-									title: err.message,
-									backgroundColor: '#D62246',
-									duration: Snackbar.LENGTH_SHORT
-								});
-							});
-					}
-				}
-				if (str != ''){
-					str = str.substring(0, str.length-1)
-				}
-				this.setState({ uploading: false }, () => {
-					addeddata['attachments'] = str
-					this.props.context.adddata('/po/po', 'podata', addeddata);
-					this.props.navigation.goBack();
-				});
-			});
+			let str = this.files.join(',')
+			if (str != '') {
+				addeddata['attachments'] = str;
+			}
+
+			this.props.context.adddata('/po/po', 'podata', addeddata);
+			this.props.navigation.goBack();
 
 		} else {
 			Snackbar.show({

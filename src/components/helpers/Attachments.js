@@ -9,16 +9,16 @@ import {
 	Image,
 	ScrollView,
 	Modal,
-	SafeAreaView,
 	Platform
 } from 'react-native';
 import Snackbar from 'react-native-snackbar';
 import ImagePicker from 'react-native-image-picker';
-import ImageView from 'react-native-image-viewing';
 import DocumentPicker from 'react-native-document-picker';
-import PDF from 'react-native-pdf';
 import RNFetchBlob from 'rn-fetch-blob';
 import { GlobalContext } from '../../provider';
+import { UIActivityIndicator } from 'react-native-indicators';
+
+import { add_attachment } from '../../provider/updatedata';
 
 import deleteimage from '../../assets/error.png';
 
@@ -40,7 +40,8 @@ class AttachmentField extends React.Component {
 			imageview: false,
 			viewimage: '',
 			source: '',
-			pdfview: false
+			pdfview: false,
+			uploading: false
 		};
 	}
 
@@ -85,12 +86,37 @@ class AttachmentField extends React.Component {
 		if (results == undefined) {
 			return;
 		}
+
+		this.setState({ uploading: true });
 		for (const res of results) {
-			let value = [ ...this.state.value ];
-			let ob = { ...res };
-			ob['new'] = true;
-			value.push(ob);
-			this.setState({ value, height: 55 + value.length * 35 }, () => this.props.sendfiles(this.state.value));
+			this.setState({ uploading: true });
+			let str = '';
+			let form = new FormData();
+			let data = { ...res };
+			form.append('file', {
+				name: data.name,
+				type: data.type,
+				uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', '')
+			});
+			await add_attachment(this.props.context.url, this.props.context.token, form)
+				.then((res) => {
+					str = res.url;
+					this.setState(
+						{
+							value: [ ...this.state.value, str ],
+							height: 55 + (this.state.value.length + 1) * 35,
+							uploading: false
+						},
+						() => this.props.sendfiles(this.state.value)
+					);
+				})
+				.catch((err) => {
+					Snackbar.show({
+						title: err.message,
+						backgroundColor: '#D62246',
+						duration: Snackbar.LENGTH_SHORT
+					});
+				});
 		}
 	};
 
@@ -106,90 +132,57 @@ class AttachmentField extends React.Component {
 	};
 
 	viewRow = (item) => {
-		let name = ''
-		if(item.name){
-			name = item.name.toLowerCase();
-		}else{
-			name = item.toLowerCase();
-		}
-		if (name.includes('.png') || name.includes('.jpg') || name.includes('.jpeg')) {
-			if (item.new) {
+		let extension = item.substring(item.lastIndexOf('.') + 1, item.length);
+		let name = item.substring(item.indexOf('Z') + 1, item.length);
+		if (Platform.OS == 'android') {
+			let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
+			RNFetchBlob.config({
+				addAndroidDownloads: {
+					useDownloadManager: true,
+					title: name,
+					description: 'View document',
+					mime: `application/${extension}`,
+					mediaScannable: true,
+					path: path,
+					notification: true
+				}
+			})
+				.fetch('GET', this.props.context.url + item, {
+					Authorization: `Bearer ${this.props.context.token}`
+				})
+				.then((res) => {
+					const android = RNFetchBlob.android;
+					android.actionViewIntent(res.path(), `application/${extension}`);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		} else if (Platform.OS == 'ios') {
+			if (extension != 'pdf') {
 				this.setState({
-					viewimage: [ { uri: item.uri } ],
+					source: item,
 					imageview: true
 				});
-			}else {
-				let extension = item.substring(item.lastIndexOf('.') + 1, item.length);
-				let name = item.substring(item.indexOf('Z') + 1, item.length);
-				let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
-				RNFetchBlob.config({
-					addAndroidDownloads: {
-						useDownloadManager: true,
-						title: name,
-						description: 'View document',
-						mime: `application/${extension}`,
-						mediaScannable: true,
-						path: path,
-						notification: true
-					}
-				})
-					.fetch('GET', this.props.context.url + item, {
-						Authorization: `Bearer ${this.props.context.token}`
-					})
-					.then((res) => {
-						if ((Platform.OS = 'android')) {
-							const android = RNFetchBlob.android;
-							android.actionViewIntent(res.path(), `application/${extension}`);
-						} else {
-							RNFetchBlob.ios.openDocument(res.path());
-						}
-					})
-					.catch((err) => {
-						console.log(err);
-					});
-			}
-		} else if (name.includes('.pdf')) {
-			if (item.new) {
-				if (Platform.OS == 'ios') {
-					RNFetchBlob.ios.openDocument(item.uri);
-				} else if (Platform.OS == 'android') {
-					const android = RNFetchBlob.android;
-					android.actionViewIntent(item.uri, 'application/pdf');
-				}
 			} else {
-				let extension = item.substring(item.lastIndexOf('.') + 1, item.length);
-				let name = item.substring(item.indexOf('Z') + 1, item.length);
 				let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
 				RNFetchBlob.config({
-					addAndroidDownloads: {
-						useDownloadManager: true,
-						title: name,
-						description: 'View document',
-						mime: `application/${extension}`,
-						mediaScannable: true,
-						path: path,
-						notification: true
-					}
+					path,
+					overwrite: true
 				})
 					.fetch('GET', this.props.context.url + item, {
 						Authorization: `Bearer ${this.props.context.token}`
 					})
 					.then((res) => {
-						if ((Platform.OS = 'android')) {
-							const android = RNFetchBlob.android;
-							android.actionViewIntent(res.path(), `application/${extension}`);
-						} else {
-							RNFetchBlob.ios.openDocument(res.path());
-						}
+						RNFetchBlob.ios.openDocument(res.path());
 					})
 					.catch((err) => {
 						console.log(err);
 					});
 			}
 		}
-	};
+	}
 
-	addimages = () => {
+	addimages = async () => {
 		ImagePicker.showImagePicker(options, async (res) => {
 			let err = '';
 			if (res.didCancel) {
@@ -197,14 +190,34 @@ class AttachmentField extends React.Component {
 			} else if (res.error) {
 				err = res.error;
 			} else {
-				let arr = [ ...this.state.value ];
-				let ob = { ...res };
-				ob['name'] = res.fileName;
-				ob['new'] = true;
-				arr.push(ob);
-				this.setState({ value: arr, height: 55 + arr.length * 35 }, () =>
-					this.props.sendfiles(this.state.value)
-				);
+				this.setState({ uploading: true });
+				let str = '';
+				let form = new FormData();
+				let data = { ...res };
+				form.append('file', {
+					name: data.fileName,
+					type: data.type,
+					uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', '')
+				});
+				await add_attachment(this.props.context.url, this.props.context.token, form)
+					.then((res) => {
+						str = res.url;
+						this.setState(
+							{
+								value: [ ...this.state.value, str ],
+								height: 55 + (this.state.value.length + 1) * 35,
+								uploading: false
+							},
+							() => this.props.sendfiles(this.state.value)
+						);
+					})
+					.catch((err) => {
+						Snackbar.show({
+							title: err.message,
+							backgroundColor: '#D62246',
+							duration: Snackbar.LENGTH_SHORT
+						});
+					});
 			}
 			if (err != '') {
 				Snackbar.show({
@@ -218,41 +231,87 @@ class AttachmentField extends React.Component {
 
 	render() {
 		return (
-			<View style={{ width: Dimensions.get('window').width * 0.85, alignSelf: 'center' }}>
-				<TouchableOpacity
-					activeOpacity={1}
-					onPress={this.chooseType}
-					style={{ width: Dimensions.get('window').width * 0.85, alignSelf: 'center', height: 50 }}
-				>
-					<Text style={styles.label}>Attachments</Text>
-				</TouchableOpacity>
-				<ScrollView style={[ styles.value, { height: this.state.height } ]} showsVerticalScrollIndicator={true}>
-					{this.state.value.map((item, i) => (
-						<View key={i} style={styles.attachmentrow}>
-							<TouchableOpacity
-								activeOpacity={1}
-								onPress={() => this.viewRow(item)}
-								style={styles.attachmentname}
-							>
-								<Text style={styles.name}>{item.name ? item.name : item.replace('/uploads/', '')}</Text>
-							</TouchableOpacity>
-							<TouchableOpacity
-								activeOpacity={1}
-								style={styles.deletecontainer}
-								onPress={() => this.deleteRow(item)}
-							>
-								<Image style={styles.deleteimage} source={deleteimage} />
-							</TouchableOpacity>
-						</View>
-					))}
-				</ScrollView>
-				<ImageView
-					images={this.state.viewimage}
-					imageIndex={0}
-					visible={this.state.imageview}
-					onRequestClose={() => this.setState({ imageview: false })}
-				/>
-			</View>
+			<React.Fragment>
+				<View style={{ width: Dimensions.get('window').width * 0.85, alignSelf: 'center' }}>
+					<TouchableOpacity
+						activeOpacity={1}
+						onPress={this.chooseType}
+						style={{ width: Dimensions.get('window').width * 0.85, alignSelf: 'center', height: 50 }}
+					>
+						<Text style={styles.label}>Attachments</Text>
+					</TouchableOpacity>
+					<ScrollView
+						style={[ styles.value, { height: this.state.height } ]}
+						showsVerticalScrollIndicator={true}
+					>
+						{this.state.value.map((item, i) => (
+							<View key={i} style={styles.attachmentrow}>
+								<TouchableOpacity
+									activeOpacity={1}
+									onPress={() => this.viewRow(item)}
+									style={styles.attachmentname}
+								>
+									<Text style={styles.name}>
+										{item.name ? item.name : item.replace('/uploads/', '')}
+									</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									activeOpacity={1}
+									style={styles.deletecontainer}
+									onPress={() => this.deleteRow(item)}
+								>
+									<Image style={styles.deleteimage} source={deleteimage} />
+								</TouchableOpacity>
+							</View>
+						))}
+					</ScrollView>
+					<Modal visible={this.state.imageview} transparent={false} animated={true}>
+						<Image
+							source={{
+								uri: this.props.context.url + this.state.source,
+								headers: {
+									Authorization: `Bearer ${this.props.context.token}`
+								},
+								method: 'GET'
+							}}
+							style={{
+								width: Dimensions.get('window').width,
+								resizeMode: 'contain',
+								height: Dimensions.get('window').height
+							}}
+						/>
+						<TouchableOpacity
+							activeOpacity={0.5}
+							style={{ position: 'absolute', top: 50, right: 0, height: 50, width: 50 }}
+							onPress={() => this.setState({ imageview: false })}
+						>
+							<Image source={deleteimage} style={{ height: 15, width: 15, resizeMode: 'contain' }} />
+						</TouchableOpacity>
+					</Modal>
+				</View>
+
+				<Modal animated={false} visible={this.state.uploading} transparent={true}>
+					<View
+						style={{
+							backgroundColor: '#000',
+							width: Dimensions.get('window').width,
+							height: Dimensions.get('window').height,
+							opacity: 0.7
+						}}
+					/>
+					<View
+						style={{
+							position: 'absolute',
+							top: 0,
+							justifyContent: 'center',
+							width: Dimensions.get('window').width,
+							height: Dimensions.get('window').height
+						}}
+					>
+						<UIActivityIndicator color="#fff" size={50} />
+					</View>
+				</Modal>
+			</React.Fragment>
 		);
 	}
 }
@@ -268,9 +327,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'rgba(230,230,230,0.6)',
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center',
-		position: 'absolute',
-		top: 44.2,
-		minHeight: 80
+		marginTop: -6
 	},
 	label: {
 		fontSize: 12,

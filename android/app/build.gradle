@@ -183,6 +183,8 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-audio-player-recorder')
+    implementation project(':react-native-audio-record')
     implementation project(':rn-fetch-blob')
     implementation project(':react-native-pdf')
     implementation project(':react-native-image-picker')

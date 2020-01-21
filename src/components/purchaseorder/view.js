@@ -6,8 +6,10 @@ import {
 	View,
 	Image,
 	ActivityIndicator,
+	Platform,
+	Modal,
 	SafeAreaView,
-	Platform
+	Dimensions
 } from 'react-native';
 
 import viewstyle from './styles/poview';
@@ -15,12 +17,15 @@ import { GlobalContext } from '../../provider';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import back from '../../assets/back.png';
+import deleteimage from '../../assets/deleterow.png'
 
 class PurchaseOrder extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			rowdata: null
+			rowdata: null,
+			source:'',
+			imageview:false
 		};
 	}
 	componentDidMount() {
@@ -37,49 +42,86 @@ class PurchaseOrder extends React.Component {
 
 	changedata = (data) => {
 		if(data.issues){
-			for(let i in data.issues){
-				if(data.issues[i].status == 'OPEN'){
-					data.issues.splice(i,1)
+			let issues = [...this.state.rowdata.issues]
+			let keys = []
+			let indexes = []
+			for(let i in issues){
+				keys.push(issues[i].id)
+				indexes.push(i)
+			}
+			for(let issue of data.issues){
+				if(keys.indexOf(issue.id)>-1){
+					if(issue.status != 'OPEN'){
+						issues[indexes[keys.indexOf(issue.id)]] = issue
+					}else{
+						issues.splice(indexes[keys.indexOf(issue.id)],1)
+					}
+				}else{
+					if(issue.status != 'OPEN'){
+						issues.push(issue)
+					}
 				}
 			}
+			data.issues = issues
 		}
 		this.setState({ rowdata: { ...this.state.rowdata, ...data } });
 	};
 
 	viewAttachment = (item) => {
-		let extension = item.substring(item.lastIndexOf('.')+1, item.length);
+		let extension = item.substring(item.lastIndexOf('.') + 1, item.length);
 		let name = item.substring(item.indexOf('Z') + 1, item.length);
-		let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
-		RNFetchBlob.config({
-			addAndroidDownloads: {
-				useDownloadManager: true,
-				title: name,
-				description: 'View document',
-				mime: `application/${extension}`,
-				mediaScannable: true,
-				path: path,
-				notification: true
-			}
-		})
-			.fetch('GET', this.props.context.url + item, {
-				Authorization: `Bearer ${this.props.context.token}`
-			})
-			.then((res) => {
-				if ((Platform.OS = 'android')) {
-					const android = RNFetchBlob.android;
-					android.actionViewIntent(res.path(), `application/${extension}`);
-				} else {
-					RNFetchBlob.ios.openDocument(res.path());
+		if (Platform.OS == 'android') {
+			let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
+			RNFetchBlob.config({
+				addAndroidDownloads: {
+					useDownloadManager: true,
+					title: name,
+					description: 'View document',
+					mime: `application/${extension}`,
+					mediaScannable: true,
+					path: path,
+					notification: true
 				}
 			})
-			.catch((err) => {
-				console.log(err);
-			});
+				.fetch('GET', this.props.context.url + item, {
+					Authorization: `Bearer ${this.props.context.token}`
+				})
+				.then((res) => {
+					const android = RNFetchBlob.android;
+					android.actionViewIntent(res.path(), `application/${extension}`);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		} else if (Platform.OS == 'ios') {
+			if (extension != 'pdf') {
+				this.setState({
+					source: item,
+					imageview: true
+				});
+			} else {
+				let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
+				RNFetchBlob.config({
+					path,
+					overwrite: true
+				})
+					.fetch('GET', this.props.context.url + item, {
+						Authorization: `Bearer ${this.props.context.token}`
+					})
+					.then((res) => {
+						RNFetchBlob.ios.openDocument(res.path());
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			}
+		}
 	};
 
 	render() {
 		return this.state.rowdata != null ? (
 			<React.Fragment>
+				<SafeAreaView style={{backgroundColor:"#507df0"}} />
 				<View style={viewstyle.topbar}>
 					<TouchableOpacity activeOpacity={1} style={viewstyle.backcontainer} onPress={this.goback}>
 						<Image source={back} style={viewstyle.backimage} />
@@ -166,8 +208,8 @@ class PurchaseOrder extends React.Component {
 							</View>
 						</React.Fragment>
 					) : null}
-					{this.state.rowdata.issues ? (
-						<React.Fragment>
+					{this.state.rowdata.issues ? 
+						this.state.rowdata.issues.length > 0 && (<React.Fragment>
 							<View style={viewstyle.separator} />
 							<View style={viewstyle.details}>
 								<View style={viewstyle.paragraph}>
@@ -209,6 +251,30 @@ class PurchaseOrder extends React.Component {
 				<TouchableOpacity activeOpacity={1} style={viewstyle.editbutton} onPress={this.editdata}>
 					<Text style={viewstyle.editbuttontext}>{`EDIT `}</Text>
 				</TouchableOpacity>
+
+				<Modal visible={this.state.imageview} transparent={false} animated={true}>
+						<Image
+							source={{
+								uri: this.props.context.url + this.state.source,
+								headers: {
+									Authorization: `Bearer ${this.props.context.token}`
+								},
+								method: 'GET'
+							}}
+							style={{
+								width: Dimensions.get('window').width,
+								resizeMode: 'contain',
+								height: Dimensions.get('window').height
+							}}
+						/>
+						<TouchableOpacity
+							activeOpacity={0.5}
+							style={{ position: 'absolute', top: 50, right: 0, height: 50, width: 50 }}
+							onPress={() => this.setState({ imageview: false })}
+						>
+							<Image source={deleteimage} style={{ height: 15, width: 15, resizeMode: 'contain' }} />
+						</TouchableOpacity>
+					</Modal>
 			</React.Fragment>
 		) : (
 			<ActivityIndicator />

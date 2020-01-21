@@ -35,7 +35,7 @@ class AddForm extends React.Component {
 			trailer: props.context.trailerdata ? props.context.trailerdata : [],
 			category: props.context.categorydata ? props.context.categorydata : [],
 			vendor: props.context.vendordata ? props.context.vendordata : [],
-			issues: props.context.issuesdata ? convertback(props.context.issuesdata) : [],
+			issues: props.context.issuesdata ? JSON.parse(JSON.stringify(convertback(props.context.issuesdata))) : [],
 			user: props.context.user_data,
 			issuesdata: props.context.issuesdata ? props.context.issuesdata : {}
 		};
@@ -172,78 +172,33 @@ class AddForm extends React.Component {
 		return [];
 	};
 
-	handleSubmit = () => {
+	handleSubmit = async() => {
 		let err = '';
 		err = this.validateFirstForm();
 		if (err == '' && this.state.editdata.type == 'ISSUES') {
-			this.validateSecondForm();
+			err = this.validateSecondForm();
 		}
 		if (err == '') {
-			this.validateThirdForm();
+			err = this.validateThirdForm();
 		}
 		if (err == '') {
 			let addeddata = JSON.parse(JSON.stringify(this.addeddata));
-			let issue = this.getAllIssues();
+			let issue = await this.getAllIssues();
 			if (issue.length > 0) {
 				addeddata.issues = issue;
 			}
-
-			this.setState({ uploading: true }, async () => {
-				let str = '';
-				for (let i in this.files) {
-					if (this.files[i]['new']) {
-						let form = new FormData();
-						let data = this.files[i];
-						if (this.files[i]['type'] == 'application/pdf') {
-							form.append('file', {
-								name: data.name,
-								type: data.type,
-								uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', '')
-							});
-						} else {
-							form.append('file', {
-								name: data.fileName,
-								type: data.type,
-								uri: Platform.OS === 'android' ? data.uri : data.uri.replace('file://', '')
-							});
-						}
-						await add_attachment(this.props.context.url, this.props.context.token, form)
-							.then((res) => {
-								str += res.url;
-								str += ',';
-							})
-							.catch((err) => {
-								Snackbar.show({
-									title: err.message,
-									backgroundColor: '#D62246',
-									duration: Snackbar.LENGTH_SHORT
-								});
-							});
-					} else {
-						str += this.files[i];
-						str += ',';
-					}
-				}
-				if (str != '') {
-					str = str.substring(0, str.length - 1);
-				}
-				setTimeout(() => {
-					this.setState({ uploading: false }, () => {
-						if (str != this.previousdata.attachments) {
-							addeddata['attachments'] = str;
-						}
-						if (addeddata.length != 0) {
-							addeddata.id = this.state.editdata.id;
-							console.log(addeddata);
-							this.props.context.updatedata('/po/po', 'podata', addeddata);
-							this.props.navigation.goBack();
-							this.props.navigation.state.params.changedata(addeddata);
-						} else {
-							this.props.navigation.goBack();
-						}
-					});
-				}, 1500);
-			});
+			let str = this.files.join(',')
+			if (str != this.previousdata.attachments) {
+				addeddata['attachments'] = str;
+			}
+			if (addeddata.length != 0) {
+				addeddata.id = this.state.editdata.id;
+				this.props.context.updatedata('/po/po', 'podata', addeddata);
+				this.props.navigation.goBack();
+				this.props.navigation.state.params.changedata(addeddata);
+			} else {
+				this.props.navigation.goBack();
+			}
 		} else {
 			Snackbar.show({
 				title: err,
@@ -340,7 +295,6 @@ class AddForm extends React.Component {
 		this.setState({ refreshing: true });
 		let addedissues = [ ...this.state.editdata.addedissues ];
 		data.item.status = 'ASSIGNED';
-		data.item.POId = this.state.editdata.id;
 		addedissues.push(data.item);
 		let issues = [ ...this.state.editdata.issues ];
 		issues.splice(data.index, 1);
@@ -362,7 +316,6 @@ class AddForm extends React.Component {
 		addedissues.splice(data.index, 1);
 		let issues = [ ...this.state.editdata.issues ];
 		data.item.status = 'OPEN';
-		data.item.POId = null;
 		issues.push(data.item);
 		this.setState({
 			editdata: {

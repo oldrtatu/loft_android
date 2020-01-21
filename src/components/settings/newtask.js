@@ -2,7 +2,7 @@ import React from 'react';
 import { Text, ScrollView, SafeAreaView, View, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
 
 import { GlobalContext } from '../../provider';
-import { InputField, DropDown, TextArea,SuggestionField, AttachmentField } from '../helpers';
+import { InputField, DropDown, TextArea,SuggestionField, AttachmentField,AudioRecord } from '../helpers';
 
 import back from '../../assets/back.png';
 import { convertback } from '../helpers/convertdata';
@@ -109,6 +109,7 @@ class AddTask extends React.Component {
 						/>
 					)}
                     <AttachmentField sendfiles={this.sendfiles} />
+					{/* <AudioRecord/> */}
 				</ScrollView>
 			</React.Fragment>
 		);
