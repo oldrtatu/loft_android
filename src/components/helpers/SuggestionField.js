@@ -74,9 +74,10 @@ class SuggestionField extends React.Component {
 					/>
 					<Text style={styles.label}>{`${this.props.label}  `}</Text>
 				</View>
-				<Modal animated={false} visible={this.state.showResults} transparent={true} >
+				{/* <Modal animated={false} visible={this.state.showResults} transparent={true} > */}
+				{this.state.showResults && (
 					<ScrollView
-						style={[ styles.dropdowncontainer, { height: this.state.height, top: this.state.top + 150 } ]}
+						style={[ styles.dropdowncontainer, { height: this.state.height } ]}
 					>
 						{this.state.showvalues.map((item, i) => (
 							<TouchableOpacity
@@ -89,7 +90,8 @@ class SuggestionField extends React.Component {
 							</TouchableOpacity>
 						))}
 					</ScrollView>
-				</Modal>
+				)}
+				{/* </Modal> */}
 			</React.Fragment>
 		);
 	}
@@ -141,7 +143,6 @@ const styles = StyleSheet.create({
 	},
 	dropdowncontainer: {
 		borderWidth: 1,
-		position: 'absolute',
 		maxHeight: 150,
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center',
