@@ -16,6 +16,9 @@
     <!-- If you want to record audio to a SD card (i.e. external storage),
          you need to add this permission -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
  
 
     <application
