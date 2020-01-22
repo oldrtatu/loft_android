@@ -75,7 +75,7 @@ class AddForm extends React.Component {
             this.props.navigation.goBack();
 		}else{
 			Snackbar.show({
-				title:err,
+				text:err,
 				duration:Snackbar.LENGTH_SHORT,
 				backgroundColor:"#D62246"
 			})

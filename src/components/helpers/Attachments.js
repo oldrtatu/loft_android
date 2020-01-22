@@ -74,7 +74,7 @@ class AttachmentField extends React.Component {
 		}).catch((err) => {
 			if (DocumentPicker.isCancel(err)) {
 				Snackbar.show({
-					title: 'Cancelled document picker',
+					text: 'Cancelled document picker',
 					duration: Snackbar.LENGTH_SHORT,
 					backgroundColor: '#D62246'
 				});
@@ -112,7 +112,7 @@ class AttachmentField extends React.Component {
 				})
 				.catch((err) => {
 					Snackbar.show({
-						title: err.message,
+						text: err.message,
 						backgroundColor: '#D62246',
 						duration: Snackbar.LENGTH_SHORT
 					});
@@ -213,7 +213,7 @@ class AttachmentField extends React.Component {
 					})
 					.catch((err) => {
 						Snackbar.show({
-							title: err.message,
+							text: err.message,
 							backgroundColor: '#D62246',
 							duration: Snackbar.LENGTH_SHORT
 						});
@@ -221,7 +221,7 @@ class AttachmentField extends React.Component {
 			}
 			if (err != '') {
 				Snackbar.show({
-					title: err,
+					text: err,
 					duration: Snackbar.LENGTH_SHORT,
 					backgroundColor: '#D62246'
 				});

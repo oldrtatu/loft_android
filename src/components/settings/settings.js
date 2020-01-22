@@ -101,7 +101,7 @@ class Settings extends React.Component {
 				this.setState({ visible: false, passwordloading: false }, () => {
 					setTimeout(() => {
 						Snackbar.show({
-							title: 'Password changed successfully',
+							text: 'Password changed successfully',
 							duration: Snackbar.LENGTH_SHORT,
 							backgroundColor: '#1CA49F'
 						});
@@ -143,7 +143,7 @@ class Settings extends React.Component {
 				() => {
 					setTimeout(() => {
 						Snackbar.show({
-							title: 'Configuration changed successfully',
+							text: 'Configuration changed successfully',
 							duration: Snackbar.LENGTH_SHORT,
 							backgroundColor: '#1CA49F'
 						});
@@ -183,7 +183,7 @@ class Settings extends React.Component {
 					this.setState({ user_data: { ...this.state.user_data, ...res[1] },loading:false }, () => {
 						setTimeout(() => {
 							Snackbar.show({
-								title: toshow + ' changed successfully',
+								text: toshow + ' changed successfully',
 								duration: Snackbar.LENGTH_SHORT,
 								backgroundColor: '#1CA49F'
 							});
@@ -193,7 +193,7 @@ class Settings extends React.Component {
 					this.setState({loading:false})
 					setTimeout(() => {
 						Snackbar.show({
-							title: res[1],
+							text: res[1],
 							duration: Snackbar.LENGTH_SHORT,
 							backgroundColor: '#D62246'
 						});
@@ -203,7 +203,7 @@ class Settings extends React.Component {
 				this.setState({loading:false})
 				setTimeout(() => {
 					Snackbar.show({
-						title: 'Can not leave ' + toshow + ' empty',
+						text: 'Can not leave ' + toshow + ' empty',
 						duration: Snackbar.LENGTH_SHORT,
 						backgroundColor: '#D62246'
 					});
@@ -237,7 +237,7 @@ class Settings extends React.Component {
 			}
 			if (err != '') {
 				Snackbar.show({
-					title: err,
+					text: err,
 					duration: Snackbar.LENGTH_SHORT,
 					backgroundColor: '#D62246'
 				});

@@ -190,7 +190,7 @@ class IssuesForm extends React.Component {
 				navigation.state.params.changedata(this.addeddata);
 			}else{
 				Snackbar.show({
-					title: err,
+					text: err,
 					duration: Snackbar.LENGTH_SHORT,
 					backgroundColor: '#D62246'
 				});
@@ -206,7 +206,7 @@ class IssuesForm extends React.Component {
 			let err = this.validateFirstForm();
 			if (err != '') {
 				Snackbar.show({
-					title: err,
+					text: err,
 					duration: Snackbar.LENGTH_SHORT,
 					backgroundColor: '#D62246'
 				});
@@ -223,7 +223,7 @@ class IssuesForm extends React.Component {
 			err = this.validateSecondForm();
 			if (err != '') {
 				Snackbar.show({
-					title: err,
+					text: err,
 					duration: Snackbar.LENGTH_SHORT,
 					backgroundColor: '#D62246'
 				});

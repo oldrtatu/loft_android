@@ -56,7 +56,7 @@ class InventoryForm extends React.Component {
 			}
 		}else{
 			Snackbar.show({
-				title:err,
+				text:err,
 				duration:Snackbar.LENGTH_SHORT,
 				backgroundColor:"#D62246"
 			})

@@ -5,11 +5,10 @@ import {
 	StyleSheet,
 	Dimensions,
 	TextInput,
-	FlatList,
 	TouchableOpacity,
-	ScrollView,
-	Modal
+	ScrollView
 } from 'react-native';
+
 
 class SuggestionField extends React.Component {
 	constructor(props) {
@@ -20,7 +19,8 @@ class SuggestionField extends React.Component {
 			showResults: false,
 			showvalues: [],
 			height: 0,
-			top: 0
+			top: 0,
+			focus:false
 		};
 	}
 	UNSAFE_componentWillReceiveProps(newprops) {
@@ -35,9 +35,7 @@ class SuggestionField extends React.Component {
 	};
 
 	endEditing = () => {
-		if(this.state.showvalues.length == 0){
-			this.setState({ showResults: false });
-		}
+		this.setState({ showResults: false });
 	};
 
 	searchValue = (text) => {
@@ -54,13 +52,14 @@ class SuggestionField extends React.Component {
 	setValue = (item) => {
 		this.setState({
 			showResults: false,
-			value: item[this.props.name].toString()
+			value: item[this.props.name].toString(),
+			focus:true
 		},()=>{this.props.getValue(item)});
 	};
 
 	render() {
 		return (
-			<React.Fragment>
+			<View>
 				<View onLayout={(e) => this.setState({ top: e.nativeEvent.layout.y + e.nativeEvent.layout.height })}>
 					<TextInput
 						defaultValue={this.state.value}
@@ -74,25 +73,23 @@ class SuggestionField extends React.Component {
 					/>
 					<Text style={styles.label}>{`${this.props.label}  `}</Text>
 				</View>
-				{/* <Modal animated={false} visible={this.state.showResults} transparent={true} > */}
 				{this.state.showResults && (
 					<ScrollView
 						style={[ styles.dropdowncontainer, { height: this.state.height } ]}
+						keyboardShouldPersistTaps='always'
 					>
 						{this.state.showvalues.map((item, i) => (
-							<TouchableOpacity
-								activeOpacity={1}
+							<View
 								key={i}
 								style={styles.row}
-								onPress={() => this.setValue(item)}
+								onTouchStart={() => this.setValue(item)}	
 							>
 								<Text style={styles.rowtext}>{item[this.props.name]}</Text>
-							</TouchableOpacity>
+							</View>
 						))}
 					</ScrollView>
 				)}
-				{/* </Modal> */}
-			</React.Fragment>
+			</View>
 		);
 	}
 }
@@ -135,11 +132,12 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		fontWeight: '700',
 		color: 'rgba(80,86,101,0.36)',
-		marginTop: -47,
-		marginLeft: 30,
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center',
-		marginBottom: 33
+		position:'absolute',
+		zIndex:1,
+		top:15,
+		paddingLeft:15
 	},
 	dropdowncontainer: {
 		borderWidth: 1,
@@ -148,7 +146,7 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		backgroundColor: 'white',
 		borderColor: 'lightgray',
-		zIndex: 1
+		zIndex: 11,
 	},
 	row: {
 		borderColor: 'lightgray',

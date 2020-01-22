@@ -62,6 +62,7 @@ target 'loft_app' do
 
 
 
+
   target 'loft_appTests' do
     inherit! :search_paths
     # Pods for testing
