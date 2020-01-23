@@ -1,15 +1,5 @@
 import React from 'react';
-import {
-	Text,
-	View,
-	TouchableOpacity,
-	Image,
-	ScrollView,
-	Dimensions,
-	SafeAreaView,
-	Platform,
-	Modal
-} from 'react-native';
+import { Text, View, TouchableOpacity, Image, ScrollView, Dimensions, SafeAreaView, Modal, Alert } from 'react-native';
 
 import form from './styles/formstyle';
 
@@ -75,13 +65,13 @@ class AddForm extends React.Component {
 		}
 		ob.addedissues = [];
 		for (let i in ob.issues) {
-			let issue = this.data.issuesdata[ob.issues[i].id];
+			let issue = JSON.parse(JSON.stringify(this.data.issuesdata[ob.issues[i].id]));
 			ob.addedissues.push(issue);
 		}
 		ob.issues = [];
 		let issues = [];
 		for (let i in this.data.issues) {
-			let issue = this.data.issues[i];
+			let issue = JSON.parse(JSON.stringify(this.data.issues[i]));
 			let unitNo = ob[ob.equipmentType.toLowerCase()]['unitNo'];
 			if (issue.equipmentType == ob.equipmentType && issue.status == 'OPEN') {
 				if (issue[issue.equipmentType.toLowerCase()]['unitNo'] == unitNo) {
@@ -172,7 +162,7 @@ class AddForm extends React.Component {
 		return [];
 	};
 
-	handleSubmit = async() => {
+	handleSubmit = async () => {
 		let err = '';
 		err = this.validateFirstForm();
 		if (err == '' && this.state.editdata.type == 'ISSUES') {
@@ -184,18 +174,66 @@ class AddForm extends React.Component {
 		if (err == '') {
 			let addeddata = JSON.parse(JSON.stringify(this.addeddata));
 			let issue = await this.getAllIssues();
+			let complete = false;
+			if (this.state.editdata.type == 'ISSUES') {
+				complete = true;
+				for (let stat of this.state.editdata.addedissues) {
+					if (stat.status == 'ASSIGNED') {
+						complete = false;
+						break;
+					}
+				}
+			}
 			if (issue.length > 0) {
 				addeddata.issues = issue;
 			}
-			let str = this.files.join(',')
+			let str = this.files.join(',');
 			if (str != this.previousdata.attachments) {
 				addeddata['attachments'] = str;
 			}
 			if (addeddata.length != 0) {
-				addeddata.id = this.state.editdata.id;
-				this.props.context.updatedata('/po/po', 'podata', addeddata);
-				this.props.navigation.goBack();
-				this.props.navigation.state.params.changedata(addeddata);
+				if (complete) {
+					Alert.alert(
+						'Do you want to change the PO status to complete?',
+						'',
+						[
+							{
+								text: 'Yes',
+								onPress: () => {
+									addeddata.status = 'COMPLETE';
+									addeddata.id = this.state.editdata.id;
+									this.props.context.updatedata('/po/po', 'podata', addeddata);
+									this.props.navigation.goBack();
+									this.props.navigation.state.params.changedata(addeddata);
+								}
+							},
+							{
+								text: 'Cancel',
+								style: 'cancel',
+								onPress: () => {
+									Snackbar.show({
+										text: 'Please change one issue to assigned',
+										duration: Snackbar.LENGTH_SHORT,
+										backgroundColor: '#D62246',
+										textColor: '#fff'
+									});
+									this.setState({ reload: true }, () => this.setState({ reload: false }));
+								}
+							}
+						],
+						{ cancelable: false }
+					);
+				} else {
+					if(this.state.editdata.type == 'ISSUES'){
+						if(this.previousdata.status != 'ACTIVE'){
+							addeddata.status = 'ACTIVE'
+						}
+					}
+					addeddata.id = this.state.editdata.id;
+					this.props.context.updatedata('/po/po', 'podata', addeddata);
+					this.props.navigation.goBack();
+					this.props.navigation.state.params.changedata(addeddata);
+				}
 			} else {
 				this.props.navigation.goBack();
 			}
@@ -399,9 +437,9 @@ class AddForm extends React.Component {
 							label="Status"
 							name="status"
 							value={this.state.editdata.status}
-							dropdown={dat.poType == 'GENERAL' ? [ 'ACTIVE', 'COMPLETE' ] : [ 'ACTIVE' ]}
+							dropdown={[ 'ACTIVE', 'COMPLETE' ]}
 							getValue={this.getValue}
-							disabled={false}
+							disabled={dat.poType == 'GENERAL' ? false : true}
 						/>
 						<InputField
 							placeholder="Enter user name"
