@@ -153,6 +153,13 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+
+        release {
+            storeFile file('loft.keystore')
+            storePassword 'THEviper22'
+            keyAlias 'loft'
+            keyPassword 'THEviper22'
+        }
     }
     buildTypes {
         debug {
