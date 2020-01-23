@@ -1,6 +1,5 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
-permissions_path = '../node_modules/react-native-permissions/ios'
 
 target 'loft_app' do
   # Pods for loft_app
@@ -34,34 +33,6 @@ target 'loft_app' do
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
-
-  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
-
-  pod 'react-native-document-picker', :path => '../node_modules/react-native-document-picker'
-
-
-  pod 'RNSnackbar', :path => '../node_modules/react-native-snackbar'
-
-  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
-
-  pod 'Permission-Camera', :path => "#{permissions_path}/Camera.podspec"
-  pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary.podspec"
-  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary.podspec"
-
-
-
-
-
-
-
-
-  pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
-
-
-
-
-
-
 
   target 'loft_appTests' do
     inherit! :search_paths

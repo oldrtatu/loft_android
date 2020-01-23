@@ -13,6 +13,8 @@ import {
 	Platform
 } from 'react-native';
 
+import AsyncStorage from '@react-native-community/async-storage';
+
 import camera from '../../assets/camera.png';
 import forward from '../../assets/forward.png';
 import password from '../../assets/password.png';
@@ -168,6 +170,8 @@ class Settings extends React.Component {
 	};
 
 	logout = () => {
+		AsyncStorage.removeItem('_token')
+		AsyncStorage.removeItem('_user')
 		this.props.navigation.navigate('Sign In');
 	};
 

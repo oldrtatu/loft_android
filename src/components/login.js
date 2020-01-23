@@ -1,5 +1,6 @@
 import React from 'react';
-import {  View, ImageBackground, TextInput, Text, TouchableOpacity } from 'react-native';
+import {  View, ImageBackground, TextInput, Text, TouchableOpacity,Modal,Dimensions } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import { UIActivityIndicator } from 'react-native-indicators';
 
@@ -13,8 +14,29 @@ class LogIn extends React.Component {
 		super(props);
 		this.state = {
 			user_data: props.global.user_data,
-			loading: false
+			loading: false,
+			uploading:false
 		};
+	}
+
+	componentDidMount(){
+		this.checkSavedLogin()
+	}
+
+	checkSavedLogin = async() =>{
+		this.setState({uploading:true})
+		let token = await AsyncStorage.getItem('_token')
+		if(token != null && token != undefined){
+			let user = await AsyncStorage.getItem('_user')
+			this.setState({
+				user_data: JSON.parse(user), token: token, authenticated: true,uploading:false
+			},()=>{
+				this.props.global.checklogin(this.state.user_data,token)
+				this.props.navigation.navigate('App')
+			})
+		}else{
+			this.setState({uploading:false})
+		}
 	}
 
 	checkLogin = async () => {
@@ -68,6 +90,28 @@ class LogIn extends React.Component {
 						</TouchableOpacity>
 					)}
 				</ImageBackground>
+
+				<Modal animated={false} visible={this.state.uploading} transparent={true}>
+					<View
+						style={{
+							backgroundColor: '#000',
+							width: Dimensions.get('window').width,
+							height: Dimensions.get('window').height,
+							opacity: 0.7
+						}}
+					/>
+					<View
+						style={{
+							position: 'absolute',
+							top: 0,
+							justifyContent: 'center',
+							width: Dimensions.get('window').width,
+							height: Dimensions.get('window').height
+						}}
+					>
+						<UIActivityIndicator color="#fff" size={50} />
+					</View>
+				</Modal>
 			</View>
 		);
 	}
