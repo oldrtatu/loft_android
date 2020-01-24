@@ -26,9 +26,12 @@ class SuggestionField extends React.Component {
 	};
 
 	endEditing = () => {
-		// if(!this.state.focus){
-		// 	this.setState({ showResults: false });
-		// }
+		if(!this.state.focus){
+			this.setState({ showResults: false });
+		}
+		if(this.state.showvalues.length == 0){
+			this.setState({ showResults: false });
+		}
 	};
 
 	searchValue = (text) => {
@@ -43,7 +46,6 @@ class SuggestionField extends React.Component {
 	};
 
 	setValue = (item) => {
-		console.log(item[this.props.name])
 		this.setState(
 			{
 				showResults: false,
@@ -82,6 +84,7 @@ class SuggestionField extends React.Component {
 						// keyboardShouldPersistTaps="always"
 						showsVerticalScrollIndicator={true}
 						onScrollBeginDrag={()=>this.setState({focus:true})}
+						onTouchStart={()=>this.setState({focus:true})}
 					>
 						{this.state.showvalues.map((item, i) => (
 							<TouchableHighlight
