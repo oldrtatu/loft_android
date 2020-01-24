@@ -9,17 +9,19 @@ import { update_data, add_data } from './updatedata';
 import { convertdata, convertback } from '../components/helpers/convertdata';
 import AsyncStorage from '@react-native-community/async-storage';
 
+//this is a comment
+
 export class GlobalContextProvider extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			user_data: {
-				username: 'yashmalik23@gmail.com',
-				password: '12345678',
+				username: '',
+				password: '',
 				error: ''
 			},
 			authenticated: false,
-			url: 'http://xplicitsoftware.co:8080'
+			url: 'https://xplicitsoftware.co'
 		};
 	}
 
