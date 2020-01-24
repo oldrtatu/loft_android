@@ -2,10 +2,11 @@ import React from 'react';
 import { Text, ScrollView, SafeAreaView, View, TouchableOpacity, Image, StyleSheet, Dimensions } from 'react-native';
 
 import { GlobalContext } from '../../provider';
-import { InputField, DropDown, TextArea,SuggestionField, AttachmentField } from '../helpers';
+import { InputField, DropDown, TextArea, SuggestionField, AttachmentField, Slidebutton } from '../helpers';
 
 import back from '../../assets/back.png';
 import { convertback } from '../helpers/convertdata';
+import Snackbar from 'react-native-snackbar';
 class AddTask extends React.Component {
 	constructor(props) {
 		super(props);
@@ -17,49 +18,104 @@ class AddTask extends React.Component {
 			addData: {
 				name: '',
 				taskType: 'GENERAL',
-                description: '',
-                relatedTo:''
+				description: '',
+				relatedTo: '',
+				documentFile:'',
+				imageFile:''
 			},
-			addnew: false
+			addnew: true,
+			reload: false
 		};
-    }
-    files = []
+	}
+	files = [];
 
 	goback = () => {
 		this.props.navigation.goBack(null);
 	};
 
-	componentDidMount() {
-		let addnew = this.props.navigation.getParam('addnew');
-		console.log(addnew);
-		if (!addnew) {
-			this.setState({
-				addData: { ...this.props.navigation.getParam('data') },
-				addnew: false
-			});
-		} else {
-			this.setState({ addnew });
-		}
-	}
 
 	getValue = (key, value) => {
 		let ob = { ...this.state.addData };
-        ob[key] = value;
-        if(key == 'taskType'){
-            ob['relatedTo'] = ''
-        }
+		ob[key] = value;
+		if (key == 'taskType') {
+			ob['relatedTo'] = '';
+		}
 		this.setState({ addData: ob });
-    };
-    
-    sendfiles = (data) => {
-		this.files = data;
 	};
-    
-    getId= (item)=>{
-        let ob = { ...this.state.addData };
+
+	sendfiles = (data) => {
+		let documentFile = ''
+		let imageFile = ''
+		for(let item of data){
+			if(item.includes('pdf')){
+				if (documentFile == ''){
+					documentFile += item
+				}else{
+					documentFile += ','+item
+				}
+			}else{
+				if (imageFile == ''){
+					imageFile += item
+				}else{
+					imageFile += ','+item
+				}
+			}
+		}
+		this.setState({
+			addData:{
+				...this.state.addData,
+				documentFile,imageFile
+			}
+		})
+	};
+
+	getId = (item) => {
+		let ob = { ...this.state.addData };
 		ob['relatedTo'] = item.id.toString();
 		this.setState({ addData: ob });
-    }
+	};
+
+	validate = () => {
+		if (this.state.addData.name == '') {
+			return 'Enter task name';
+		} else if (this.state.addData.taskType != 'GENERAL') {
+			if (this.state.addData.relatedTo == '') {
+				return 'Enter the related ID';
+			} else {
+				return '';
+			}
+		} else {
+			return '';
+		}
+	};
+
+	handleSubmit = () => {
+		let err = this.validate();
+		if (err == '') {
+			let addeddata = JSON.parse(JSON.stringify(this.state.addData));
+			if(addeddata.taskType == 'GENERAL'){
+				delete addeddata.relatedTo
+			}else{
+				if(addeddata.taskType == 'ISSUES'){
+					addeddata['issueId'] = parseInt(addeddata.relatedTo)
+				}else{
+					addeddata['POId'] = parseInt(addeddata.relatedTo)
+				}	
+				delete addeddata.relatedTo
+			}
+			addeddata['status'] = 'INCOMPLETE'
+			delete addeddata.taskType
+			this.props.navigation.goBack();
+			this.props.navigation.state.params.addTask(addeddata);
+		} else {
+			Snackbar.show({
+				text: err,
+				duration: Snackbar.LENGTH_SHORT,
+				backgroundColor: '#D62246'
+			});
+			this.setState({ reload: true }, () => this.setState({ reload: false }));
+		}
+	};
 	render() {
 		return (
 			<React.Fragment>
@@ -70,7 +126,7 @@ class AddTask extends React.Component {
 					</TouchableOpacity>
 					<Text style={form.heading}>{this.state.addnew ? 'Add' : 'Edit'}</Text>
 				</View>
-				<ScrollView>
+				<ScrollView nestedScrollEnabled={true}>
 					<InputField
 						placeholder="Enter task name"
 						label="Task Name"
@@ -108,8 +164,10 @@ class AddTask extends React.Component {
 							editable={true}
 						/>
 					)}
-                    <AttachmentField sendfiles={this.sendfiles} />
+					<AttachmentField sendfiles={this.sendfiles} />
 				</ScrollView>
+
+				<Slidebutton submit={this.handleSubmit} reload={this.state.reload} />
 			</React.Fragment>
 		);
 	}

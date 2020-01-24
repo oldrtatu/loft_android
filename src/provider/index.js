@@ -2,7 +2,8 @@ import React from 'react';
 
 const GlobalContext = React.createContext();
 
-import { loginuser, change_password, change_userdata, upload_user_image } from './login';
+import { loginuser, change_password, change_userdata, upload_user_image,addnewtodo,deletetodo } from './login';
+import {addtask,deletetask} from './tasks'
 import { fetch_data } from './fetchdata';
 import { update_data, add_data } from './updatedata';
 import { convertdata, convertback } from '../components/helpers/convertdata';
@@ -70,6 +71,7 @@ export class GlobalContextProvider extends React.Component {
 					user_data[key] = res.response[key];
 					resolve([ true, res ]);
 					this.setState({ user_data }, () => {
+						AsyncStorage.setItem('_user',JSON.stringify(this.state.user_data))
 						resolve([ true, res.response ]);
 					});
 				})
@@ -164,6 +166,7 @@ export class GlobalContextProvider extends React.Component {
 			}
 		}
 	};
+
 	adddata = async (path, table, data) => {
 		let res = await add_data(this.state.url, this.state.token, path, data);
 		if (res.message) {
@@ -194,6 +197,102 @@ export class GlobalContextProvider extends React.Component {
 		}
 	};
 
+	addtodolist = (data) => {
+		return new Promise(async (resolve, reject) => {
+			await addnewtodo(this.state.url, this.state.token, data)
+				.then((res) => {
+					let user_data = JSON.parse(JSON.stringify(this.state.user_data));
+					let todo =  user_data['todos']
+					if(todo != null && todo != undefined){
+						todo.push(res.response)
+					}else{
+						todo = []
+						todo.push(res.response)
+					}
+					user_data['todos'] = todo
+					resolve([ true, res ]);
+					this.setState({ user_data }, () => {
+						AsyncStorage.setItem('_user',JSON.stringify(this.state.user_data))
+						resolve([ true, res.response ]);
+					});
+				})
+				.catch((err) => resolve([ false, err.message ]));
+		});
+	}
+
+	deletetodolist = (data) => {
+		return new Promise(async (resolve, reject) => {
+			await deletetodo(this.state.url, this.state.token, data)
+				.then((res) => {
+					let user_data = JSON.parse(JSON.stringify(this.state.user_data));
+					let todo =  user_data['todos']
+					for(let i in todo){
+						if(todo[i].id == data.id){
+							todo.splice(i,1)
+							break
+						}
+					}
+					user_data['todos'] = todo
+					resolve([ true, res ]);
+					this.setState({ user_data }, () => {
+						AsyncStorage.setItem('_user',JSON.stringify(this.state.user_data))
+						resolve([ true, res.response ]);
+					});
+				})
+				.catch((err) => resolve([ false, err.message ]));
+		});
+	}
+
+	add_task = (data,todoId) => {
+		return new Promise(async (resolve, reject) => {
+			await addtask(this.state.url, this.state.token, data)
+				.then((res) => {
+					let user_data = JSON.parse(JSON.stringify(this.state.user_data));
+					let todo =  user_data['todos']
+					for(let i in todo){
+						if(todo[i].id == todoId){
+							todo[i].tasks.push(res.response)
+							break
+						}
+					}
+					user_data['todos'] = todo
+					resolve([ true, res ]);
+					this.setState({ user_data }, () => {
+						AsyncStorage.setItem('_user',JSON.stringify(this.state.user_data))
+						resolve([ true, res.response ]);
+					});
+				})
+				.catch((err) => resolve([ false, err.message ]));
+		});
+	}
+
+	delete_task = (data,todoId) => {
+		return new Promise(async (resolve, reject) => {
+			await deletetask(this.state.url, this.state.token, data)
+				.then((res) => {
+					let user_data = JSON.parse(JSON.stringify(this.state.user_data));
+					let todo =  user_data['todos']
+					for(let i in todo){
+						if(todo[i].id == todoId){
+							for(let j in todo[i].tasks){
+								if(todo[i].tasks[j].id == data.id){
+									todo[i].tasks.splice(j,1)
+									break
+								}
+							}
+						}
+					}
+					user_data['todos'] = todo
+					resolve([ true, res ]);
+					this.setState({ user_data }, () => {
+						AsyncStorage.setItem('_user',JSON.stringify(this.state.user_data))
+						resolve([ true, res.response ]);
+					});
+				})
+				.catch((err) => resolve([ false, err.message ]));
+		});
+	}
+
 	render() {
 		return (
 			<GlobalContext.Provider
@@ -206,7 +305,11 @@ export class GlobalContextProvider extends React.Component {
 					fetchdata: this.fetchdata,
 					updatedata: this.updatedata,
 					adddata: this.adddata,
-					checklogin:this.checkLogin
+					checklogin:this.checkLogin,
+					addtodolist:this.addtodolist,
+					deletetodolist:this.deletetodolist,
+					add_task:this.add_task,
+					delete_task:this.delete_task
 				}}
 			>
 				{this.props.children}

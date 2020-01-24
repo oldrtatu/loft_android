@@ -150,3 +150,70 @@ export function upload_user_image(url,token,data){
         })
     })
 }
+
+export function addnewtodo(url,token,data){
+    return new Promise(async (resolve, reject) => {
+        await axios({
+            method: "POST",
+            data: data,
+            url : url + '/todo',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then((res) => {
+            if(res.data.code == "ADD_SUCC"){
+                resolve(res.data)
+            }else{
+                reject({
+                    "message":"Token expired"
+                })
+            }
+            
+        })
+        .catch((err) => {
+            if (err.response){
+                reject({
+                    "message":err.response.data.message
+                })
+            }else{
+                reject({
+                    "message":"Network error"
+                })
+            }
+        });
+    }) 
+}
+export function deletetodo(url,token,data){
+    return new Promise(async (resolve, reject) => {
+        await axios({
+            method: "DELETE",
+            data: data,
+            url : url + '/todo',
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then((res) => {
+            if(res.data.code == "DELETE_SUCC"){
+                resolve(res.data)
+            }else{
+                reject({
+                    "message":"Token expired"
+                })
+            }
+            
+        })
+        .catch((err) => {
+            if (err.response){
+                reject({
+                    "message":err.response.data.message
+                })
+            }else{
+                reject({
+                    "message":"Network error"
+                })
+            }
+        });
+    }) 
+}

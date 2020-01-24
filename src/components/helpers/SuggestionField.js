@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-	Text,
-	View,
-	StyleSheet,
-	Dimensions,
-	TextInput,
-	TouchableOpacity,
-	ScrollView
-} from 'react-native';
-
+import { Text, View, StyleSheet, Dimensions, TextInput, TouchableHighlight, ScrollView } from 'react-native';
 
 class SuggestionField extends React.Component {
 	constructor(props) {
@@ -20,7 +11,7 @@ class SuggestionField extends React.Component {
 			showvalues: [],
 			height: 0,
 			top: 0,
-			focus:false
+			focus: false
 		};
 	}
 	UNSAFE_componentWillReceiveProps(newprops) {
@@ -35,7 +26,9 @@ class SuggestionField extends React.Component {
 	};
 
 	endEditing = () => {
-		this.setState({ showResults: false });
+		// if(!this.state.focus){
+		// 	this.setState({ showResults: false });
+		// }
 	};
 
 	searchValue = (text) => {
@@ -46,26 +39,36 @@ class SuggestionField extends React.Component {
 				list.push(item);
 			}
 		});
-		this.setState({ showvalues: list, height: 35 * list.length });
+		this.setState({ showvalues: list, height: 35 * list.length ,value:text });
 	};
 
 	setValue = (item) => {
-		this.setState({
-			showResults: false,
-			value: item[this.props.name].toString(),
-			focus:true
-		},()=>{this.props.getValue(item)});
+		console.log(item[this.props.name])
+		this.setState(
+			{
+				showResults: false,
+				value: item[this.props.name].toString(),
+				focus: true,
+				height: 0
+			},
+			() => {
+				this.props.getValue(item);
+			}
+		);
 	};
+
 
 	render() {
 		return (
-			<View>
-				<View onLayout={(e) => this.setState({ top: e.nativeEvent.layout.y + e.nativeEvent.layout.height })}>
+			<View style={{maxHeight:205,height:this.state.height + 65}}>
+				<View>
 					<TextInput
-						defaultValue={this.state.value}
+						value={this.state.value}
 						placeholder={this.props.placeholder}
 						style={this.state.showResults ? styles.active : styles.inputfield}
-						onTouchStart={(e) =>{ (this.props.editable) ? this.startEditing(e):null}}
+						onTouchStart={(e) => {
+							this.props.editable ? this.startEditing(e) : null;
+						}}
 						onBlur={() => this.endEditing()}
 						onSubmitEditing={() => this.endEditing()}
 						onChangeText={(text) => this.searchValue(text)}
@@ -75,17 +78,20 @@ class SuggestionField extends React.Component {
 				</View>
 				{this.state.showResults && (
 					<ScrollView
-						style={[ styles.dropdowncontainer, { height: this.state.height } ]}
-						keyboardShouldPersistTaps='always'
+						style={[ styles.dropdowncontainer, { height: this.state.height} ]}
+						// keyboardShouldPersistTaps="always"
+						showsVerticalScrollIndicator={true}
+						onScrollBeginDrag={()=>this.setState({focus:true})}
 					>
 						{this.state.showvalues.map((item, i) => (
-							<View
+							<TouchableHighlight
 								key={i}
+								underlayColor="#507df0"
 								style={styles.row}
-								onTouchStart={() => this.setValue(item)}	
+								onPress={() => this.setValue(item)}
 							>
 								<Text style={styles.rowtext}>{item[this.props.name]}</Text>
-							</View>
+							</TouchableHighlight>
 						))}
 					</ScrollView>
 				)}
@@ -96,7 +102,7 @@ class SuggestionField extends React.Component {
 
 const styles = StyleSheet.create({
 	inputfield: {
-		flex: 1,
+		// flex: 1,
 		paddingLeft: 15,
 		color: '#131d4a',
 		fontSize: 12,
@@ -110,7 +116,7 @@ const styles = StyleSheet.create({
 		alignSelf: 'center'
 	},
 	active: {
-		flex: 1,
+		// flex: 1,
 		paddingLeft: 15,
 		color: '#131d4a',
 		fontSize: 12,
@@ -128,25 +134,26 @@ const styles = StyleSheet.create({
 		borderLeftColor: '#5988FF'
 	},
 	label: {
-		flex: 1,
+		// flex: 1,
 		fontSize: 12,
 		fontWeight: '700',
 		color: 'rgba(80,86,101,0.36)',
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center',
-		position:'absolute',
-		zIndex:1,
-		top:15,
-		paddingLeft:15
+		position: 'absolute',
+		zIndex: 1,
+		top: 15,
+		paddingLeft: 15
 	},
 	dropdowncontainer: {
 		borderWidth: 1,
-		maxHeight: 150,
+		maxHeight: 140,
 		width: Dimensions.get('window').width * 0.85,
 		alignSelf: 'center',
 		backgroundColor: 'white',
 		borderColor: 'lightgray',
-		zIndex: 11,
+		zIndex:10,
+		flex:1
 	},
 	row: {
 		borderColor: 'lightgray',
@@ -162,4 +169,3 @@ const styles = StyleSheet.create({
 });
 
 export default SuggestionField;
-

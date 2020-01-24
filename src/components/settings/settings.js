@@ -249,6 +249,10 @@ class Settings extends React.Component {
 		});
 	};
 
+	updateApp =()=>{
+		console.log('hi')
+	}
+
 	render() {
 		return (
 			<ScrollView style={styles.containerStyle}>
@@ -315,6 +319,10 @@ class Settings extends React.Component {
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.navigator} onPress={this.todolist}>
 						<Text style={styles.forwardtitle}>To do list</Text>
+						<Image source={forward} style={styles.forwardarrow} />
+					</TouchableOpacity>
+					<TouchableOpacity style={styles.navigator} onPress={this.updateApp}>
+						<Text style={styles.forwardtitle}>Update app</Text>
 						<Image source={forward} style={styles.forwardarrow} />
 					</TouchableOpacity>
 					<TouchableOpacity style={styles.password} onPress={this.addPassword}>

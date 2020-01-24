@@ -5,6 +5,7 @@ import Sett from '../components/settings/settings';
 import ToDo from '../components/settings/todolist';
 import TaskPage from '../components/settings/tasks';
 import AddTask from '../components/settings/newtask'
+import ViewTask from '../components/settings/viewtask'
 
 import Settingsheader from '../components/navigation/settingheader';
 
@@ -30,6 +31,12 @@ const navigator = createStackNavigator(
 		},
 		'Add':{
 			screen: AddTask,
+			navigationOptions: {
+				header: null
+			}
+		},
+		'ViewTask':{
+			screen: ViewTask,
 			navigationOptions: {
 				header: null
 			}

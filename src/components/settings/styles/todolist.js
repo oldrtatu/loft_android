@@ -76,7 +76,18 @@ const styles = StyleSheet.create({
 	newtext:{
 		fontSize:14,
 		color:"#fff"
-	}
+	},
+    textinput:{
+        height:40,
+        borderWidth:1,
+        marginTop:7,
+        paddingLeft:20,
+        color:"#131D4A",
+        fontSize: 12,
+		borderColor:"#E6E6E6",
+		width:"80%",
+		alignSelf:"center"
+    },
 })
 
 export default styles

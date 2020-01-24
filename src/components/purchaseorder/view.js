@@ -17,15 +17,15 @@ import { GlobalContext } from '../../provider';
 import RNFetchBlob from 'rn-fetch-blob';
 
 import back from '../../assets/back.png';
-import deleteimage from '../../assets/deleterow.png'
+import errorimage from '../../assets/error.png'
 
 class PurchaseOrder extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			rowdata: null,
-			source:'',
-			imageview:false
+			source: '',
+			imageview: false
 		};
 	}
 	componentDidMount() {
@@ -41,28 +41,28 @@ class PurchaseOrder extends React.Component {
 	};
 
 	changedata = (data) => {
-		if(data.issues){
-			let issues = [...this.state.rowdata.issues]
-			let keys = []
-			let indexes = []
-			for(let i in issues){
-				keys.push(issues[i].id)
-				indexes.push(i)
+		if (data.issues) {
+			let issues = [ ...this.state.rowdata.issues ];
+			let keys = [];
+			let indexes = [];
+			for (let i in issues) {
+				keys.push(issues[i].id);
+				indexes.push(i);
 			}
-			for(let issue of data.issues){
-				if(keys.indexOf(issue.id)>-1){
-					if(issue.status != 'OPEN'){
-						issues[indexes[keys.indexOf(issue.id)]] = issue
-					}else{
-						issues.splice(indexes[keys.indexOf(issue.id)],1)
+			for (let issue of data.issues) {
+				if (keys.indexOf(issue.id) > -1) {
+					if (issue.status != 'OPEN') {
+						issues[indexes[keys.indexOf(issue.id)]] = issue;
+					} else {
+						issues.splice(indexes[keys.indexOf(issue.id)], 1);
 					}
-				}else{
-					if(issue.status != 'OPEN'){
-						issues.push(issue)
+				} else {
+					if (issue.status != 'OPEN') {
+						issues.push(issue);
 					}
 				}
 			}
-			data.issues = issues
+			data.issues = issues;
 		}
 		this.setState({ rowdata: { ...this.state.rowdata, ...data } });
 	};
@@ -72,27 +72,34 @@ class PurchaseOrder extends React.Component {
 		let name = item.substring(item.indexOf('Z') + 1, item.length);
 		if (Platform.OS == 'android') {
 			let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
-			RNFetchBlob.config({
-				addAndroidDownloads: {
-					useDownloadManager: true,
-					title: name,
-					description: 'View document',
-					mime: `application/${extension}`,
-					mediaScannable: true,
-					path: path,
-					notification: true
-				}
-			})
-				.fetch('GET', this.props.context.url + item, {
-					Authorization: `Bearer ${this.props.context.token}`
-				})
-				.then((res) => {
-					const android = RNFetchBlob.android;
-					android.actionViewIntent(res.path(), `application/${extension}`);
-				})
-				.catch((err) => {
-					console.log(err);
+			if (extension != 'pdf') {
+				this.setState({
+					source: item,
+					imageview: true
 				});
+			} else {
+				RNFetchBlob.config({
+					addAndroidDownloads: {
+						useDownloadManager: true,
+						title: name,
+						description: 'View document',
+						mime: `application/${extension}`,
+						mediaScannable: true,
+						path: path,
+						notification: true
+					}
+				})
+					.fetch('GET', this.props.context.url + item, {
+						Authorization: `Bearer ${this.props.context.token}`
+					})
+					.then((res) => {
+						const android = RNFetchBlob.android;
+						android.actionViewIntent(res.path(), `application/${extension}`);
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			}
 		} else if (Platform.OS == 'ios') {
 			if (extension != 'pdf') {
 				this.setState({
@@ -121,7 +128,7 @@ class PurchaseOrder extends React.Component {
 	render() {
 		return this.state.rowdata != null ? (
 			<React.Fragment>
-				<SafeAreaView style={{backgroundColor:"#507df0"}} />
+				<SafeAreaView style={{ backgroundColor: '#507df0' }} />
 				<View style={viewstyle.topbar}>
 					<TouchableOpacity activeOpacity={1} style={viewstyle.backcontainer} onPress={this.goback}>
 						<Image source={back} style={viewstyle.backimage} />
@@ -208,21 +215,23 @@ class PurchaseOrder extends React.Component {
 							</View>
 						</React.Fragment>
 					) : null}
-					{this.state.rowdata.issues ? 
-						this.state.rowdata.issues.length > 0 && (<React.Fragment>
-							<View style={viewstyle.separator} />
-							<View style={viewstyle.details}>
-								<View style={viewstyle.paragraph}>
-									<Text style={viewstyle.longtextheading}>Issues</Text>
-									{this.state.rowdata.issues.map((item, i) => (
-										<View style={viewstyle.row} key={i}>
-											<Text style={viewstyle.leftissuetext}>{item.id}</Text>
-											<Text style={viewstyle.righttext}>{item.status}</Text>
-										</View>
-									))}
+					{this.state.rowdata.issues ? (
+						this.state.rowdata.issues.length > 0 && (
+							<React.Fragment>
+								<View style={viewstyle.separator} />
+								<View style={viewstyle.details}>
+									<View style={viewstyle.paragraph}>
+										<Text style={viewstyle.longtextheading}>Issues</Text>
+										{this.state.rowdata.issues.map((item, i) => (
+											<View style={viewstyle.row} key={i}>
+												<Text style={viewstyle.leftissuetext}>{item.id}</Text>
+												<Text style={viewstyle.righttext}>{item.status}</Text>
+											</View>
+										))}
+									</View>
 								</View>
-							</View>
-						</React.Fragment>
+							</React.Fragment>
+						)
 					) : null}
 					{this.state.rowdata.attachments ? (
 						<React.Fragment>
@@ -253,28 +262,28 @@ class PurchaseOrder extends React.Component {
 				</TouchableOpacity>
 
 				<Modal visible={this.state.imageview} transparent={false} animated={true}>
-						<Image
-							source={{
-								uri: this.props.context.url + this.state.source,
-								headers: {
-									Authorization: `Bearer ${this.props.context.token}`
-								},
-								method: 'GET'
-							}}
-							style={{
-								width: Dimensions.get('window').width,
-								resizeMode: 'contain',
-								height: Dimensions.get('window').height
-							}}
-						/>
-						<TouchableOpacity
-							activeOpacity={0.5}
-							style={{ position: 'absolute', top: 50, right: 0, height: 50, width: 50 }}
-							onPress={() => this.setState({ imageview: false })}
-						>
-							<Image source={deleteimage} style={{ height: 15, width: 15, resizeMode: 'contain' }} />
-						</TouchableOpacity>
-					</Modal>
+					<Image
+						source={{
+							uri: this.props.context.url + this.state.source,
+							headers: {
+								Authorization: `Bearer ${this.props.context.token}`
+							},
+							method: 'GET'
+						}}
+						style={{
+							width: Dimensions.get('window').width,
+							resizeMode: 'contain',
+							height: Dimensions.get('window').height
+						}}
+					/>
+					<TouchableOpacity
+						activeOpacity={0.5}
+						style={{ position: 'absolute', top: 50, right: 0, height: 50, width: 50 }}
+						onPress={() => this.setState({ imageview: false })}
+					>
+						<Image source={errorimage} style={{ height: 25, width: 25, resizeMode: 'contain' }} />
+					</TouchableOpacity>
+				</Modal>
 			</React.Fragment>
 		) : (
 			<ActivityIndicator />

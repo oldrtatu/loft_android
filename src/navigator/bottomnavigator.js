@@ -13,8 +13,8 @@ import Nav from '../components/navigation/bottomnav';
 
 const TestScreen = () => {
 	return (
-		<View>
-			<Text>Text Screen</Text>
+		<View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
+			<Text>This page is still in development phase</Text>
 		</View>
 	);
 };

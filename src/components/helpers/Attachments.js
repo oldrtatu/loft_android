@@ -136,27 +136,34 @@ class AttachmentField extends React.Component {
 		let name = item.substring(item.indexOf('Z') + 1, item.length);
 		if (Platform.OS == 'android') {
 			let path = `${RNFetchBlob.fs.dirs.DownloadDir}/${name}`;
-			RNFetchBlob.config({
-				addAndroidDownloads: {
-					useDownloadManager: true,
-					title: name,
-					description: 'View document',
-					mime: `application/${extension}`,
-					mediaScannable: true,
-					path: path,
-					notification: true
-				}
-			})
-				.fetch('GET', this.props.context.url + item, {
-					Authorization: `Bearer ${this.props.context.token}`
-				})
-				.then((res) => {
-					const android = RNFetchBlob.android;
-					android.actionViewIntent(res.path(), `application/${extension}`);
-				})
-				.catch((err) => {
-					console.log(err);
+			if (extension != 'pdf') {
+				this.setState({
+					source: item,
+					imageview: true
 				});
+			} else {
+				RNFetchBlob.config({
+					addAndroidDownloads: {
+						useDownloadManager: true,
+						title: name,
+						description: 'View document',
+						mime: `application/${extension}`,
+						mediaScannable: true,
+						path: path,
+						notification: true
+					}
+				})
+					.fetch('GET', this.props.context.url + item, {
+						Authorization: `Bearer ${this.props.context.token}`
+					})
+					.then((res) => {
+						const android = RNFetchBlob.android;
+						android.actionViewIntent(res.path(), `application/${extension}`);
+					})
+					.catch((err) => {
+						console.log(err);
+					});
+			}
 		} else if (Platform.OS == 'ios') {
 			if (extension != 'pdf') {
 				this.setState({
@@ -180,7 +187,7 @@ class AttachmentField extends React.Component {
 					});
 			}
 		}
-	}
+	};
 
 	addimages = async () => {
 		ImagePicker.showImagePicker(options, async (res) => {
@@ -285,7 +292,7 @@ class AttachmentField extends React.Component {
 							style={{ position: 'absolute', top: 50, right: 0, height: 50, width: 50 }}
 							onPress={() => this.setState({ imageview: false })}
 						>
-							<Image source={deleteimage} style={{ height: 15, width: 15, resizeMode: 'contain' }} />
+							<Image source={deleteimage} style={{ height: 25, width: 25, resizeMode: 'contain' }} />
 						</TouchableOpacity>
 					</Modal>
 				</View>
