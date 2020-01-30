@@ -471,7 +471,7 @@ class AddForm extends React.Component {
 							getValue={this.getVendor}
 							placeholder="Enter preferred vendor"
 							label="Preferred vendor"
-							value={this.state.editdata.vendor.name}
+							value={this.state.editdata.vendor ? this.state.editdata.vendor.name : ""}
 							dropdowndata={this.data.vendor}
 							editable={dat.vendor ? false : true}
 						/>
@@ -503,7 +503,7 @@ class AddForm extends React.Component {
 						<TextArea
 							placeholder="Enter vendor notes"
 							label="Vendor notes"
-							value={this.state.editdata.vendorNotes}
+							value={this.state.editdata.vendorNotes ? this.state.editdata.vendorNotes : ""}
 							validate={[]}
 							name="vendorNotes"
 							getValue={this.getValue}

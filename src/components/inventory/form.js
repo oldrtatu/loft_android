@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TouchableOpacity, Image, ScrollView, SafeAreaView } from 'react-native';
-import { InputField, IncrementField, DropDown, SuggestionField, DatePicker, TextArea,Slidebutton } from '../helpers';
+import { InputField, IncrementField, DropDown, SuggestionField, DatePicker, TextArea, Slidebutton } from '../helpers';
 import { GlobalContext } from '../../provider';
 
 import form from './styles/formstyle';
@@ -12,14 +12,14 @@ class InventoryForm extends React.Component {
 	constructor(props) {
 		super(props);
 		this.previousdata = JSON.parse(JSON.stringify(props.navigation.getParam('rowdata')));
-        this.data = {
+		this.data = {
 			item: props.context.itemdata ? props.context.itemdata : [],
 			vendor: props.context.vendordata ? props.context.vendordata : []
-        };
+		};
 		this.state = {
 			editdata: {
 				name: '',
-				item: { code: '', quantityUnit: '',name:'' },
+				item: { code: '', quantityUnit: '', name: '' },
 				currentQuantity: '0',
 				unit: '',
 				status: '',
@@ -27,10 +27,10 @@ class InventoryForm extends React.Component {
 				checkDate: '',
 				reorderAt: '',
 				notes: '',
-				costPerItem:'',
-				costUnit:''
+				costPerItem: '',
+				costUnit: ''
 			},
-			reload:false
+			reload: false
 		};
 	}
 
@@ -46,37 +46,37 @@ class InventoryForm extends React.Component {
 
 	handleSubmit = () => {
 		const { navigation } = this.props;
-		let err = this.validateForm()
-		if(err == ''){
-			if(Object.keys(this.addeddata).length>0){
-				this.addeddata['id'] = this.state.editdata.id
+		let err = this.validateForm();
+		if (err == '') {
+			if (Object.keys(this.addeddata).length > 0) {
+				this.addeddata['id'] = this.state.editdata.id;
 				this.props.context.updatedata('/po/inventory', 'inventorydata', this.addeddata);
 				navigation.goBack();
 				navigation.state.params.changedata(this.addeddata);
 			}
-		}else{
+		} else {
 			Snackbar.show({
-				text:err,
-				duration:Snackbar.LENGTH_SHORT,
-				backgroundColor:"#D62246"
-			})
-			this.setState({reload:true},()=>this.setState({reload:false}))
+				text: err,
+				duration: Snackbar.LENGTH_SHORT,
+				backgroundColor: '#D62246'
+			});
+			this.setState({ reload: true }, () => this.setState({ reload: false }));
 		}
 	};
 
 	validateForm = () => {
-		if(this.state.editdata.name == ''){
-			return "Enter item name"
-		}else if(this.state.editdata.currentQuantity == '' || parseInt(this.state.editdata.currentQuantity) == 0){
-			return "Enter current quantity"
-		}else if(this.state.editdata.costPerItem == '' || parseInt(this.state.editdata.costPerItem) == 0){
-			return "Enter cost per item"
-		}else if(this.state.editdata.reorderAt == '' || parseInt(this.state.editdata.reorderAt) == 0){
-			return "Enter re order at quantity"
-		}else{
-			return ''
+		if (this.state.editdata.name == '') {
+			return 'Enter item name';
+		} else if (this.state.editdata.currentQuantity == '' || parseInt(this.state.editdata.currentQuantity) == 0) {
+			return 'Enter current quantity';
+		} else if (this.state.editdata.costPerItem == '' || parseInt(this.state.editdata.costPerItem) == 0) {
+			return 'Enter cost per item';
+		} else if (this.state.editdata.reorderAt == '' || parseInt(this.state.editdata.reorderAt) == 0) {
+			return 'Enter re order at quantity';
+		} else {
+			return '';
 		}
-	}
+	};
 
 	getValue = (key, value) => {
 		let ob = { ...this.state.editdata };
@@ -90,9 +90,9 @@ class InventoryForm extends React.Component {
 	};
 
 	getVendor = (item) => {
-		if(item == null || item == undefined || item == ''){
-			this.addeddata['VendorId'] = null
-		}else{
+		if (item == null || item == undefined || item == '') {
+			this.addeddata['VendorId'] = null;
+		} else {
 			this.setState({ editdata: { ...this.state.editdata, vendor: item } });
 		}
 	};
@@ -165,7 +165,7 @@ class InventoryForm extends React.Component {
 						getValue={this.getVendor}
 						placeholder="Enter preferred vendor"
 						label="Preferred vendor"
-						value={this.state.editdata.vendor.name}
+						value={this.state.editdata.vendor ? this.state.editdata.vendor.name : ''}
 						dropdowndata={this.data.vendor}
 						editable={true}
 					/>
@@ -193,7 +193,7 @@ class InventoryForm extends React.Component {
 						getValue={this.getValue}
 						editable={true}
 					/>
-					<View style={{height:70}}/>
+					<View style={{ height: 70 }} />
 				</ScrollView>
 				<Slidebutton submit={this.handleSubmit} reload={this.state.reload} />
 			</React.Fragment>
